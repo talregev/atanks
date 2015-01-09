@@ -1,0 +1,71 @@
+Atomic Tanks
+Coding
+Tom Hudson (tom@singular.org.uk)
+Justin Ronco (jronco@users.sourceforge.net)
+eden99_99 (eden99_99@users.sourceforge.net)
+Jesse Smith (jessefrgsmith@yahoo.ca)
+Mike Wilson (CaptainNeeda+atanks@gmail.com)
+Kevin (sylikc@gmail.com)
+Sven Eden (yamakuzure@users.sourceforge.net)
+Bruno Victal
+Bill Buerger
+
+Graphics
+Tom Hudson (tom@singular.org.uk)
+CtHx
+
+Documentation
+Justin Soles (wordsamurai@users.sourceforge.net)
+Jesse Smith (jessefrgsmith@yahoo.ca)
+
+
+Translations
+Roland (German)
+Yama (German)
+MyO (Russian)
+Sergei (Russian)
+Fred Maranhão (Portuguese)
+Olivier (French)
+Jozef (Slovak)
+Roby Alice (Italian)
+
+
+
+Ideas
+This is by no means an exhaustive list and thanks go to everyone who has
+contributed ideas to the project.
+Patrick Bogen (pdbogen@users.sourceforge.net)
+Rocky Dean Pulley (rdpulley@users.sourceforge.net)
+Mr. Mips (mrmips@users.sourceforge.net)
+Justin Ronco (jronco@users.sourceforge.net)
+Joshua Kruck (krujos@users.sourceforge.net)
+Neil (vossman77@users.sourceforge.net)
+Tom Hudson (tom@singular.org.uk)
+
+Sound
+Tom Hudson (tom@singular.org.uk)
+
+Original Code & Graphics
+Steve Condie (stevante@yahoo.com)
+Juraj Michalek (georgik@host.sk)
+
+Original Graphics
+Trevor Paulsen (supergass@aol.com)
+Ricky Galati (benogalati@yahoo.com)
+
+Original Sound
+Unknown
+
+Webmasters
+Mike Volmar (mvolmar@users.sourceforge.net)
+Tom Hudson (tom@singular.org.uk)
+Jesse Smith (jessefrgsmith@yahoo.ca)
+
+Any Other Role not listed
+Tom Hudson (tom@singular.org.uk)
+
+Allegro
+Shawn Hargreaves (shawn@talula.demon.co.uk) - http://allegro.sf.net
+
+Games for Linux: http://games.linux.sk
+Text Logos: http://www.cooltext.com

@@ -1,0 +1,2363 @@
+NOTE: From now on, new changes appear at the top of this file.
+
+	- Large code clean-up by Bruno Victal
+
+=========== Atanks-6.1 released ==============
+	All of this releases patches were provided by Bill Buerger.
+	- Extend the amount of time the AI will play against itself
+	  from 10 seconds to 60 seconds.
+	- Fixed "clean" command in Windows Makefile.
+	- Players now wait to start their turn until they
+	  can control their tank. No more waiting at the start
+	  of their turn.
+	- Rollers now properly explode when hitting steel wall.
+	- Scoreboard shows current income and turn order.
+	  This can be toggled with the ~ key.
+	- Fixed navigation keys on the store/buying sceen.
+
+
+=========== Atanks-6.0 released ==============
+	- Removed extra alleg42.dll file from src directory.
+        - Clarified license.
+        - Pressing "v" or "V" during a match will cause
+          the audio volume to decrease or increase, respectively.
+          Volume patch provided by Daniel.
+        - Plugged memory leak from update check.
+        - Fixed possible memory problem in floating text.
+
+=========== Atanks-5.9 released ==============
+
+	- Applied patch which removes GCC warnings,
+          Patch supplied by Daniel Gutson.
+
+
+============ Atanks-5.8 released ==============
+
+	- Removed compiler optimizations from src/Makefile to prevent
+          crashes on Fedora and Debian Unstable branches.
+        - If Allegro cannot be initialized, the game now
+          exits with a return code of 1.
+
+
+============ Atanks-5.7 released ==============
+
+    - Added new tank type, the Mini, provided by Daniel.
+    - Added patch from Fabian Greffrath to fix crashes
+      when Atanks is compiled using GCC 4.7. This patch
+      makes menu entries on the Options menu static variables.
+      Closes Debian bug #691107.
+
+
+============ Atanks-5.6 released ==============
+
+    - Updated icon file and COPYING file. Thanks to
+      Cristian for pointing out the problems with these files.
+
+    - Code clean-up to make game safer without threads/sockets.
+      Try to avoid memory errors in networked games.
+      Atanks now builds cleanly with clang++ compiler.
+
+    - Code clean-up to allow Atanks to compile on Windows.
+      We check to make sure pthread code is not included
+      where THREADS is not defined.
+
+    - Removed unneeded parameter from Tank class's
+      applyPhysics function. Was causing compiler warnings.
+
+============ Atanks-5.5 released ==============
+
+May 17, 2012
+    - Fixed typos in makefiles in src directory.
+      Thanks to Ville for submitting this patch.
+
+
+============ Atanks-5.4 released ==============
+
+April 8, 2012
+
+    - Updated Portuguese language files in text folder.
+    - Updated menu file with new Portuguese translation.
+      (Thanks ot Jose for providing the new translations.)
+    - Applied src/Makefile patch from Gentoo build process.
+      (Thanks to Michael Sterrett for providing this patch.)
+
+
+============ Atanks-5.3 released ==============
+
+Feb 23, 2012
+
+    - Updated makefile to remove un-needed debugging information.
+    - Various memory leak fixes and checks.
+      Patches provided by Nathan.
+    - Various memory fixes and typo fix.
+      Patches provided by Nathan.
+    - Removed some un-needed variables.
+    - Added locking system which should make Atanks
+      thread safe and more stable.
+      Thanks to Nathan for providing these patches.
+
+
+============ Atanks-5.2 released ==============
+
+    - Updated desktop file with Spanish comment.
+    - Modified makefile to support optional DESTDIR
+      variable.
+    - Added -pthread flag in src/makefile to avoid
+      linking issues.
+      The three patches above all provided by
+      Cristian Morales Vega.
+
+============ Atanks-5.1 released ==============
+
+    - Fixed close button so it skips remaining rounds.
+      Close button now also works during Demo Mode.
+    - Updated atanks.rc file.
+
+
+============ Atanks-5.0 released ===============
+
+June 4, 2011
+    - Window's close button now works on buying screen 
+      and during rounds.
+
+
+============= Atanks-4.9 released ================
+
+
+March 23, 2011
+    - Added Italian language support. 
+      (provided by Roby Alice.)
+
+
+March 7, 2011
+    - Applied update to atanks.rc file to implement
+      game icon in the corner of the window.
+      (Update supplied by Billy Buerger)
+
+
+============ Atanks-4.8 released ==================
+
+
+March 6, 2011
+    - Put in check to prevent AI from buying weapons and items
+      above their tech level.
+    - Fixed lock-up when playing in Demo mode.
+
+Jan 13, 2011
+    - Fixed SDI point defense code so the lasers point at the
+      incoming missile. Thanks to Nolan for supplying this fix.
+
+
+============== Atanks-4.7 released ===================
+
+Sept 5, 2010
+    - Fixed header file includes for FreeBSD.
+    - Now we try to find out if Allegro can't start and exit
+      if we run into a problem.
+    - Fixed bug where command line flags for width and height were ignored.
+    - Partitial shields are restored at the end of rounds.
+    - Tanks should no longer get extra turns during rounds.
+
+
+July 18, 2010
+    - Added patch from CtHx which allows alternative key usage.
+      A, D, W, S for left, right, up, down. The R and F keys in place of
+      pageup and pagedown. The P key will now work like ESC during rounds.
+    - Added header file needed for newer versions of gcc. Thanks to CtHx
+      for pointing out this requirement.
+    - Added patch to support tank movement, using H and J.
+
+
+June 28, 2010
+    - Made it possible to adjust game speed in a more fine-tuned manner.
+    - Shields now reactivate at the end of the player's turn, not beginning.
+    - Large code clean-up to remove support for older config file format.
+
+
+June 12, 2010
+    - Fixed custom background code so that if no image
+      exists, we avoid a crash and generate a standard image.
+
+June 2, 2010
+    - Updated Makefile to match Billy Buerger's.
+    - Shields reactivate if knocked out.
+    - Fixed error where if the first player was neutral, they
+      would not receive credit for victories.
+      Bug reported by CtHx.
+    - Added fix for credits where all players are neutral or
+      the round ends in a draw.
+
+
+========== Atanks-4.6 released =================
+
+May 24, 2010
+    - Added new makefile for OS X and FreeBSD users.
+      Should allow users on both systems to run
+      gmake osxuser
+      To build Atanks
+    - Tank text bounces on player's turn.
+    - Ingame menu is now displayed.
+    - Screen refreshes properly after quitting to menu mid-game.
+    - Tanks fall when they should.
+    - Added timed shots.
+    - Walls are re-drawn occasionally to make sure the player can see them.
+    - Avoid game lock-up when player dies during their turn.
+    - Skip AI when humans are dead now works.
+    - Client cannot take infinte turns.
+
+
+May 7, 2010
+    - Tanks wait to explode after other things have stopped exploding.
+      Makes action easier to follow.
+    - Server IP address can now be 16 characters long on the
+      Network Options menu.
+
+
+April 17, 2010
+    - Updated Makefile to work better with Ubuntu.
+      Fix provided by Neil.
+    - Added Spanish language support.
+      Provided by Marcelo Camacho Moreno.
+    - There are now two game loops. Which one is used depends on
+      on the compiler flags in the Makefile. The options are
+      OLD_GAMELOOP or NEW_GAMELOOP
+    - When using new gameloop, tanks can fire vollies
+      (like the jackhammer) in simultanious mode.
+
+
+============== Atanks-4.5 released ==================
+
+April 7, 2010
+    - Separated tank explosions from tank memory clean up. This
+      should prevent some memory leaks on the client side.
+    - Damage text on the client side now rises and disappears.
+    - When a client is taking too long to fire, the AI will
+      take over the take briefly to shoot.
+
+
+April 1, 2010
+    - Updated OS X entry in Makefile. Hopefully this will allow
+      people to compile on Mac.
+    - Updated main.h to support OS X. This used to piggy-back on
+      the Linux defines, but we can't do that anymore because of
+      Allegro's sound system.
+    - When only AI and netowrk clients are left, the game no longer
+      moves into foast forward (skip AI mode).
+    - Added "make ubuntu" build to work around the default sound driver
+      not working. Thanks to Neil for helping to trouble-shoot this and
+      test the patch.
+
+
+March 16, 2010
+    - Animations move at the proper speed on the client side.
+    - Server now updates client with tank health and shield status.
+    - Client displays tank shields.
+    - Client now displays shield and health information.
+    - Moved war quote code to allow smoother ending for networked games.
+
+
+March 5, 2010
+    - Removed debugging output from Help and Credits screens.
+    - Added client_message variable for passing messages from the client
+      to the main menu.
+    - When players fire before client has received all ground data,
+      the client will resume getting the data.
+    - Corrected spelling in German weapons file.
+      Provided by Simeon.
+    - Upgraded client-side terrain graphics.
+    - Cleaned up compiler warnings.
+    - Code clean-up in do_winner function.
+    - Server now lets client know who won the game.
+    - Client displays winner after game is finished.
+
+
+============== Atanks-4.4 released ================
+
+Febraury 18, 2010
+    - Entire Help text is now displayed when the language is set to Russian.
+
+January 22, 2010
+    - Removed old title screen from data files.
+    - Introduced repaired weapons file from Simeon.
+    - Added check in weapon damage to prevent recursive bug.
+    - Added Locale settings to file loads/saves to fix crash
+      in some regions. Fix submitted by CtHx.
+
+============== Atanks-4.3 released =================
+
+December 27, 2009
+    - Cleaned up memory leak in floating text code.
+    - Made Atanks _not_ use threads by default.
+    - Added command line option to enable thread use.
+    - Removed old shield drawing code.
+    - Created new shield animation.
+    - Added Bigfoot tank style. (Provided by GtHx)
+    - Networking threads are now able to function even
+      if background drawing threads are turned off.
+    - Clicking on tank style buttons causes the
+      new tank style to display properly.
+    - Put a cap on money to make sure even players in loaded games
+      get less than one billion dollars.
+    - Added code to detect where data files are. This
+      removes the need for the system makefile.
+
+
+December 4, 2009
+    - Updated Russian translation for in game menu.
+      Provided by CtHx.
+    - Updated German weapons file.
+      Translation provided by Simeon.
+    - Added new Spider tank images, provided by CtHx.
+    - Added updated Slovak language support.
+      Provided by Jozef.
+    - Made sure all ingame text files are the same length to
+      avoid empty strings.
+    - Switched to using new button design, provided by CtHx.
+    - Blue rectangle is drawn properly around new buttons
+      on the main menu.
+    - Changed the way menu backgrounds are drawn to avoid crashes
+      with various resolutions.
+    - Updated spec file to include all data files.
+    - In place of the name of the style, a preview of the player's
+      tank style is shown on the Player menu.
+    - Added new menu background, provided by CtHx.
+    - War quotes now appear in white for better contrast with new background.
+
+
+======================== Atanks-4.2 released ==========================
+
+
+November 27, 2009
+    - German language now uses unicode font to avoid weird symbols
+      in the text.
+
+November 13, 2009
+    - Fixed floating text so that Russian comments are not cut short.
+    - Added new Slovak weapons file. Provided by Jozef.
+    - Adjusted the way rollers move if they hit a flat surface.
+    - Added ingame Russian text. Provided by MyO.
+    - Client side now tries to maintain inventory.
+    - Try to make sure network players are returned to their original type
+      after each game.
+    - Added new tank styles, UFO, Future, Heavy. These were provided by CtHx.
+    - Added command line option "--nothread" to prevent the game from
+      using background threads.
+
+November 6, 2009
+    - Fixed Russian war quotes so odd symbols do not appear in the text.
+    - Teleports are now visible on client.
+    - Tried to make sure AI buys parachutes and spreads its money around more.
+    - Client should now stay connected in multi-round games.
+    - Fixed compile error when threads are not being used.
+    - Client now changes rounds and ends game when it should.
+    - Client can see which weapons they have and select which weapons to fire.
+    - If client does not do anything after about 10-15 seconds, AI takes over
+      for one shot.
+    - Fixed Heavy Riot Bomb price from $300 to $3000 to match similar weapons.
+    - Fixed client crash when using riot bombs.
+    - Client side no long fills up memory with unused objects.
+
+October 30, 2009
+    - Added basic game networking.
+    - The game will now compile without threads.
+    - Try to avoid crashes on large screens/64-bit computers.
+    - Tank positions sync across network every few shots.
+    - Added .rc file
+
+
+=========================== Atanks-4.1 released ==============================
+
+October 19, 2009
+    - Rollers should now fall down walls and roll properly before exploding.
+    - If satellite is turned off, it may still appear, but will no longer fire.
+    - Fixed crash which would happen if napalm hit steel floor.
+    - Made sure in game text gets cleaned up at the end of the game.
+    - Fixed a Windows bug which would cause crash at start-up.
+    - Added Network Game buttons to main menu.
+
+October 10, 2009
+    - Added Small Dirt Spread weapon.
+    - Updated Russian translation.
+      Text provided by MyO and Sergei.
+    - Created new weapon called Cluster Mirv. It releases a cluster
+      bomb while coming down.
+    - Created new weapon called the Per Cent Bomb. Causes the target
+      to lose half of its health (armour + shield).
+    - Tank speech text rarely over-laps now and travels at different
+      speeds.
+    - Added item called SDI Missile Defense. This device attempts to shoot
+      down missiles coming too close to the player's tank.
+    - When playing in full screen on Windows, the mouse should now
+      be visible.
+    - Added new weapon which reduces the explosive power of the target's
+      missiles. The new weapon is called a Reducer.
+    - Game text now lives in "ingame" text files (see "text" folder). Each
+      language has its own file to allow for easy translation without
+      recompiling.
+    - SDI no longer shoots at napalm jelly, causing it to hover.
+    - Updated spec file to reflect directory/file changes.
+
+October 4, 2009
+    - Fixed system wide makefile to build client.o
+    - Text can now be loaded into memory, rather than relying
+      on files and checking the disk.
+    - Updated Makefile to install text in new "text" folder.
+    - Text files, including weapons, help and tank text are now kept in
+      the "text" directory.
+    - Game loads text into memory and switches languages on the fly.
+    - Fixed comma showing up at start of money.
+    - When launching the game in full screen mode, the game using the
+      system's screen resolution. If the resolution cannot be detected,
+      it reverts back to safe values.
+    - Amount of money earned for a hit is displayed above the shooter's tank.
+    - Misc code clean up to remove old, commented code blocks.
+    - Added Full Screen option to Graphics Options menu.
+    - Added two new tank types for the players to choose from.
+      The new types are called Big Grey and T34.
+      Thanks to CtHx for providing these tank images.
+
+
+================ Atanks-4.0 released =======================
+
+September 24, 2009
+    - Fixed memory leaks with new text block code.
+    - Running "make install" should now do a "make system"
+      for you first, rather than a local build.
+    - The game now remembers if the window was set to full screen
+      mode or not. Command line over-rides either mode.
+    - Firing rockets while under dirt does not cause the tank to fly
+      sideways.
+    - Added fix which should prevent Russian tank text from being
+      broken into multiple lines.
+    - Fixed on/off text in menu code. Thanks to ctHx for pointing out this
+      problem.
+    - Applied fix to avoid crash on 64-bit systems when choosing which
+      weapon to fire.
+    - Fixed Russian font on the buying screen.
+    - If the game is skipping the AI, the AI should now self destruct
+      if nobody is winning after 10 seconds.
+      Thanks to Yama and Draco for providing the code/suggestion for this.
+    - Money values are now displayed with comma separators to make
+      them easier to read.
+
+
+September 19, 2009
+    - The unicode font should now install properly, editted makefile.
+    - Changing language in the Options menu now causes the proper
+      weapons file to be loaded.
+    - Added fix to avoid pink lines showing up in detailed terrain.
+    - When selecting players, buttons should toggle properly now
+      if Russian font is being used.
+    - Placed Russian main menu buttons in proper order, I hope.
+      Thanks to CtHx for providing the correct order.
+    - Blue box on main menu is now the right size when viewing Russian
+      buttons.
+    - Added better German language support for in game menu.
+    - Added German weapons file.
+    - Added German Options menu translation.
+      Thanks to Roland for providing German language files
+      and menu translations.
+    - Added short delay in threaded land generation to reduce CPU
+      load at beginning of rounds.
+    - Tanks use all Russian chat files now.
+    - Fixed text on top bar during rounds.
+    - Added TEXTBLOCK class for easy access to text files.
+    - Added text.cpp and text.h to makefiles.
+    - Removed old lineseq.h file and references.
+    - Cleaned up renderTextLines function to display cyrillic
+      text properly.
+      
+
+September 14, 2009
+    - Added unicode fonts to support cyrillic.
+      Thanks to Netscape (I think) for supplying this font.
+    - Placed unicode font in a datafile to greatly reduce project size
+      and decrease load/start-up time.
+    - Fixed bug which would prevent Portuegese help file from displaying.
+    - Fixed bug which prevented Russian Help text from displaying.
+    - The correct weapons file is now loaded to match the selected language.
+    - Floating text has been reorganized.
+    - Adjusted options screen to display unicode font better.
+    - Fixed speech text during rounds when using unicode font.
+    - Added command line option "--nobackground". This causes the green
+      background seen on most screens and menus to not be drawn. Instead
+      the background is left plain black. This is to avoid crashes on
+      some 64-bit machines.
+    - Updated spec file for RPM building.
+    - Adjusted text positioning on rounds screen to better handle
+      different fonts.
+    - Added Russian language buttons for the main menu.
+      Thanks to Sergei for making these and donating them.
+    - Land colours and textures are now generated in the background
+      before they are needed. This makes rendering detailed land much
+      faster on most computers.
+
+
+September 8, 2009
+    - Changed menu screens to use more common key commands.
+      Up/Down arrows move up and down through menus.
+      Space selects/deselects items.
+      Enter is the same as clicking OK.
+      ESC backs up to the previous screen.
+      The right/left arrow keys adjust item values or buy/sell.
+    - Updated README file to reflect new key mapping.
+    - Moved some define statements out of main.h and into the
+      Makefile for global availablity.
+    - Made buying screen moving more logically when responding
+      to keyboard.
+    - Made keyboard work smoothly on buying screen.
+    - Cleaned up buying items with keybaord to make sure proper
+      items are purchased and screen scrolls as expected.
+    - The ENTER key now leaves the buying screen, not SPACE.
+    - On the buying screen, the item selector stays on the screen
+      when the mouse is being used.
+    - Weapons can now be cycled through during a round by
+      using the Z and C keys. (Tab and Backspace still work.)
+    - Running "make system" will build Atanks in a way compatible with
+      installing on Linux systems.
+    - Changed Mass Teleport to make sure all tanks get teleported.
+    - Fixed Options menu to make sure ENTER key would return to main menu.
+
+
+September 4, 2009
+    - Added Windows icon, resource and makefile.
+      Thanks to Billy Buerger for supplying these.
+    - Added Allegro .dll file for easier Windows portability.
+    - Replaced some pieces of code from checking to see if we are running
+      on Linux to checking if we have threads and/or network access.
+      This should make the code easier to port.
+    - On the Help screen, arrow keys can be used to scroll up or
+      down through the text. Spacebar resumes scrolling. ESC or
+      a mouse click returns to the main menu.
+    - Re-added English version of the Help file.
+    - Made sure the "*" appears next to player names in the
+      Player menu.
+    - Removed long delay between menu screens on Windows/wine.
+    - Fixed Windows crash bug in aiming code and player handling.
+    - Fast sky generation should now work in Windows, if compiled with
+      mingw compiler and THREADS is defined.
+    - Some code clean-up to make porting network features to Windows easier.
+
+==================== Atanks-3.9 released ==================================
+
+August 28, 2009
+    - Added patch from BillyBuerger which allows computer only
+      play to be skipped, even if the setting to watch the full
+      round is enabled. This is accessed by pressing ESC during
+      the round and selecting Skip AI. The action is then
+      skipped for the remainder of that round only.
+    - Added Russian language support for instructions, README
+      file, tank speech and menu. Many thanks to MyO for submitting
+      the translations.
+
+
+August 21, 2009
+    - Fixed bug which would cause the game to hang while AI was
+      buying items.
+    - Fixed bug which would cause AI to purchase only small missiles
+      if no preferences had been generated.
+    - Fixed a compile bug on Windows related to the new sound
+      driver code.
+    - Fixed a bug that would cause the Windows version to crash if
+      the AI was fighting in a round with less than ten players.
+    - Fixed a bug which would cause the Windows build to crash if
+      repulsor shields were used with less than ten tanks in the game.
+    - Fixed compile errors on Windows.
+    - Added function which will create a "music" folder in the .atanks
+      config folder.
+    - Game will now play wav files which are saved in the .atanks/music
+      folder. One track is played each round and looped.
+      The wav file must be 16-bit.
+    - Added item to main option menu called the Sound menu. The sound menu
+      contains all sound related options. Removed sound driver options
+      from the Graphics menu.
+
+
+August 7, 2009
+    - Players can now select which sound driver they want. This should
+      usually be left on Auto Detect, but Linux users can select from
+      a variety of other sound drivers if need be.
+    - Saving and loading games is now done using text files again.
+    - Settings are saved in regular .txt files again for easy editing.
+      The game should automatically switch from the old .dat files.
+    - Added --nonetwork command line option to avoid using any
+      network server code.
+
+
+August 1, 2009
+    - Fixed bug where pressing a key on the Select Players screen
+      would cause the game to run without any players.
+    - Removed crash when sound is not properly initalised.
+    - Added keybaord support for options menu and select player
+      menu. Tab and Backspace switch between fields. ENTER toggles
+      toggle boxes. Up and down arrows adjust values. Space is OK
+      and ESC is cancel.
+    - Removed most un-needed exit calls to avoid having the game crash
+      needlessly.
+    - Added keyboard support for the main game menu. Tab and Backspace
+      navigate the menu. Enter and Spacebar select items. Esc quits
+      the game.
+    - Added check to make sure unselectable items are not selected
+      during the battle.
+    - Added a quick note on keybaord controls to the README file.
+    - Removed AI's ability to cheat by "megically" getting more money.
+    - Made teams divide up money more fairly.
+    - Fixed dependencies in the Makefile.
+    - Game should no longer crash if a mouse is no present.
+    - Added keyboard support to buying screen.
+
+
+July 25, 2009
+    - Created exporter utility, which takes all images out of
+      an Allegro datafile and saves the bitmaps in the current
+      directory.
+    - Replaced all datafiles with sub-directories. This allows easy
+      access to view and edit all images and sounds.
+    - The game now manually loads all images and sounds
+      in the globaldata class.
+    - Atanks now uses manually loaded images. Datafiles are no longer
+      used. Removed datafiles.
+    - Napalm looks a little more firey.
+    - Added Rocket item, which shoots the tank up into the air.
+    - Fixed drawing of the tank when using the rocket.
+    - Reduced cost of auto-repair kit.
+    - Added rocket flames.
+    - Prevented tank from launching itself into orbit.
+    - Rockets can move a tank left or right, depending on the direction of
+      the tank gun. Straight up causes the tank not to drift either way.
+    - Updated Makefile to handle new image and sound handling.
+
+
+================== Atanks-3.8 released ============================
+
+July 24, 2009
+    - Fixed some code to be more compatible with Windows.
+
+July 16, 2009
+    - Fixed bug where the error message would be garbled if no weapons file
+      was found. Thanks to BillyBuerger for reporting this bug.
+    - Placed virtual object functions back in their source file. Removed
+      inline statements.
+    - Placed physical object code back in source file. Removed inline
+      statements.
+    - Funky bomblets (and funky deathlets) now display in different colours.
+    - Removed all the un-needed private constructors and deconstructors.
+      Removed un-needed inline declarations.
+    - Removed white bubbles from menus to improve contrast and reduce
+      CPU usage.
+
+
+
+July 8, 2009
+    - Removed code which caused crash if settings were not saved.
+    - Fixed crash in retaliation text code.
+    - Added Demo mode. Leaving Atanks on the main menu for one
+      minute causes the game to play by itself for five rounds.
+      This can be stopped at any time by pressing the ESC key.
+    - On Linux, the sky is now generated in a background thread. This
+      removes most of the delay at the end of the buying screen, before
+      a round starts.
+      (I forget who suggested this a year or so back, but I didn't have
+       the time to implement it then. I think they were a Java developer
+       and they deserve the credit for this idea.)
+    - Fixed a problem with cluster bombs not having the proper sub-missile.
+    - Moved some floating functions out of atanks.cpp and placed them in
+      files.cpp for better access from other source files.
+    - Fixed land drawing under threaded mode.
+    - Changed war quotes to display in black for better contrast.
+    - Fixed blank patches in sky when using threads.
+
+
+
+July 4, 2009
+    - Changed main game loop to go through objects twice rather than loop
+      twice for each class. Should reduce CPU usage by about 5%.
+    - Tried to make teams more evenly matched.
+    - Added Option menu called "Network".
+    - Made checking for updates on the web an option, under the Network menu.
+    - Made MIRVs detect their position much more efficently.
+    - Created new weapon (Driller), which will dig a deep hole where ever it lands. Does
+      minor damage to any tanks hit.
+
+June 27, 2009
+    - Added Chain Missile and Jackhammer weapons. (Provided by Yama.)
+    - Weapons such as chain gun, chain missile and jack hammer now correctly
+      display the number of shots the player has left, rather than the total
+      amount of missiles in the spread.
+    - In the Store, the correct number of items purchased now show up next to
+      items such as the chaingun, chain missile and jack hammer.
+    - Updated README file.
+
+
+
+============= Atanks-3.7 released ========================================
+
+June 22, 2009
+    - Napalm should now fall if no dirt is under it.
+    - Player colours should look the same in 16 and 32 bit colour modes now.
+    - Cleaned up old fog code.
+    - Fixed fan graphic in different colour modes.
+    - Game now automatically checks for updates, if the user is running Linux.
+      Availible updates are displayed on the main page.
+
+June 19, 2009
+    - Added option to allow players not not share money with team mates.
+      (menucontent.h, globaldata.h, globaldata.cpp, atanks.cpp)
+    - Fixed crash when checking tank status.
+      (globaldata.h, player.cpp, tank.cpp)
+    - Atanks now uses the desktop's default colour depth. The user
+      can over-ride the default by using the "-d" option on the command line.
+    - Applied code from Yama to make satellite drawing more smooth. Should
+      avoid leaving artifacts.
+
+June 15, 2009
+    - Fixed abs() calls in player.cpp and tank.cpp
+    - Replaced old Teleport animation with Yama's. 
+
+June 4, 2009
+    - Added war quotes to display at the end of games. (files.cpp, files.h,
+      atanks.cpp (do_winner))
+    - Added war_quotes.txt data file with list of quotes about war.
+    - Added Reset All button on the options page (atanks.cpp options,
+      globaldata.h, globaldata.cpp, evironment.h environment.cpp)
+    - Made default colour theme "crispy".
+    - Moved do_winner screen up a little to give room to the war quotes.
+    - Added option for custom background (menucontent.h, environment.h
+      environment.cpp)
+    - Any bitmaps found in the config folder (.atanks) can be used
+      as custom backgrounds. (files.cpp, files.h, atanks.cpp, environment.h,
+      environment.cpp)
+    - Added Mass Teleport item, teleports all tanks on the screen to
+      random locations. (tank.cpp, weapons.txt, main.h)
+
+
+================== Atanks-3.6 released ================================
+
+June 1, 2009
+    - Fixed Makefile to make sure binary does to correct directory.
+    - Moved giant inline function out of header file and into environment.cpp
+    - Added deconstructor to ENVIRONMENT class fpr clean-up.
+
+May 19, 2009
+    - Settings from previous versions (prior to 3.5) can now be imported.
+    - Fixed Makefile to handle changes to source files.
+    - Re-added debugging codes to Makefile.
+    - Fixed various crashes that would happen with the computer was aiming
+      at tanks which had already been destroyed.
+    - Prevented tanks from getting credit after they die.
+    - Players should no longer show up as winning a round if they have died.
+    - New game menu should look better now at higher resolution.
+    - When selecting options or game rounds, the options now "wrap" around
+      from highest to lowest and lowest to highest.
+    - Added menu support for Slovak. (Provided by Jozef.)
+
+
+
+==================== Atanks-3.5-r1 released ==========================
+March 25, 2009
+    - Important Bugfix:
+      Fixed a bug that could cause atanks to crash if a game with players which
+      do not belong to the first 10 set up players chosen is loaded.
+    - Important Bugfix:
+      A typo made atanks impossible to be compiled on windows platform
+
+===================== Atanks-3.5 released ============================
+
+March 19, 2009
+    - Fixed a bug that caused players to be skipped, if their predecessor died
+      during their own attack. (now really working!)
+    - rewrote loading and saving of game settings and games.
+      Important: Old save games and settings can not be imported!
+    - Bots no might a) forget their revenge plans on new rounds, b) drop revenge
+      plans if the revengee is on the same team and c) go for the not-same-team
+      leader as a new revengee if the difference of won rounds grows too high.
+    - Smoke desolves now a bit more realistic.
+    - Napalm Jellies now grow first instead of spawning fully sized.
+    - If a "winner" dies during end-of-round waiting, the score and money bonuses
+      are substracted. (No more "Die-But-Keep-The-Points"-behavior!)
+    - Fixed a bug that made Sith go for their team mates in special circumstances.
+    - Changed the Makefiles to the new source layout and fixed some issues.
+    - dynamized the new targetting system, so that there should be no more "lags"
+
+February 21, 2009
+    -- Finally "-Wno-write-strings" is no longer needed to compile the sources
+    -- Rewrote the environment method to calculate average background colors. It is 
+    now inline and somewhat optimized, making shadowed + fading text more 
+    performant.
+    -- Rewrote File handling, apart from three tiny points atanks is now fully ISO 
+    C++ compliant.
+    -- Made rollers a bit faster dropping
+    -- No more roller-breaking of shields by hammering them above the enemy onto 
+    the steel/wrap ceiling! They explode now.
+    -- Two tiny patches make bots targetting a bit faster and destroy (hopefully) 
+    any possibility for the system to go infinite
+    -- prepared all neccessary files to be translated. But please note:
+    -- English: Is always there
+    -- Portuguese: Is borked. But maybe it's only my utf-8 system showing the 
+    wrong characters. I looked into the atanks-2.9 files and it is broken there as 
+    well. If its just my system, don't mind. ;)
+    -- French: Has some tiny things that has to be translated. Retaliation is 
+    still english, and I am not sure how to translate "Shadowed Text" and "Fading 
+    Text", so some french natural speaker might do this?
+    -- German: Only weapons_de.txt needs to be translated, I'll do it next year.
+    -- Slovak: Only the gloating texts *are* translated so the rest is missing 
+    completely, but I have prepared the files and menucontent.h for a slovak 
+    natural speaker to be translated.
+    -- Added weapons_*language*.txt files so we can (finally) translate the weapon 
+    texts as well.
+    -- Fixed a bug that could cause roller tracking to go infinite.
+    -- Balanced fading texts some more
+    -- Corrected some text messages
+    -- added new roller code. Rollers now really roll!
+    -- fixed a bug that made tracking report wrong hit points when tracking 
+    rollers and burrowers
+    -- Added average background color calculation and fixed fading text offset. It 
+    should look far better now.
+    -- Balanced shadowed text color calculation
+    -- added a new retaliation text. When bots aim at opponents they have a grudge 
+    against, they might tell you now.
+    For this to work you'll have to copy retaliation*.txt into 
+    /usr/share/games/atanks/ (or wherever you have your atanks data files) 
+    directory.
+    -- removed waiting for explosions to finish when tanks blow up after being hit 
+    by violent death missiles.
+    I was longing to change that for ages, because I grew rather sick of tanks 
+    being suspended in mid-air for ages while all those violent death missile fly 
+    around. Now, they blow up immediately. However, when a normal missile is shot 
+    and destroys a tank, it still waits for the missile's explosion to finish.
+    -- changed tank falling behavior: They now can fall a short distance (2-5 
+    pixels) without getting damage and without the parachutes to open.
+    I was longing for that one, too. The reason is, that it is madness to waste 
+    30+ parachutes and/or getting alot of damage while moving (!!) a tank down a 
+    flat slope.
+    -- Fixed a bug with the tracing of spreads which resulted in bots hitting self 
+    but not the opponent.
+    -- added a security check when calculating offsets to napalm. Bots should not 
+    drop napalm onto themselves any more when trying to hit a neighbor.
+    -- added shadows to the text to increase readability. (Has to be turned on in 
+    the graphics menu, for compatibilities sake this option defaults to "off")
+    -- added fading to the text, to ... well... to have a bit of eye candy. ;) 
+    (Has to be turned on in the graphics menu, for compatibilities sake this 
+    option defaults to "off")
+    -- cleaned up aiming calculation
+    -- cleaned up debugging messages for "DEBUG_AIM" and added some more info.
+    -- Fixed a bug that could cause riot shots and blasts to start 10-20 pixels 
+    away from the tank cannon.
+    -- Fixed a bug that caused the the aiming system to fail in a very special 
+    (and rare, but still existing) situation, resulting in bots shooting into the 
+    ceiling.
+    -- Added a cleanup for all objects. No more debris on the screen!
+    -- As the new aiming system doesn't need it any more, the wall type and boxed 
+    mode aren't changed any more once the last human player dies and skipping is 
+    turned on.
+    -- added boxed mode (Finally!)
+    -- riot blasts fixed, they no longer shoot downwards when too less power is 
+    chosen
+    -- chain missiles now blast through dirt. (vertical spreads, too)
+    -- Walltypes on non-human rounds with skip-AI on will now all change to 
+    Wrapped Walls & non-Boxed mode, but not before the current destructions 
+    (violent deaths, falling tanks) are finished. (happy, sylikc? ;))
+    -- a completely new aiming system has been written to make the boxed mode 
+    possible
+    -- added tweaks to reduce "debris" left on screen
+    -- added tweaks to reduce "choking" of the display when too much is going on
+    -- removed HLR_DEBUG, because in over 1000 rounds the speed-up-system never 
+    failed
+    -- There are now three different defines for debugging:
+        -- DEBUG
+        Will show everything concerning inventories, shopping system, item 
+        selection and target selection of the bots on the console.
+        -- DEBUG_AIM
+        Will show all relevant numbers of the new aiming system on the console
+        -- DEBUG_AIM_SHOW
+        Will draw dots and circles on the screen to make the "thinking" of the 
+        aiming process visible.
+        (Warning: The game is no longer playable in this mode)
+    -- balanced computer player values, according to the new aiming system. 
+    Generally speaking, the "useless" bot won't hit a barn with a pumpgun, while 
+    the "deadly" bot is very precise.
+    -- If no target can be reached by normal means, bots now might teleport (or 
+    swap) out of their corner, or try to get rid of the obstacle by using riot 
+    blasts
+    -- While aiming bots now try to avoid hitting themselves or team mebers (when 
+    non-neutral) and are somewhat carefull not to hit themselves or team members 
+    with the blast damage their weapon produces. If a target can't be hit 
+    otherwise, there have sacrefices to be made, though...
+    -- target selection now uses the new aiming system to value targets lower 
+    which are hard (or impossible) to hit
+    -- item selection now uses the new aiming system to value weapons lower with 
+    which the chosen target can't be hit properly
+    -- The target system now calculates burrowers and rollers. (Which leads to 
+    some highly entertaining results! :))
+    -- The more intelligent a bot is, the more "bounces" of walls or "wraps" it 
+    can calculate.
+    -- The more intelligent a bot is, the more spread it can calculate. So don't 
+    wonder if a useless or guesser bot fires a super spread, happily hitting 
+    itself. It simply couldn't see that coming.
+    -- Velocity check rewritten. It now a) works and b) fixes the "Repulsor-
+    Shield-Bug" :D Yes, I am very happy about that!
+    It is handled in three different ways:
+        -- No Spring Wall: The limit is set by maximum power, influenced by 
+        the mass of the weapon.
+        -- Spring Wall and Not Boxed: The Limit is doubled, or shooting at the 
+        wall would destroy your missile.
+        -- Spring Wall in a box: The limit is four times the normal limit, or 
+        it won't be any fun!
+        I had very entertaining results with that! :)
+    -- hit 2500! This means I have now tested over 2500 rounds with the new 
+    shopping- and target-selection systems since the last changes and/or bugfixes!
+    -- The Boost Value calculation is changed to be more dynamic to future changes
+    -- added a private member to count how many boost items are bought
+    -- changed boost buying: inserted a per-round-limit aka iBoostItemsBought with 
+    the help of the above count
+    -- language menu fixed
+    -- changed interest to be dynamically gained
+    -- Added a new define, HLR_DEBUG which, when set, causes the round to end 
+    after each bot having one last shot if no human players are left. (Default, 
+    currently, is 16)
+    -- Fixed a bug that caused aTanks to freeze for seconds everytime too much is 
+    going on. (Explo, Text, Smoke, etc.) On some occasions there still can be a 
+    "hang" for a split second or so. But that could have been my computer, the 
+    issue needs to be tested and watched.
+    -- Started to add boxed mode (not implemented yet! But the menu item is there 
+    and the Wall-Display is changed)
+    -- Fixed a bug causing accelerated AI to crash
+    -- Included sylikc's Anti-Crash-Fix
+    -- When bots have enough money, they do not spend everything. Jedi keep 50%, 
+    Neutrals 25% and sith 5% (the squanderers! ;) *hrhr*) for "bad times"
+    -- Repulsor Shield handling changed:
+        changed ydist to be always negative, so missiles are *always* handled 
+        like they came from above! It remains to be tested whether this 
+        balances the repulsor shields, or renders them unbeatable (which could 
+        happen...)
+        Note: In over 500 rounds they perform better, but are still far away 
+        from being "unbeatable"
+    -- When determining pre-Buy items bots enforce buying of boost-Items if they 
+    are too far away from the peak.
+    -- Limit for items raised up to 999 (like humans)
+    -- limited AI-Only Rounds. If the last human players dies the remaining bots 
+    get 10 tries each to find a winner. If they do not succeed, the round is ended 
+    and the most healthy tank wins. (Or the round draws if two or more are equal)
+    I added this, because there is a tiny chance (it never happened in the last 
+    weeks, but thrice only yesterday!) that the games gos infinite in AI-only 
+    turns. Situation: bots left have only small missiles and regenerate more each 
+    round than the small missile delivers.
+    With this limit it won't happen any more.
+    -- When the last human dies and the wall type is changed, it is redrawn at 
+    once now.
+    -- limited interest && team money
+    It is too easy to become super-marvel-universium-mega-hero by just waiting a 
+    couple of rounds until the bank has pumped up your account to some millions. 
+    Currently the bank refuses to pay more interest than 100k, but that hard limit 
+    will be changed to a dynamic one. (see todo list)
+    As for team money, bots now refuse to spend more than 500k into the pot. 
+    Humans, too, of course.
+    -- team win->WinRoundBonus divided instead of applied full.
+    It is just extremely unfair that the teams get much more money for winning a 
+    round when it is easier for them to do so.
+    -- 75% was too much, thus jedi now only pay 50% into the team account.
+    -- Bots try to save up money to get better equipment
+    -- Bots look at basic equipment first before heading for the weapons-shop.
+        -- Parachutes (if gravity is on)
+        -- Basic weapons (aka 5 medium and 3 large missiles
+        -- Armor/Amps
+        -- "Tools" to free themselves like Riot Blasts
+        -- Shields, if enough money is there
+        -- if all is set, look for dimpled/slick projectiles!
+    Armor/Amps (aka "Boost-Items"), however, are limited, so they will only buy 
+    them, if someone has a higher value in boost-items. As these items can be 
+    bought randomly as well, they won't neccessarily wait for the human player(s) 
+    to go ahead!
+    -- Buying is no longer purely random but takes the bots weapon preferences 
+    into account.
+    -- The amount of money a bot wants to save up is used for the target-finding-
+    system as well:
+    If a bot has less money, it is more likely to target weak opponents to fetch 
+    the kill-bonus. If it has enough money, it will more likely chose the biggest 
+    threat.
+    -- Money-saving is now limited, so that no bot tries to sum up millions. Right 
+    now the highest maximum, depending on type and weapon preferences, is 1M. 
+    (Deadly(=5) * 2 * Armageddon cost)
+    -- Teams are now handled differently in alot of places:
+        -- Prior the shopping tour, every jedi adds 75%, and every sith 25% of 
+        their money to the "team-account". The team-money is reduced by a 
+        "transaction fee" (jedi: 5%, sith: 10%) and then divided onto all 
+        team-members to help each other out.
+        -- While searching for a target jedi try not to hit their team mates, 
+        while sith do not care so much.
+        -- While searching for a target jedi give alot less than neutrals 
+        about revenge, while sith can become furious (even against team 
+        members!)
+        -- jedi *can* become "super-defensive" (defensive > 1.0) while sith 
+        *can* become "super-offensive (defensive < -1.0). By this jedi can be 
+        extremely cautious every now and then, while sith like to throw 
+        caution out of the window. :)
+    -- Riot blasts/bombs are no longer chosen to be shot onto enemies!
+    -- fixed a bug with the rating of buried targets while searching for a 
+    target/chosing an apropriate weapon
+    -- target selection and weapon selection now work together:
+    A bot choses a weapon and tries to find the best target for it. Then the bot 
+    decides whether another weapon would be better for that target and switches to 
+    that. But they value weapons higher they like more, now.
+    -- corrected the _targetX modification for shaped charges and napalm:
+    Bots trie to aim shaped charges so that they do not directly hit, for aiming 
+    napalm they try to take wind into account.
+    -- added blast check, to avoid using weapons which blast hit self, depending 
+    on intelligence and defensiveness
+    -- added laser check to see whether a laser can be fired or would hit solid 
+    rock only
+    -- added check for buried targets and appropriate weapons (burrower, 
+    penetrator, tremor-tectonic)
+    -- added a check to get more intelligent bots to do collateral damage when 
+    possible
+    -- Added a custom Kamikaze text for the situation when bots decide to blow 
+    them selves up.
+    -- Money interest was added right before entering the shop, resulting in 
+    interest added everytime a game was reloaded (and reloaded, and reloaded...). 
+    I changed that so that interest is added after leaving the shop, fixing the 
+    "Add-money-by-reload"-Bug. Further there is no more interest for money that is 
+    just earned in the last round.
+    -- added offset if no human players left, raising the class of the bots to 
+    speed up the game without changing the difference in intelligence between bots 
+    too much.
+    -- bots perform best on rubber and wrap walls. If no human players are left, 
+    the wall type is changed if steel/spring is chosen to speed up the accelerated 
+    game.
+    -- calculation of the shaped charge type weapons was improved (and corrected).
+    -- Added preference generation for bots that are set to "per play" when a game
+    is loaded. The loading of the preferences is (unfortunately) disabled and I do 
+    not know why. As long as they *are* disabled, PerPlay-Config bots have to get 
+    a new config on game load, or they use the global config, rendering PerPlay-
+    Config useless.
+    -- For PhysObjects: reduced "virtual" height to 25 times screen height and
+    changed velocity check for the real velocity and >200 x mass.
+    -- Re-Added german language, it flew out of the release.
+
+===================== Atanks-3.2 released ============================
+
+September 25, 2008
+    -- Player references are now removed from dying tanks to
+    void game crash.
+
+Setpember 20, 2008
+    -- Close button should now work on Windows.
+    (Patch provided by sylikc.)
+    -- Weapons should no longer bounce off repulse shields and
+    fly up forever.
+    (Patch from Yama.)
+    -- Explosions on wrap-around walls appear on the far side of the
+    screen too.
+    (Patch from Yama.)
+    -- Code clean up.
+    (Patch from Yama.)
+    -- Added fix to avoid skipping turns when spring
+    walls are used.
+
+
+
+September 2, 2008
+    -- Credits and Help screens now ignore extra DOS return
+    characters in the text file.
+    (Submitted by sylikc)
+    -- Added German language support. 
+    (Provided by Yama.)
+    -- Changed formula for dealing damage with shaped charges.
+    (Provided by Yama.)
+    -- Added language support for instructions.
+    (Provided by Yama.)
+    -- Adjusted time clock to avoid skipping human player turns.
+    -- Fixed typo which prevented penetrators from detonating when they
+    hit the ground.
+    (Provided by Yama.)
+
+
+August 28, 2008
+    -- Added patch from sylikc to prevent rounds ending
+    before the winner gets credit. Changes atanks.cc
+    -- Winners are now sorted by score at the end of the game.
+    -- Added patch to make Atanks able to run in the background
+    on Windows OS. (Provided by sylikc)
+    -- Added custom data dir for Gentoo distro.
+    (Provided by Yama)
+    -- Fixed pointer warning in menucontent.h file.
+    (Fix provided by Yama)
+    -- Added advanced AI weapon and item preferences.
+    (Provided by Yama.)
+    -- Fixed potential crash in player menu. (Patch from Yama)
+
+
+
+August 11, 2008
+    -- Added Mac OS X makefile for compatibility on that platform.
+    -- Patched files.cc and files.h to work with OS X.
+    (Patch provided by ryandesign)
+    -- Added Slovak language for tank dialog.
+    (Provided by Jozef Riha)
+    -- Applied item selection patch and loading patch from
+    Yama.
+
+
+===================== Atanks-3.1 released ============================
+
+July 26, 2008
+    -- Removed strcasestr from Win32 build to avoid compiler error.
+    -- Fixed error with time delay and simulanious firing.
+
+
+July 12, 2008
+    -- Corrected error where tanks firing chain missiles would be skipped a turn.
+
+July 1, 2008
+    -- Added time limit for shots. Can be changed in the Physics option
+    screen.
+    -- The timed shots limit is now saved in the game settings.
+    -- Adjusted compile flags to avoid annoying messages from gcc-4.3.0
+
+
+
+June 6, 2008
+    -- Fixed bug where if no saved game exists,
+    atanks will crash.
+    -- Added Windows compatibility code for saved
+    game searches. Provided by Keilaron.
+    -- Fixed Windows search for saved games.
+
+
+
+
+
+===================== Atanks-3.0 released ====================
+
+May 23, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added patch to avoid skipping turns when
+    violent death is on.
+    -- Adjusted final score layout.
+
+
+
+May 6, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Introduced browsing option for saved games.
+    -- Completed "select saved game to continue" feature.
+    -- Fixed bug where a team would get credit for winning
+    when all tanks were destroyed.
+    -- Added kill/died ratio to end game stats.
+    -- Fixed bug in detecting which player/team wins.
+
+
+April 15, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Graphics should display properly if the
+    game needs to recover graphic settings.
+    -- When the player dies, the game will not skip
+    ahead to the end of the round until violent deaths
+    are finished.
+    (Thanks to Scott for providing this patch.)
+    -- Updated Portuguese language files to use latin1
+    encoding. Should display better than old files.
+    -- Fixed floating point calculation bug in the
+    interpolate() function. Thanks to pyeatt for providing
+    this fix.
+
+
+March 25, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Re-implemented fog. Made fog smoother, where
+    tanks disappear and re-appear.
+    -- Fixed medium napalm so it drops napalm, not
+    tremors.
+    -- The fog option no longer shows up as incomplete.
+    -- Massive code clean up. Removed old versions of save/load,
+    took out old aiming code. Breaks backward compatiblity with
+    versions of Atanks prior to 2.4.
+    -- Made the satellite slightly less violent.
+    -- Tanks should no longer waste lasers trying to fire below
+    their level.
+    -- Updated gloat, revenge and suicide remarks.
+
+
+=============== Atanks-2.9 released ======================
+
+March 18, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added text to buying screen to indicate arrows can
+    be used to scroll through items.
+    -- Re-wrote AI aiming. Target tanks, rather than areas.
+    -- AI no longer shoots at steel walls.
+    -- Added levels of violent tank deaths.
+    -- Added dirt that randomly falls from the sky, similar to meteors.
+       Option is in the Weather menu.
+    -- Removed old satellite system
+    -- Created new satellite object.
+    -- Satellite now fires lasers.
+    -- AI controlled tanks no longer adjust power for items. 
+       Saves time.
+
+
+March 2, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added command line option "--noconfig" which
+    avoids loading game settings, but still loads
+    players, to allow game settings to be reset.
+    -- If no tanks fire a shot, natruals are paused until
+    someone fires. This fixes two problems:
+    A) If you leave the keyboard and come back 5 minutes
+       later, there is still some dirt left.
+    B) It is not possible to simply buy a lot of parachuts
+       and armour and wait for enemy tanks to die from naturals.
+    -- Added Physics option "Violent Death" which causes tanks to
+    die in violent explosions when turned on. Is left off by default.
+    -- Added Land Slide option called "Tank Only", which causes tanks
+    to fall, but dirt hover in the air.
+    -- Reworked loading players to make it more flexible.
+    -- Attempted fix for start-up screen size.
+    -- Added item called Armour Piercing. Makes a very small explosion
+       but does a fairly large amount of damage.
+
+
+
+February 19, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Fixed spelling error on desktop file.
+    Thanks to Keilaron for pointing this out.
+    -- Added French language files, menu option.
+    Thanks to Olivier for providing the translation.
+    -- Added command line option "-c" to specify
+    where the config file should be created/used.
+    -- Removed weapons.h from source tree.
+    -- Avoid memory fault in moving config file.
+
+
+========== Atanks-2.8 released ========================
+
+February 11, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Changed MIRV settings to cause wider spread of sub missiles.
+    -- AI returns to regular difficulty level after each game when
+    in campaign mode.
+    -- Added land type None, which plays rounds with no land at all.
+    Using Random land will not cause None to be used.
+
+
+January, 29, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- When a neutral player wins the same number of rounds
+       as a team, the game is a draw.
+
+
+January 18, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Weapon, naturals and items are now stored in
+    a text file (weapons.txt). The data in weapons.h
+    is no longer used.
+       A) Created function to read in weapon/item data.
+       B) Commented out weapons.h
+       C) Implemented weapons.txt -- provided by action9000
+       D) Replaced named constants in weapons.txt
+       E) Weapon, items and naturals declared in globals.h
+    -- Re-wrote AI weapon selection system, hopefully this will be
+       less CPU intensive.
+    -- The icon for the current weapon is displayed on the
+       top bar during rounds.
+    -- If the AI does not have a fun weapon to use, it may
+       select an item.
+    -- AI does not select self-destructive items or teleports
+       unless parachutes are in inventory.
+    -- Created small MIRV missile. A device that releases payload
+       while still above the ground.
+    -- Created MIRV images.
+
+
+January 7, 2008
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Introduced Campaign mode, which causes the AI
+    to get progressively smarter each round.
+    -- Removed liquid.cc from source tree.
+    -- Removed list.cc and list.h from source tree.
+    -- AI players randomly select weapons rather than
+       using an item until they run out.
+
+    
+December 28, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Firing a chian missile no longer fires another
+    shot, such as a death head.
+    -- Dirt balls that explode above the screen
+    no longer produce endless stream of dirt.
+    -- Program should no longer crash when
+    creating a new player.
+    -- Fixed lightning sound.
+    -- Created menu option for Laser Satellite.
+    -- Added laser-armed satellite that randomly fires
+    on the battle field.
+
+
+December 23, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Put fan item picture back to fan. Had been
+    accidently changed to fuel image.
+    -- Fixed mkdir call for Windows.
+
+
+
+=============== Atanks-2.7 Released ======================
+
+
+December 15, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Fixed bug where the game would crash if two players on the
+    same team have a duel.
+    -- Added a new type of weapon, the Chain Missile. This weapon
+    fires small missiles in vollies of three.
+    -- Fixed bug that prevents the config file to be saved
+    on systems without a previous version of Atanks installed.
+
+
+December 9, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added a .desktop file for atanks (atanks.desktop).
+    -- Wrap around walls are now displayed using the colour yellow.
+
+November 29, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Fixed bug where, if a tank shoots itself and falls
+    and the money penalty for self-damage drops the player's money 
+    below $0, then the money is "corrected" to $1,000,000,000.
+    Thanks to Andy for pointing this out.
+    -- If both teams have the same number of wins, then
+    the game is a draw.
+    -- Game settings are saved along with the saved game.
+    Settings are saved in the same directory as the saved game
+    as a .txt (plain text) file. Replacing your atanks-config.txt
+    file with this will give you the same game settings as you had
+    while playing the original game.
+    -- Display directions for saving game on buying screen.
+    -- Added fuel item, which allows the player's tank to
+    move using the < and > keys (or period and comma).
+    -- Amount of fuel the tank has is displayed on the top bar.
+
+
+November 18, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added different settings on the Options menu
+    for tech levels. One relating to weapons and the
+    other for items.
+    -- Keilaron added code for setting the window's
+    title (caption) under Winodws.
+    -- Added wrap-around walls. When missiles reach the side
+    of the screen, they wrap around to the other side.
+    -- Wind Strength is now saved in the settings file.
+    -- Increased buffer size for options to avoid over-flow.
+
+    
+November 15, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Corrected timing bug that causes freeze on
+    the buying screen.
+    -- Games that are not given a name are given the
+    default name of "unamed".
+    -- Changed name of player type from "Range Finder"
+    to "Ranger" to make it fit in the text box.
+    -- Windows version now saves settings and saved games
+    under user's AppData folder, rather than current working
+    directory.
+    -- Atanks will attempt to create a sub-directory in the user's
+    HOME directory called .atanks. The config file will be
+    copied there, if it exists. If the file does not yet exist,
+    future config files will be saved there.
+    Note: The game does not attempt to copy saved game files.
+    -- Saved games are now saved and loaded from the player's
+    HOME/.atanks/ directory.
+
+
+============== Atanks-2.6 released ====================
+
+
+November 3, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added Load Game option to the new game menu.
+    -- Games can be loaded from the Select Players screen.
+    -- Corrected minor load bugs and removed testing output.
+
+October 24, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Player can now create a name for the
+    game about to begin on the Select Players screen.
+    -- Moved a few functions out of atanks.cc and
+    into files.cc
+    -- Moved some headers into files.h
+    -- Games can now be saved from the buying screen
+    by pressing F10.
+    -- Tanks that have hit another tank now gloat
+    when the target dies only. Tanks do not
+    gloat for near-deaths.
+
+
+October 14, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Game speed is now adjustable through the Graphics
+    option menu.
+    Adjusting the game speed may help avoid errors where
+    the game would lockup before.
+    -- Rollers now hit Steel walls and fall normally instead
+    of instantly appearing at the bottom of the screen.
+    -- When the player pressed a key in the range of 0-9
+    the tank's team name is displayed along with the health status.
+
+October 9, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added variable land slide option. Player
+    can now control the delay in cartoon gravity.
+    -- Tanks delay falling the same way land does
+    on cartoon gravity.
+    -- Added Portuguese text to menus.
+    Many thanks to Fred Maranhão for the translation.
+
+September 29, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added more tank text (English)
+    -- Which team a tank is on is now shown on the top menu bar.
+    -- Changed default player names to ones more historical.
+    -- Intelligent AI players now buy parachutes when
+    gravity exists.
+    -- When there is no gravity, tanks no longer fall.
+    -- Introduced variable gravity delay for Cartoony gravity.
+
+August 17, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added Portuguese language files to the Makefile.
+
+
+============== Atanks-2.5 released ====================
+August 11, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- The Floattext class no longer frees up text passed to
+    its constructor. Text is now allocated and freed outside of
+    the class for easier debugging.
+
+    -- Players now try to avoid shooting fellow team mates.
+    Neutral players are not considered members of a team.
+
+    -- When only the members of one team are alive, the round
+    is over. Neutral players are not considered a team.
+
+    -- At the end of the game, teams are credited with wins.
+
+    -- Minor Makefile typo corrections.
+
+
+August 4, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- When tanks talk, the text is selected using
+    Random_Line (new function) rather than the
+    previously used LINESEQ for increased flexibility.
+
+    -- Player can now switch languages without re-starting
+    the game.
+
+    -- Added new colour theme, provided by Jim of the FreeDOS
+    project. The colour theme can be changed in the Graphics
+    menu. The options are "Regular" for the original theme and
+    "Crispy" for the new theme.
+    Note: Sky and landscape change colour when the theme is
+    changed. To see different explosions currently requires
+    a game restart.
+
+    -- Added Team option to the Player menu. Possible teams
+    are Sith, Neutral and Jedi.
+    Note: Teams do not have any effect on the game, yet.
+
+    -- Updated the Help.txt file. Thanks to Fred for pointing
+    out the incorrect text.
+
+    -- Removed AutoPlay option from the main Options menu
+    under Auto-Skip as it seems to be redundant.
+
+    -- Fixed Cartoon gravity to make it more cartoony.
+
+    -- When buying items, the AI now understands repair kits
+    have cumlitive effect.
+
+
+July 29, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added a new gravity type (Cartoon) which causes
+    the landscape to hover for a variable amount of time.
+
+    -- Tanks now hover for a few seconds when using
+    Cartoon gravity.
+
+    -- Reduced CPU usage when displaying the main menu.
+
+    -- Added Portuguese language files for gloat, revenge,
+    suicide and Help. Added menu option called Languages
+    to allow the player to switch between English and
+    Portuguese. Thanks to Fred for the translations.
+
+
+July 25, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- When you drop a burrower or penterator onto
+    a Steel floor, the game no longer hangs.
+
+    -- Players can now buy and sell items in bulk by
+    holding the CONTROL key while clicking on an item
+    in the buying screen. Items are bought/sold in
+    bulk 10 times their normal amount.
+
+    -- Fixed bug that prevented most tanks from buying
+    parachutes.
+
+    -- Fixed bug in loading preferences from a text file.
+
+    -- When starting the game in full screen mode,
+    previous width and height settings are ignored.
+    Fixes a weird display issue.
+
+    -- Try to avoid pausing the game when user switches
+    to a different window. (Windows only.)
+
+    -- Fixed screen centring on higher resolution settings.
+
+    -- Worked on text scrolling to make it more efficent.
+
+    -- Money no longer over-flows to become negative.
+
+
+================ Released Atomic Tanks 2.4 ========================
+
+June 22, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Fixed typo in Makefiles.
+    -- Created spec file for Red Hat/Fedora
+    Linux distros.
+    -- Created .rpm file for Fedora (Linux distro).
+    -- Fixed saving screen width and height.
+
+June 18, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- When turning the sound ON or OFF in the Options menu,
+    the game no longer requires a restart for the setting
+    to take effect.
+    -- When switching between Default OS mouse cursor and
+    the Custom Atanks cursor, the change no longer
+    requires a game restart.
+    -- If the constant "DOS" is defined, the background
+    should not be cached. This should fix weird menu issue on DOS.
+    -- When Steel walls are in effect, the computer usually
+    avoids shooting them.
+    -- When a new player is created, their default colour is
+    a high contrast to avoid blending.
+    -- Max missile age has been changed from 60 seconds to
+    20 seconds to speed up game play.
+
+June 10, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- In rest points, Linux uses usleep() and Windows
+    now uses native Sleep() call to avoid high CPU usage.
+    -- If there are no tanks alive at the end of a round
+    the game annouces a "Draw" and no one gets credit for
+    a win.
+    -- Try to avoid sub-index in tank::draw function.
+    -- Draw tank base _after_ the shield to avoid dis-colouration.
+
+June 6, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Removed Windows version of LINUX_SLEEP to avoid
+    very slow response from the game.
+    -- Put set_display_switch_mode() call in init_game_settings()
+    for Windows to avoid pausing the game when the window
+    loses focus.
+    -- Wall type indicator no longer appears across the top of the
+    screen. On the walls and floor only, where wall type
+    actually matters.
+
+June 2, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Config settings are now stored in a text file
+    called .atanks-config.txt
+    The old config files can still be read for backward
+    compatibility.
+    -- A new wall type (random) has been added, which causes the
+    type of wall to change each round.
+    -- The side of the screen now shows a thin band of colour which
+    indicates which wall type is being used. Red for Steel, Green
+    for Rubber and Blue for Spring.
+
+May 14, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Windows build now uses rest() calls where Linux uses usleep
+    in the hope of reducing CPU usage on Win32 systems.
+    -- Pressing the 0-9 keys will display the coresponding tank's
+    name, health and shield status. This information is removed
+    from the top bar when a weapon is fired.
+
+May 4, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Created files.h to hold common file defines and data.
+    -- Increased the delay in LINUX_SLEEP to 10000 (on Linux)
+    to reduce CPU usage.
+    -- When printing Credits and Help, we now use the Allegro
+    rest() function to reduce CPU usage. Estimated 3x easier
+    on CPU usage.
+
+April 22, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Moved BUTTON code out of atanks.cc into its
+    own source file (button.cc).
+    -- Added checks at the top of header files weapons.h,
+    player.h and menucontent.h to avoid duplicate defines.
+    -- Removed extra calls of srand() from atanks.cc
+    -- Tanks now make comments when they kill themselves.
+
+April 18, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Moved VERSION definition to main.h from the Makefiles
+    -- Fixed typo in Makefiles which caused Windows compile error.
+
+
+================== Atanks-2.3 Released ========================
+
+April 3, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Changed title screen. Art provided by Keilaron.
+    -- Settings are saved as soon as the player leaves the
+    Option screen. This avoids losing settings if the game
+    crashes or exits unexpectedly.
+
+
+March 27, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Changed the Auto-repair kit from tech level 4
+    to tech level 2.
+
+
+March 21, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- The player can now select to use either the custom
+    Atomic Tanks mouse cursor or the default OS cursor.
+    Note: The OS cursor is probably faster. 
+    The option is located under the Graphics menu and 
+    may require the game be restarted to take effect.
+    -- The ENTER key on the number pad can now be used
+    to indicate you are done entering text on Options
+    and Player editing screens.
+
+
+March 18, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- When the player presses TAB or BACKSPACE to change
+    weapons, the weapon text no longer flickers. The text
+    no longer flickers at the begining of new rounds.
+    -- The CTRL key now works to more finely tune PGUP and
+    PGDW commands. Of course, this still causes the power to
+    vary a lot (100 points per tap).
+    -- Created new device called "Fan" which changes the direction
+    and strength of the wind. The change in wind depends on the
+    direction of the player's turret and the power behind the "shot".
+    This only really works well in high-wind environments.
+
+
+March 15, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Changed drawing code so that different tank
+    styles can have the turrent in different positions.
+    See tank::draw()
+    -- When exiting the game to the main menu, the next game no
+    longer speeds up dramatically.
+    -- Fixed bug on Windows where exiting the game
+    causes all tanks to fire their weapons.
+    See tank::activateSelection()
+
+    
+March 12, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- The spelling of "lazer" has been changed to "laser".
+    -- Items that are not weapons are no longer displayed
+    left-aligned on the top bar. they are right-aligned like
+    the other items.
+    -- The Page Up and Page Down keys now cause the player's
+    power to go up or down dramatically (100 points instead of 5).
+    -- Players can now choose to make their tanks 
+    appear differently. The options are Normal or Classic.
+    This is changed in the Players menu.
+    -- Tank style preferences are now saved in the config file.
+
+
+March 6, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Human players can now be put under temporary
+    computer control (highest AI setting). This can
+    be done during the player's turn by pressing F10.
+
+    -- Repair kit's name changed to Auto-repair kit
+    to reflect its ability to repair without user intervention.
+
+    -- Text colour in Help and Credits changed to white from
+    black to increase contrast.
+
+    -- If a player is saved as a part time bot, then they
+    are re-loaded as a human player.
+
+
+================== Atanks-2.2 released ===========================
+
+Feb 27, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- We now save the Wind Strength option properly from
+    the Weather menu.
+    -- Avoid segfault when displaying gloating messages.
+    -- Meteors only live for 5 seconds. This is to prevent loops
+    where lots of meteors appear and don't self destruct, causing
+    an endless loop.
+    -- Meteors no longer fall while players are aiming in SIMUL turn
+    mode. They will fall at any time in other turn modes. Meteors will
+    also fall in SIMUL turn mode while weapons are in the air.
+    Note: Lightning remains the same as before.
+
+
+Feb 24, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Cleared up some compiler warnings we were getting from
+    the Windows compiler. Shouldn't effect game play at all,
+    but makes the build process nicer.
+    -- Added a device called Swapper, which will cause the
+    player's tank to switch places with another tank. The
+    other tank is picked at random.
+    -- Added a new wall type, Spring. The spring wall type 
+    causes missiles to bounce off the walls and floor
+    with more speed (x1.25) than they had before.
+    -- When one player kills another, the attacker gloats.
+    Only one gloat message is displayed if multiple tanks
+    are destroyed.
+
+
+Feb 21, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Disabled window closing in Windows to prevent hangs.
+    -- Added item: repair kit. A device which will slowly
+    repair the player's tank each turn.
+    -- The number of rounds of play remaining 
+    can be adjusted on the buying screen.
+    This is performed using the "-" and "+" signs on the keyboard.
+    Note, the "=" will also act like a "+" to add rounds.
+    -- Clear key buffer before accepting input from each player
+    to prevent accidently fireing a weapon.
+
+
+Feb 19, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Expanded final score box to prevent
+    money from running on to the background.
+    -- The mouse wheel can now be used to scroll through
+    items on the buying screen. Makes navigator quicker.
+    -- Game now clears keybaord buffer at the end of each turn.
+    Avoids weapons being un-intentionally activated.
+
+Feb 13, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Permissions on title.dat changed to 644. Corrects
+    bug where a system-wide install would run for root only.
+
+
+==================== Atanks-2.1 released ==========================
+
+Feb 11, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Added an option under the optins->Physics menu
+    to change the type of wall being used during the game.
+    The types are Rubber and Steel. Rubber acts as before,
+    allowing missiles to bounce off the walls and bottom of
+    the screen. The steel walls cause missiles to detonate on
+    impact.
+    -- Added the wall type option to the config file to
+    allow the setting to be saved.
+    -- When pressing the BACKSPACE key during the game, players
+    can cycle backward through their weapon selections.
+    -- Changed computer's targeting AI so the computer understands
+    the difference between rubber walls and steel walls. This prevents
+    the computer from shooting at steel walls repeatedly.
+
+
+Feb 9, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Option to enable or disable sound is now on
+    the main Options menu. At this time, changing the
+    sound on/off will not take effect until the game
+    is re-started.
+    -- Changed config file to save the sound option.
+    -- Made sure the command line option "--nosound"
+    over-rides the sound setting in the config file.
+    -- The width and height of the Atanks window can now be 
+    changed from the Options menu, under Graphics. Changes
+    take effect after the game is exited and re-started.
+    -- Added screen width and height to the config file.
+    -- Made sure the command line given width or height
+    takes priority over the width and height settings from
+    the config file.
+    -- Tank health is now printed in the same colour as the
+    player's tank.
+
+
+Feb 5, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Corrected bug where missles would not die from old
+    age. Missles should now properly detonate after 60
+    seconds (MAX_MISSLE_AGE) whether they hit anything.
+    This is to avoid infinate loops where missles bouce
+    forever.
+    -- Corrected problem with text lingering from the end
+    of one round and showing up in the next. Insults should
+    no longer carry over into the new round.
+
+
+Jan 31, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- The player's name now appears over their tank. Text
+    colour matches the tank's colour.
+    -- Changed money to signed int. Cleared up some
+    type problems. Put in check to keep money from
+    over-flowing. See Player::newRound()
+    -- Command-line option "--noname" added to allow the
+    player name above tank feature to be disabled.
+
+
+Jan 27, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Allow player names to be more than 10 characters. Names 
+    should now be able to expand to 23. Changed some output
+    code to allow for longer names without over-writing other
+    text on the screen. Changed file format to allow longer names
+    and backward compatibility.
+
+Jan 25, 2007
+     Mike (CaptainNeeda+atanks@gmail.com)
+    -- Added feature to allow all tanks to fire at the same time.
+    This is accessible by selecting "Simul" under Turn Order
+    in the options menu.
+
+
+Jan 21, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Floating text no longer carries over to the next round.
+       Added newRound() function to FLOATTEXT object.
+    -- When the window's "X" or close button is clicked, the game 
+       will exit immediately.
+
+=============== Atanks-2.0 Released ===========================
+
+Jan 10, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Fixed serious bug which causes game to crash
+    when there are more than two players.
+
+Jan 9, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Corrected serious bug where tanks did not take damage
+    when they free-fall.
+
+Jan 7, 2007
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Removed custom my_abs() function. Replaced it
+    with built-in fabs().
+    -- Where a char variable is used as a boolean, change the
+    type to int or bool to avoid compiler warnings.
+    -- Created a Debian spefic Makefile (Makefile.debian)
+    to make Atanks more compatible with Debian's package.
+
+
+Dec 19, 2006
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Version information is now displayed on the
+    command line properly at start up. This should
+    clear up some confusion about what version we have
+    during debuging.
+    Note: Version number is stored in Makefile
+    -- Fixed command line option for height. "-h" was
+    already being used for "help". Height can now be
+    given using "-t" or "--tall".
+    -- When one tank falls on another, the falling tank
+    now rests on top of the other, rather than over-lapping
+    on the screen.
+    -- Added command line option "--nosound" to disable
+    game sounds.
+    -- Updated command line help.
+    -- Re-wrote README file to be more up-to-date and
+    organized.
+    -- Updated Makefiles. Create new Makefile.windows for
+    people compiling on Win32 systems.
+    Use "make Makefile.windows" to compile.
+
+
+Dec 4, 2006
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- When a player runs out of ammo, the game switches
+    to a different type of ammo. The new ammo is displayed
+    in flashing RED instead of BLACK to warn the player.
+
+Nov 27, 2006
+    Jesse (jessefrgsmith@yahoo.ca)
+    -- Made code compatible with gcc 4.1
+    -- Updated code to use current Allegro 4.2 API
+       text output functions, set_clip and text_mode
+    -- Made player money unsigned to avoid negative funds.
+    -- When player runs out of a type of ammo, game automatically
+       switches to a new ammo type.
+    
+
+================= Atanks-1.1.0 released ===================================
+
+4. 9. 2002
+
+    Juraj Michalek (georgik@host.sk -- http://kota543.host.sk):
+    -- added wind
+    -- added indication bars
+    -- added pay off functions
+    -- added menu control by keyboard arrows
+6. 9. 2002
+
+    -- I rewrite all code to C++ -> hard work
+    there were a lot of bugs in type definition,
+    it's mirracle that game worked!
+
+7. 9. 2002
+
+    -- new structure of weapon record
+    -- eek, many and many type mistakes
+    -- added usleep for schedule optimization in Linux
+
+8. 9. 2002
+
+    -- changed structure of ITEM
+    -- added TANK method for boosting up shield
+    -- automatic shield boost
+    -- fixed buystuff algorithm
+    -- fixed colors and information in credits
+    -- speed up redrawing algorith
+    -- new title screen
+    -- new top-bar in game
+    
+15. 9. 2002
+
+    -- fixed bug with game engine (this bug came with
+    conversion to C++ :()
+
+2. 11. 2002
+
+    -- fixed some minor bugs
+    -- code indent fix
+    -- added command line functions
+    -- implicit select of windowed mode
+
+3. 11. 2002
+
+    -- back button in Option menu
+    -- icons of weapons
+    -- upgrade graphics
+    -- release of 0.5
+    
+5. 01. 2003 - Tom Hudson (tom@singular.org.uk):
+    -- Modified code to allow resizing of screen (currently only
+    at compile time, positions now scale)
+
+8. 01. 2003 - Tom Hudson (tom@singular.org.uk):
+    -- some previously static graphics are now generated (scalable)
+    -- modified way wind changes from turn to turn
+    -- added wind options to options screen
+
+12. 01. 2003 - Tom Hudson (tom@singular.org.uk):
+    -- changed dirtfall routines
+    -- missiles no longer have to pause while explosion happens
+    -- combine nearby make_updates (one blit instead of n)
+
+14. 01. 2003 - Tom Hudson (tom@singular.org.uk):
+    -- Fixed bug, t[z].ni is ITEMS long but
+        zero'd up to t[z].ni[WEAPONS] in newgame()
+    -- topbar now generated to fit screen
+
+15. 01. 2003 - Tom Hudson (tom@singular.org.uk):
+    -- Fixed another bug, setting t[z] variables in
+        z < MAX_MISSILES for-loop
+    -- Added FLOATTEXT class
+    -- Added permanent display of health and shields over tanks
+
+22. 01. 2003 - Tom Hudson (tom@singular.org.uk):
+    -- Modified missiles, more OO than before
+    -- Modified funky-bomb delivery (slower delivery, needs tweaking)
+    -- Added dirt-bombs
+
+24. 01. 2003 - Juraj Michalek (georgik@host.sk):
+    -- dirt ball explosion don't cover terrain
+    -- changed some weapon's costs
+
+26. 01 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Missiles once again bounce off the bottom of the screen.
+    -- Arrow no longer used to indicate current player,
+        uses bouncing health text instead
+
+28. 01 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Replaced unneeded images in .dat files,
+        reducing total download by 250k
+
+29. 01 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Explosion images are now generated at runtime,
+        saves 1Mb of download
+    -- Explosions now 'disperse' for 10 frames after initial explosion
+
+31. 01 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Change nature of land-slide to improve efficiency,
+        reduces changes/frame, smoother.
+    -- Fixed a bug in explosions (incomplete dispersal due to
+        land-slide finishing first).
+
+02. 02 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added earthquake range of weapons (tremor, shock-wave,
+        tectonic-shift)
+    -- Improved update method for explosions and land-slides.
+
+06. 02 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added new screen fades
+    -- Fixed bug in landslides where slide was calculated several times
+        per frame, once per active missile
+    -- Reorganised code, making it more OO, added VIRTUAL_OBJECT,
+        PHYSICAL_OBJECT above MISSILE and TANK and FLOATTEXT
+
+09. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Further large-scale reorganisation
+    -- Landfall accelerates with gravity
+    -- Improved graphics 'engine' (more efficient scheduling etc.)
+    -- Hierarchical menu system
+    -- Weather options (Meteor showers)
+    -- Physics options
+    -- Basic AI added
+    -- Improved credit attribution for damage done
+    -- EXPLOSION object added (explosions no longer part of missile)
+    -- tech level added to restrict availability of weapons
+    -- Added shaped-charge range of weapons
+    -- Added repulsion shields
+    -- Improved shield drawing routine
+    -- Player colours randomly generated (needs refining)
+    -- Bomblets for funky and cluster now separate weapons
+    -- Weapon buying now displays a description of each weapon
+        in a panel on the left of the screen
+
+11. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Fixed bugs in AI that made the AI really useless.
+    -- Added riot bomb and heavy riot bomb
+    -- Added riot charge and riot blast
+    -- Modified AI to choose riot gear if buried
+    -- Added Page Up and Page Down functionality to buying screen
+
+12. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Fixed bug where repulsion shields would continue to repulse
+        if shield was reduced to exactly 0
+    -- Fixed bug where angle of drawn object set to 0
+
+13. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added teleport
+    -- Added functionality to allow items to be selected and used
+    -- Fixed bug where game would crash if everyone was dead
+        at the end of a round
+    -- Fixed bug where player would be incorrectly marked as COMPUTER_PLAYER
+    -- Added self/auto-destruct items (vengeance, dying wrath, fatal fury)
+    -- Added tech levels to items
+    -- Modified AI to mostly avoid selecting self/auto-destruct items
+
+14. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Changed landscape generation algorithm to use perlin noise
+
+15. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added new landscape-type option to menu
+
+17. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Modifications to AI targetting
+    -- Fix to self-destruct
+
+18. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Implemented AI device preferences
+    -- Improved AI purchasing routines
+    -- AI now no longer uses teleport recreationally unless has parachute
+    -- Improved AI device-selection routine
+
+19. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added landSlideType option to physics menu
+    -- Separated floating text from tank, the better to display damage with
+
+20. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added permanent armour upgrades
+    -- Added drag-reduction items
+    -- Increased max number of each item to 999 from 99
+
+21. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Animated shields
+    -- Tidied in-game stats bar
+    -- Fixed bug in Funky Death due to incorrect settings in weapons.h
+    -- Modified AI item preference selection code to not favour the higher numbered items
+    -- Balance changes, effectiveness of Vengeance decreased, prices of some items changed
+
+26. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added nicer/more complex looking landscape rendering
+    -- Added nicer/more complex looking sky rendering
+    -- Added graphics options to turn on nicer rendering
+        as it's a lot slower to render
+    -- Added moon to sky
+    -- Fixed bug where ingamemenu wasn't being cleared from screen
+        on return
+    -- Fixed colorDistance () algorithm, should now have
+        meaningful results
+    -- Modified options menu to not need bitmap anymore,
+        still not great (e.g. tiny title) but getting there
+
+27. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added config file (.atanks-config) which records settings
+
+28. 04 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Implemented Versioning system in config file
+
+14. 06 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Implemented player persistence between games
+    -- Improvements to BUTTON class and usage on front menu
+    -- Teleport sound-effect + visual effect
+    -- Player selection before game
+    -- a variety of other things
+
+25. 06 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Implemented new DECOR class (decorative)
+    -- Implemented smoke trails on missiles
+    -- Implemented new TELEPORT class
+
+10. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Implemented new BEAM class
+    -- Implemented new weather (lightning)
+    -- Implemented new Lazer weapon
+
+14. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Fixed bug with damage text displaying even if damage rounds to 0
+
+15. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Implemented 3 difficulty levels for computer players
+    -- Fixed TOGGLE options bounce-effect (select, deselect, select
+        rapidly)
+
+18. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Implemented numerical display of angle and power
+        (suggested by krajzega, allegro.cc)
+    -- Animated lightning a little
+    -- AI will now not attempt to use a lazer on a target lower than
+        itself
+
+22. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Fixed bug due to number of weapons changing between versions
+
+25. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Modified credits screen, broke it down into several functions
+        to make it re-usable.
+
+30. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added instructions screen from new button on main menu
+
+31. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Fixed bug where explosion constantly checked if it was causing
+        fall damage. This would cause money to often not be awarded
+        to the player that fired the weapon.
+    -- Changed the money model slightly, now a player should not be able
+        to go below 0 money.
+
+31. 07 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- When entering text (such as the Name field when editing a player)
+        the mouse now continues to be visible, also the typing
+        cursor flashes.
+
+01. 08 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Added usleep under linux to try and prevent 100% cpu on
+        instruction and credits screens.
+    -- Modified Guesser, should now be slightly more random. Previously
+        it would consistently overshoot (guaranteed to miss, rather
+        than just unlikely to hit).
+    -- If a config file doesn't already exist, 10 players are created.
+    -- Also, it will create a new (human) player and have you edit it when
+        you run it.
+
+02. 08 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Changes for easier packaging (thanks to Michael Sterrett) including
+        -DDATA_DIR option to modify the built-in path to the data
+        files.
+    -- Checks on various initialisation return-codes to see if they were
+        successful, and returning errors if not. Previously these were
+        ignored.
+
+03. 08 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Initialisation of previously uninitialized variables (as reported
+        by 'gcc -O2 -Wall').
+
+04. 08 .2003 - Tom Hudson (tom@singular.org.uk):
+    -- Moved up/down arrows on buying screen to more logical location
+    -- Added Fast up/down arrows to buying screen to provide GUI
+        equivalent of existing page-up/page-down functionality
+    -- Added new arrow images for above purpose
+    -- Added Napalm weapons
+
+07. 08 .2003 - Kalle Toivonen (kato@korpikuu.fi)
+    -- Found and fixed bug with backspace in text entry fields
+
+11. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Added new Burrower and Penetrator subterranean weapons
+
+12. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Any remaining shields are now recharged at the end of a round.
+    -- Fixed a bug where it didn't pick up on failure to open title.dat
+        then went ahead and tried to use it anyway (bug #787283).
+    -- Money is now no longer lost when you damage yourself.
+        This is the default behaviour.
+    -- Bonus money now awarded to the tank which wins the round.
+    -- Added options for financial side of things (bounty, bonuses,
+        penalties for self damage and interest rate).
+    -- Rewrote High/Low player ordering routine (turn order).
+        Previously I'm not sure it ever worked.
+
+13. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Made 'action' options on menus possible to implement
+
+14. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Player Deletion now possible
+    -- Moved number of rounds selector to player selection screen
+
+17. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Fixed 'pause' bug, it really does now.
+    -- When all human players are out of the game and only computer
+        players remain, goes into Accelerated AI mode (Doesn't draw
+        anything, speeds up the game and ends the round quicker,
+        less sitting around waiting).
+    -- Added option for Accelerated AI
+    -- Added incremental stepping of angle and power via ctrl being
+        held down (Patrick Bogen's suggestion)
+
+18. 08 .2003 - Patrick Bogen
+    -- Fixed divide by zero bug in wind variation routine which would
+        happen if windvariation == 0;
+
+20. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Added display of AI difficulty on selection screen and player menu.
+    -- Fixed bug in win32 version causing config to screw up, it was
+        due to file read and write being non-binary.
+        This was already fixed in an earlier version but apparently
+        overwritten before it made it to CVS.
+
+22. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Added checks for memory allocation failures and handle them
+        more gracefully (print an error and exit).
+
+23. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Added FRAMES_PER_SECOND define
+    -- 15 second time limit on missiles before they just detonate
+    -- Maximum altitude (-65535) on missiles before they just detonate
+
+24. 08 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Last words added, along with revenge memory (AI more likely to
+        fire on last player to do significant damage to them).
+    -- Dropped FRAMES_PER_SECOND to 60 from 100
+    -- Modified various things to cope with FRAMES_PER_SECOND changes
+
+01. 09 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Fixed AI targetting bug resulting from FRAME_RATE changes (thanks
+        to vossman77)
+
+02. 09 .2003 - Justin Ronco (jronco@umich.edu)
+    -- Removed z, zz, zzz, z4, z5, z6 globals.
+    -- fade.cc & lineseq.h should be complete
+
+02. 09 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Fixed bug in drawFracture which would cause a hang
+        (Eugeni Andreechtchev)
+
+06. 09 .2003 - Justin Ronco (jronco@umich.edu)
+    -- Relocated Tom's Perlin Noise code to "perlin.cc".  Documented.
+
+07. 09 .2003 - Justin Ronco (jronco@umich.edu)
+    -- Relocated Sky rendering code to sky.cc.  Documented.
+    -- Modified moon drawing system;  some cleanup, some additions.
+    -- Made global gradients constant.  Changed functions appropriately.
+    -- Changed interface to generate_sky, removed all other functions
+        from external view
+    -- set_level_settings modified to call new sky functionality
+
+07. 09 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Fixed tremor-freeze bug (I thought this was already fixed?)
+
+08. 09 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Bugfix (workaround) for objects carrying through from the end of
+        one round to the beginning of the next. This is temporary
+        until a better fix can be made.
+
+09. 09 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Added detect_digi_driver before install_sound to see if sound is
+        possible
+
+20. 11 .2003 - Eden (eden99_99@users.sourceforge.net)
+    -- Fixed bug with funky bomblet leaving the top of the screen.
+    -- Fixed problem with not frequent-enough position sampling for
+        collision detection.
+
+01. 12 .2003 - Eden (eden99_99@users.sourceforge.net)
+    -- Fixed bug with burrower leaving the top of the screen.
+    -- AI improved to buy more parachutes along with a new player option
+        to change when CPU players generate their weapon
+        preferences.
+
+11. 12 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Fixed bug introduced in earlier version which printed 'advice' type
+        errors ("You must have at least 2 players") to the console,
+        rather than the screen.
+
+15. 12 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Improvement to AI, targetting now based on optimum positioning for
+        maximum damage, with weighting for revenge, avoiding damaging
+        self and several other factors.
+
+16. 12 .2003 - Tom Hudson (tom@singular.org.uk)
+    -- Further improvement to AI, added wind factoring into targetting
+        for 2 stage weapons, which should make cluster bombs etc.
+        used more effectively.
+    -- Added 'shopping trolley', allowing items to be put back.
+
+04. 01. 2004 - Tom Hudson (tom@singular.org.uk)
+    -- Improved shopping trolley to allow sell-back of previously bought
+        items at a loss (adjustable via money menu).
+    -- Changed money from int to long int as int is apparently too small
+
+06. 01. 2004 - Tom Hudson (tom@singular.org.uk)
+    -- Changes to missile-specific code, allowing a wide variety
+        of definitions and tweaks via weapons.h and simplifying
+        certain sections.
+
+08. 01. 2004 - Tom Hudson (tom@singular.org.uk)
+    -- Further improvements to AI to allow better targetting
+    -- Changes to calculation of weapon damage
+
+20. 01. 2004 - Tom Hudson (tom@singular.org.uk)
+    -- Added new items Intensity Amplifier and Violent Force which
+        increase the damage done by the player's explosive weapons.
+
+28. 01. 2004 - Tom Hudson (tom@singular.org.uk)
+    -- Fixed bug where failure to set_gfx_mode would report semi-random
+        and unrelated system errors ("directory not found").
+    -- Attempted fix to lazer-only-sometimes-doing-damage bug by
+        adding lazer radius to cause-damage area.
+
+31. 01. 2004 - Tom Hudson (tom@singular.org.uk)
+    -- Added command-line options to set screen/window width and height
+    -- Added command-line option to set gfx depth (16 or 32)
+    -- Added Valleys terrain type
+
+02. 02. 2004 - Tom Hudson (tom@singular.org.uk)
+    -- Changed AI purchasing algorithm to increase chances of purchasing
+        'cumulative' items. This is done by decreasing the chances
+        of purchasing a given item in proportion to the number of
+        items already purchased, unless it's a cumulative item.
+    -- Right mouse-button for larger increase/decrease in values in
+        menus.
+    -- Added --datadir switch for specifying an alternative data directory
+
+03. 02. 2004 - Tom Hudson (tom@singular.org.uk)
+    -- Fixed lazer only sometimes causing damage bug

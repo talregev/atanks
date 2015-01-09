@@ -1,0 +1,33 @@
+Instrucciones Básicas
+
+Objetivos
+Objetivo Primario: Destruir los otros Tanques del paisaje!
+Objetivo Secundario: Actualizar tu propio Tanque con mejores armas y
+equipamento usando el dinero ganado.
+
+Iniciando un Juego:
+1. Clic en 'jugar' del menu principal.
+2. En el menu de caracteres, definir la duración del juego en rondas,
+escoger jugadores (10 max.) y clic en `Aceptar'.
+Jugadores Humanos tienen un circulo púrpura, mientras que los jugadores computadora tienen
+barras verdes de destreza; mas barras indica mejor jugadores de computadora.
+3. En el menu de Armas, compra armas para tu Tanque y
+clic en `Hecho' para iniciar el juego.
+
+Jugando:
+1. Presiona Tab para seleccionar un arma.
+2. Usa las teclas izquierda/derecha para apuntar (llamado Angulo).
+3. Usa las teclas arriba/abajo para definir el rango del arma (llamado Potencia).
+Debes chequear también la dirección del viento y fuerza arriba de la pantalla, como estos pueden afectar el ángulo y potencia requerido para acertar a tu oponente. 
+TIP: Consejo: Presiona CTRL mientras usas una tecla para cambiar ángulo
+o potencia más lento.
+4. Presiona espacio para disparar.
+5. Si tu compraste combustible, puedes mover tu tanque usando las < y > teclas.
+El menú de armas reaparecen después de cada ronda.
+Usa el dinero ganado durante la ronda para actualizar tu tanque,
+entonces haz clic en 'Hecho' para iniciar la próxima ronda.
+El ganador del juego es el jugador que gana más rondas.
+
+Mas información
+Hay instrucciones más detalladas acerca del uso de menu de opciones en el
+archivo "Help.txt" que viene con la distribución.

@@ -1,0 +1,343 @@
+*WEAPONS*
+Kleine Rakete
+Kleine Explosion beim Einschlag.
+1500 10 10 0.2 25 0 2 30 0 0 1 0 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Mittlere Rakete
+Kleine Wirkung, kleinflächige Explosion.
+2000 5 15 0.2 40 0 2 40 0 1 1 0 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Große Rakete
+Mittlerer Wirkung, mittelflächige Explosion.
+4000 3 20 0.2 60 1 3 60 0 2 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+
+Kleine Atombombe
+Große Wirkung, großflächige Explosion.
+16000 2 40 0.2 100 2 4 100 0 3 1 0 0 2 0 0 -1 0 0 0 0 0 -1 0
+
+Atombombe
+Sehr große Wirkung, riesige Explosion.
+22000 1 60 0.2 150 2 5 150 0 4 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Totenkopf
+Massive, tötliche Explosion.
+30000 1 80 0.2 200 3 6 200 0 5 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Kleiner Streuer
+5 Kleine Raketen mit einem Schuss.
+5000 3 10 0.2 25 0 2 30 0 0 5 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+
+Mittlerer Streuer
+5 Mittlere Raketen mit einem Schuss.
+11000 2 15 0.2 40 0 2 40 0 1 5 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+
+Großer Streuer
+5 Große Raketen mit einem Schuss.
+17000 1 20 0.2 60 1 3 60 0 2 5 0 0 2 0 0 -1 0 0 0 0 0 -1 0
+
+Super Streuer
+4 Kleine Atombomben mit einem Schuss.
+25000 1 40 0.2 100 2 4 100 0 3 4 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Todesstreuer
+3 Atombomben mit einem Schuss.
+50000 1 60 0.2 150 2 5 150 0 4 3 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Armageddon
+3 Totenköpfe mit einem Schuss.
+100000 1 80 0.2 200 3 6 200 0 5 3 0 0 5 0 0 -1 0 0 0 0 0 -1 0
+
+Kleine Raktenkette
+Feuert drei kleine Rakten nacheinander ab.
+4000 3 10 0.2 25 0 2 30 0 0 1 3 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Raketenkette
+Feuert fünf kleine Rakten nacheinander ab.
+6000 10 10 0.2 25 0 2 30 0 0 1 5 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Jack Hammer
+Feuert acht kleine Rakten nacheinander ab.
+8000 16 10 0.2 25 0 2 30 0 0 1 8 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Shaped Charge
+Hoch wirksame horizontale Explosion. Die gesamte Energie ist zu den Seiten fokusiert und erhöht den Schaden und verdampft die gesamte Umgebung im Bereich der Explosion.
+10000 5 10 0.2 100 2 3 100 0 17 1 0 0 2 0 0 -1 0 0 0 0 0 -1 0
+
+Wide Boy
+Verheerende horizontale Explosion. Die gesamte Energie ist zu den Seiten fokusiert und erhöht den Schaden und verdampft die gesamte Umgebung im Bereich der Explosion.
+15000 2 10 0.2 200 2 4 200 0 18 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Cutter
+Horizontale Explosion die alles auslöscht, was in ihren Weg kommt. Die gesamte Energie ist zu den Seiten fokusiert und erhöht den Schaden und verdampft die gesamte Umgebung im Bereich der Explosion, vergleichbar mit einer ebensogrßen unkontrollierten Sprengung.
+20000 1 10 0.2 300 3 5 300 0 19 1 0 0 5 0 0 -1 0 0 0 0 0 -1 0
+
+Kleiner Roller
+Mittel explosiver Sprengsatz, der den Berg hinunter rollt bis er etwas trifft.
+2000 3 20 0.2 40 0 2 40 0 6 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+
+Großer Roller
+Großer explosiver Sprengsatz, der den Berg hinunter rollt bis er etwas trifft.
+8000 1 30 0.2 60 1 3 60 0 6 1 0 0 2 0 0 -1 0 0 0 0 0 -1 0
+
+Todesroller
+Riesiger explosiver Sprengsatz, der den Berg hinunter rollt bis er etwas trifft.
+14000 1 40 0.2 100 2 4 100 0 6 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Kleiner MIRV
+Wirft eine Gruppe großer Raketen von oben auf das Zielgebiet.
+20000 1 200 0.2 250 1 2 300 0 7 1 0 0 4 0 5 2 1.0 120 0.0 1.0 0 -1 0
+
+Rüstungsknacker
+Eine kleine, wirksame Granatedie die Panzer zerstören kann.
+2500 5 30 0.2 15 0 2 80 0 27 1 0 0 2 0 0 -1 0 0 0 0 0 -1 0
+
+Cluster Bombe
+Streut einen mittelwirksamen Bombentepich, der beim Aufschlag explodiert.
+10000 3 100 0.2 150 0 2 200 0 7 1 0 0 2 0 5 29 0.0 60 0 3.5 0 -1 0
+
+Super Cluster
+Streut einen hochwirksamen Bombentepich, der beim Aufschlag explodiert.
+20000 2 200 0.2 250 1 2 300 0 7 1 0 0 4 0 5 30 0.0 60 0 3.5 0 -1 0
+
+Funky Bombe
+Unberechenbar und hoch zerstörerisch.
+30000 3 50 0.2 200 0 0 200 0 9 1 0 0 3 0 10 27 0.0 360 1.0 0.5 0.1 -1 0
+
+Funky Tod
+Unberechenbar und extrem zerstörerisch.
+50000 1 90 0.2 300 2 1 300 0 9 1 0 0 4 0 10 28 0.0 360 1.0 0.5 0.1 -1 0
+
+Funky Bombenteppich
+Mittel wirksamer explosiver Sprengkopf.
+7000 3 5 0.01 40 0 0 50 0 10 1 0 1 1 1 0 -1 0 0 0 0 0 125 1.0
+
+Funky Todesteppich
+Hoch wirksamer explosiver Sprengkopf.
+9000 2 9 0.01 100 2 1 90 0 10 1 0 1 3 1 0 -1 0 0 0 0 0 175 1.0
+
+Bombenteppich
+Mittel wirksamer explosiver Sprengkopf.
+3500 3 20 0.2 40 0 2 40 0 8 1 0 0 1 1 0 -1 0 0 0 0 0 -1 0
+
+Super Bombenteppich
+Hoch wirksamer explosiver Sprengkopf.
+5000 2 40 0.2 60 1 2 65 0 8 1 0 0 3 1 0 -1 0 0 0 0 0 -1 0
+
+Erdfresser
+Bohrt sich zurück zur Oberfläche bevor er explodiert. Gut gegen unterirdische Panzer. Der Erdfresser ist für unterirdische Einsätze entwickelt und leidet unter hohem Luftwiderstand.
+7500 3 100 0.4 50 0 2 50 0 25 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Penetrator
+Bohrt sich unter die Oberfläche bevor er wieder zur Oberfläche kommt. The Penetrator explodiert entweder beim erreichen der Oberfläche oder bei Kontakt mit einem verschütteten Objekt. Diese Rakete ist für unterirdische Einsätze entwickelt und leidet unter hohem Luftwiderstand.
+20000 2 150 0.4 80 0 2 100 0 26 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Kleine Napalmbombe
+Streut beim Einschlag kleine Mengen intensiv brennenden Napalms.
+6000 3 80 0.2 80 1 1 80 0 9 1 0 0 3 0 10 36 0.0 90 0.2 2.5 1.0 -1 0
+
+Mittlere Napalmbombe
+Streut beim Einschlag intensiv brennendes Napalm.
+14000 2 200 0.2 150 1 1 200 0 9 1 0 0 4 0 25 36 0.0 90 0.2 3 1.0 -1 0
+
+Große Napalmbombe
+Überzieht die Umgebung beim Einschlag mit intensiv brennendem Napalm.
+22000 1 400 0.2 200 1 2 500 0 9 1 0 0 5 0 60 36 0.0 90 0.2 5 1.0 -1 0
+
+Napalmgel
+Intensiv brennendes chemisches Gel.
+2000 5 5 0.5 10 1 10 30 0 0 1 0 0 2 1 0 -1 0 0 0 0 0 -1 0
+
+Bohrer
+Vertikale Explosion, die kleinen Schaden anrichtet, aber ein tiefes Loch in die Oberfläche macht.
+5000 2 10 0.2 300 3 5 10 0 28 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Tremor
+Erzeugt beim Einschlag ein kleines Erdbeben.
+3000 5 30 0.2 40 0 2 10 0 14 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+
+Schockwelle
+Erzeugt beim Einschlag ein großes Erdbeben.
+10000 2 60 0.2 100 2 3 20 0 15 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Tektonische Bombe
+Erzeugt beim Einschlag ein riesiges Erdbeben.
+30000 1 100 0.2 150 2 4 30 0 16 1 0 0 5 0 0 -1 0 0 0 0 0 -1 0
+
+Rebellenbombe
+Zerstört eine kleine Menge Erde ohne etwas anderes zu zerstören.
+2000 5 15 0.2 25 0 2 0 0 23 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+
+Große Rebellenbombe
+Zerstört eine große Menge Erde ohne etwas anderes zu zerstören.
+3000 2 30 0.2 100 1 2 0 0 24 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Kleiner Unruhestifter
+Schneidet einen Kegel aus dem Untergrund, direkt vor der Mündung.
+1000 5 15 0.2 50 0 2 0 0 11 1 0 1 1 0 0 -1 0 0 0 0 0 0 0
+
+Großer Unruhestifter
+Schneidet einen großen Kegel aus dem Untergrund, direkt vor der Mündung.
+2000 2 30 0.2 150 1 2 0 0 12 1 0 1 3 0 0 -1 0 0 0 0 0 0 0
+
+Dreckball
+Erzeugt einen kleinen Hügel um den Gegner zu verschütten.
+3000 5 15 0.2 25 0 2 0 0 11 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+
+Großer Dreckball
+Erzeugt einen großen Hügel um den Gegner zu verschütten.
+7000 2 30 0.2 60 1 2 0 0 12 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Super Dreckball
+Erzeugt einen riesen Hügel um den Gegner zu verschütten.
+10000 1 60 0.2 100 2 2 0 0 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Kleiner Dreckball
+Drop little piles of dirt on your enemies
+4000 2 30 0.2 40 1 2 0 0 12 4 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Cluster MIRV
+Wirft eine Gruppe kleiner Raketen von oben auf das Zielgebiet.
+10000 2 100 0.2 150 0 2 200 0 7 1 0 0 2 0 5 29 0.0 45 0 2.0 0 -1 0
+
+Prozent Bombe
+Zerstört die Hälfte der gegnerischen Panzerung.
+12000 2 30 0.2 30 2 4 0 0 29 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+
+Reduzierer
+Vermindert die Kraft gegnerischer Waffen.
+6000 3 25 0.3 30 2 4 0 0 30 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Kleiner Laser
+Ein 50kW Laserstrahl.
+5000 5 1 0.0 2 0 0 30 0 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Mittlerer Laser
+Ein 100kW Laserstrahl.
+10000 3 1 0.0 5 0 0 65 0 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Großer Laser
+Ein kraftvoller 200kW Laserstrahl.
+15000 2 1 0.0 9 0 0 150 0 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+*NATURALS*
+Kleiner Meteor
+Ein kleiner Felsbrocken vom Himmel.
+0 1 15 0.2 25 0 0 5 0 20 1 0 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Mittlerer Meteor
+Ein mittlerer Felsbrocken vom Himmel.
+0 1 20 0.2 40 0 0 10 0 21 1 0 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Großer Meteor
+Ein großer Felsbrocken vom Himmel.
+0 1 25 0.2 60 1 1 20 0 22 1 0 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Kleiner Blitz
+Ein schwacher Blitz.
+0 1 1 0.0 1 0 0 5 0 0 1 0 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Mittlerer Blitz
+Ein Blitz.
+0 1 1 0.0 4 0 0 15 0 0 1 0 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+Großer Blitz - Kugelbllitz
+Ein starker Blitz.
+0 1 1 0.0 7 0 0 35 0 0 1 0 0 0 0 0 -1 0 0 0 0 0 -1 0
+
+*ITEMS*
+Teleport
+Teleportiert den Panzer an einen zufälligen Ort.
+5000 2 1 3 11
+
+Tausch
+Tauscht mit einem anderen Panzer den Platz.
+10000 2 1 4 11
+
+Massenteleportation
+Teleportiert alle Panzer auf dem Bildschirm.
+15000 2 1 4 11
+
+Ventilator
+Ändert Windstärke und -richtung.
+2500 3 1 3 2
+
+Vengeance
+Ein kleiner Selbstzerstörer. Wenn Du gehen musst, warum nicht noch jemanden mitnehmen?
+20000 1 1 2 0 0 21
+
+Todeswut
+Ein großer Selbstzerstörer. Gleichgewicht des Schreckens.
+40000 1 1 3 0 21 3
+
+Tödliche Raserei
+Beendet jedes Laben.
+60000 1 1 4 0 22 3
+
+Schwaches Schild
+Ein kleiner Schutz.
+10000 3 0 1 0 50 0 0 255 0 1
+
+Mittleres Schild
+Schutz gegen Schaden.
+20000 2 0 2 0 100 0 64 255 0 3
+
+Schweres Schild
+EIn starker Schutz.
+30000 2 0 4 0 150 0 128 255 64 6
+
+Kleines Kraftfeld
+Lässt feindliche Raketen leicht abprallen.
+10000 3 0 2 0 10 250 128 0 255 1
+
+Mittleres Kraftfeld
+Lässt feindliche Raketen abprallen.
+20000 2 0 3 0 20 500 192 64 255 3
+
+Starkes Kraftfeld
+Lässt feindliche Raketen stark abprallen.
+40000 1 0 5 0 40 1000 255 128 255 6
+
+Verstärkte Rüstung
+Erhöht die Treffer, die Dein Panzer einstecken kann ein wenig. Jeder weitere Kauf verstärkt die Rüstung Deines Panzers ein wenig.
+20000 1 0 2 0 300
+
+Plastahl Rüstung
+Erhöht die Treffer, die Dein Panzer einstecken kann ein wenig. Jeder weitere Kauf verstärkt die Rüstung Deines Panzers ein wenig.
+40000 1 0 4 0 2155
+
+Intensiver Verstärker
+Eine kleine permanente Erhöhung des Schadens, den Deine Waffe anrichtet. Mit jedem Kauf zeigt der Verstärker weniger Wirkung, so dass weiter Käufe weniger zusätzlichen Schaden bringen.
+21000 1 0 3 0 0.10
+
+Brutaler Verstärker
+Eine permanente Erhöhung des Schadens, den Deine Waffe anrichtet. Mit jedem Kauf zeigt der Verstärker weniger Wirkung, so dass weiter Käufe weniger zusätzlichen Schaden bringen.
+50000 1 0 3 0 0.30
+
+Glatte Projektile
+Eine Teflonbeschichtung reduziert den Luftwiderstand und den Effekt des Windes.
+1000 50 0 3 0 0.5
+
+Genoppte Projektile
+Kleine Noppen auf der Oberfläche der Projektile sorgen für eine massive Reduzierung des Luftwiderstandes.
+2000 50 0 4 0 0.1
+
+Fallschirm
+Erlaubt es dem Panzer sanft auf dem Boden zu landen.
+5000 10 0 0 0 0 0
+
+Reparatursatz
+Repariert den Panzer jede Runde ein wenig. Jeder weitere Reparatursatz unterstützt die Reparatur ein bisschen weniger.
+10000 1 0 2 0 0 0
+
+Benzin
+Erlaubt es dem Panzer, sich auf ebenem Gelände zu bewegen.
+1000 10 0 2 0 0 0
+
+Rakete
+Schießt den Panzer in die Luft.
+2000 2 1 4 0 0 0
+
+SDI Missile Defense System
+Bietet Schutz gegen ankommende Geschosse.
+10000 1 0 5 0 0
+

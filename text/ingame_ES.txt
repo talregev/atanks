@@ -1,0 +1,81 @@
+Seleccionar jugadores
+Rondas
+Nuevo nombre de juego
+o cargar Juego
+Cargar Juego
+Campaña
+Acpetar
+Atrás
+Debes seleccionar al menos dos jugadores
+Puedes solo tener arriba de 10 jugadores
+Jugador
+Dinero
+Ronda
+Puntuación
+Presiona F10 para guardar el juego actual.
+Usa las teclas de arriba y abajo para deslizarte
+a través de la lista de artículos.
+Juego guardado
+Ángulo:
+Potencia:
+Equipo
+Combustible
+Viento:
+Retornar
+Menu principal
+Salir
+Saltar AI
+Jugadores
+Crear Nuevo
+Nombre
+Color
+Tipo
+Generar Pref
+Jugado
+Ganaste
+Tipo de Tanque
+Eliminar este jugador
+Una nueva versión
+está disponible para descargar.
+No se puede encontrar un juego con ese nombre.
+Qty. en inventario
+Guardar juego fallado.
+Escogiendo colores
+Mostrando Cielo
+Mostrando Paisaje
+Ganador: Jedi
+Ganador: Sith
+Ganador
+Draw
+              Puntuación Jugador                  Matar:Morir
+Puntuación jugador
+Acelerado AI
+Tu nombre
+sin nombre
+Humano
+Inservible
+Guesser
+Rango
+Targetter
+Mortal
+Por Juego
+Solo una vez
+Normal
+Clasico
+Big Grey
+T34
+Sith
+Neutral
+Jedi
+Retornar
+Menu Principal
+Salir
+Saltar AI
+Pesado
+Futuro
+UFO
+Araña
+Versión servidor no coincide cliente versión.
+Tamaño de pantalla Servidor no coincide con la nuestra.
+Cliente ha sido desconectado desde el servidor.
+

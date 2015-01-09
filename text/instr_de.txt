@@ -1,0 +1,35 @@
+Basisinstruktionen
+
+Ziele
+Hauptziel: Zerstöre alle anderen Panzer!
+Nebenziel: Rüste deinen panzer mit verdientem Geld auf.
+
+Ein Spiel starten:
+1. Klicke 'Play' im Hauptmenü.
+2. Im Spielermenü wählst du die Anzahl der Runden, einen
+Namen für das Spiel und die Teilnehmer (max. 10) aus.
+ Klicke dann auf 'Okay' um das Spiel zu starten.
+Menschliche Spieler haben einen violetten Kreis, Computer-
+gesteuerte Spieler habe grüne Balken, die die Schwierig-
+keitsstufe anzeigen.
+3. Im Waffenmenü kannst du Waffen und Asurüstung kaufen.
+lcike auf 'Done' um die erste Runde zu starten.
+
+Spielsteuerung:
+1. Wähle die gewünschte Waffe mit der 'Tab'-Taste aus.
+2. Mit den Pfeiltasten nach links/rechts stellst du den Winkel ein.
+3. Mit den Pfeiltasten nach oben/unten stellst du die Schussstärke ein.
+Am oberen Bildschirmrand werden Windrichtung und Stärke angezeigt,
+diese solltest du bei deinen Schusseinstellungen beachten.
+
+TIPP: Halte die STRG-Taste gedrückt, um Winkel und Schussstärke
+langsamer einzustellen!
+
+4. Drücke die Leertaste um den Schuss abzufeuern.
+
+Das Waffenmenü erscheint nach jeder Runde.
+Rüste hier deinen Panzer weiter mit dem verdienten Geld auf.
+Um die nächste Runde zu starten, klicke auf 'Done'.
+
+Das Spiel gewinnt derjenige, der die meisten Runden gewinnt.
+

@@ -1,0 +1,111 @@
+Instructions for Atomic Tanks
+
+Contents:
+
+	Basic Instructions
+		Objectives
+		Starting a Game
+		Playing a Game
+
+	Customising the Game
+		Changing General Game Characteristics
+		Changing Game Physics
+		Changing Game Weather
+		Changing Game Finances
+		Managing and Customizing Game Players
+		Changing Game Graphics
+
+-----------------------------
+Basic Instructions:
+
+Objectives:
+Primary Objective: Destroy all other tanks on the landscape!
+Secondary Objective: Upgrade your own tank with better weapons and equipment using money earned from tank kills.
+
+Starting a Game:
+1. Click 'Play' on the main menu.
+2. On the Players menu, set game length in rounds, choose players (10 max.) and click `Okay'.
+   Note: Human player tanks are marked with a purple circle. AI tanks are
+   indicated by green bars. The more bars, the smarter the AI.
+3. On the Weapons menu, buy weapons for your tank and click `Done' to start the game.
+
+Playing a Game:
+1. Press Tab to select a weapon.
+2. Use the left/right arrow keys to aim the weapon (called Angle).
+3. Use the up/down arrow keys to set the range of the weapon (called Power).
+You should also check the wind direction and strength at the top of the screen, as these may affect the Angle and Power required to hit your opponent. 
+TIP: Press CTRL while using an arrow key to change Angle or Power more slowly.
+4. Press Space to fire the weapon.
+The weapons menu reappears after each round. Use money earned during the round to upgrade your tank, then click 'Done' to begin the next round. The winner of the game is the player who wins the most rounds.
+
+Customizing the Game (for advanced players):
+You can customize Atomic Tanks to make the game more challenging. Read the following to learn how to customize the game.
+
+Changing General Game Characteristics:
+1. Click 'Options' on the main menu to view the Options menu.
+2. Set Tech Level to determine the weapons and equipment available for purchase on the weapons screen; higher Tech Levels offer a larger variety of weapons and equipment.
+3. Set Landscape to determine the type of landscape on which each round is played.
+4. Set Turn Order to determine if player order per round is set according to highest score (High+), the lowest score (Low+), or is chosen at random.
+5. Set Skip AI-only Play to determine if computer players complete a round in real-time after all human players are eliminated; turn on Skip AI-only Play to speed up games.
+6. Click 'Back' to apply your changes to the next game.
+
+Changing Game Physics
+1. Click 'Options' on the main menu, then click Physics on the Options menu.
+2. Increase or decrease Gravity to set the overall force of gravity; higher Gravity reduces the range of most weapons, especially projectile weapons like missiles. 
+3. Increase or decrease Viscosity to set the drag factor applied to projectile weapons like missiles; higher Viscosity reduces the range of all projectile weapons.
+4. Set Land Slide to determine if a weapon hitting the ground causes a landslide, as well as its severity.
+5. Click 'Back' twice to apply your changes to the next game.
+
+Changing Game Weather
+1. Click 'Options' on the main menu, then click 'Weather' on the Options menu.
+2. Set Meteor Showers to determine the probability and severity of meteor showers occurring at random during a game.
+3. Set Lightning to determine the probability and severity of lightning occurring at random during a game.
+4. Set Fog to limit the amount of landscape that a player can see around them.
+NOTE: This feature is currently under development.
+5. Set Max Wind Strength to determine how strong the wind can blow during a game.
+6. Set Wind Variation to limit how much the wind can change during a round.
+7. Click 'Back' twice to apply your changes to the next game.
+
+Changing Game Finances
+NOTE: Changing game finances can affect game play significantly. 
+1. Click 'Options' on the main menu, then click 'Money' on the Options menu.
+2. Set Starting Money to determine the amount each player (computer and human) gets to buy weapons at the start of a game.
+4. Set Interest Rate to change the interest rate applied to money saved between rounds.
+5. Change Round Win Bonus to set how much money a player gets per round win.
+6. Set Damage Bounty to determine how much money a player gets per point of opponent damage inflicted by the player.
+7. Set Self-Damage Penalty to determine how much money a player loses per point of self-inflicted damage (hitting yourself with a missile, for example).
+8. Change Tank Destruction Bonus to set how much a player gets per tank kill.
+9. Set Tank Self-Destruction Penalty to determine how much money a player loses for destroying their own tank.
+10. Click 'Back' twice to apply your changes to the next game.
+
+Managing and Customizing Game Players
+1. Click 'Players' on the main menu to show the Players menu. 
+2. Do one of the following: 
+-to create a new player, click `Create New' and then complete steps 3 to 5.
+-to customize a player, click their name and then complete any of the following steps.
+-to delete a player, click their name, then click `Delete This Player' and confirm the deletion.
+NOTE: You cannot restore a deleted player.
+3. Change Name to rename the player.
+4. Choose a color for the player from the color palette.
+5. Set Type to determine if a player is a human or a computer; computer players may be set to the following skill levels:
+-Useless (lowest skill level): rarely shoots anyone but itself
+-Guesser: lucky if it finds its target
+-Range Finder: finds its target about half of the time
+-Targetter: finds its target almost all of the time
+-Deadly (highest skill level): this tank shoots like Robbin Hood
+
+6. Click 'OK' to apply your changes to the next game.
+
+Changing Game Graphics
+NOTE: Changing game graphics may affect the time required to start a game or round.
+1. Click 'Options' on the main menu, then click 'Graphics' on the Options menu.
+2. Set Dithering to determine if graphics are dithered; turn on Dithering for better graphics.
+3. Set Detailed Land to determine the detail of the landscape; turn on Detailed Land for better graphics.
+4. Set Detailed Sky to determine the detail of background; turn on Detailed Sky for better graphics.
+5. Click 'Back' twice to apply your changes to the next game.
+--------------------------------------
+
+If you can't find the answer to your question here, at 
+http://atanks.sourceforge.net, email jessefrgsmith@yahoo.ca
+
+

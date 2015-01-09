@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Atomic Tanks
+Comment=Destroy your opponents' tanks.
+Comment[es]=Destruye los tanques de tus oponentes.
+Type=Application
+Exec=atanks
+Icon=atanks
+Categories=Game;ArcadeGame;
+Terminal=false
+

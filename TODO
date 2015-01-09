@@ -1,0 +1,67 @@
+There is now some small attempt at prioritisation in this file, 
+higher priority stuff should be at the top of the file, 
+lower priority at the bottom. It is currently only vaguely correct.
+
+	Bugs:
+	- Player options can become scrambled
+          if accessed too often.
+	- Wrap around ceiling should not destroy projectile.
+	- Make sure network client doesn't get
+          unlimited shots.
+	- Atanks crashes when Windows players click the Network option
+          in the main Options menu.
+	- When cycling through tanks on Players screen,
+	  the old tank does not get erased.
+	- AI controlled tanks buy a limited number of defensive
+          upgrades during very long games. Plating, for example.
+
+
+	Features:
+	- Add scroll bar to buying screen.
+	- Add randomize button to buying screen to have
+	  items automatically purchased.
+
+   	- Field repair kit: Spend a turn to repair your tank 
+          rather than fire.           
+          Limited uses, heals more than Auto Repair Kit 
+	- Radar resistant missile: A missile designed to 
+          avoid the missile defence system by masking 
+          its heat signature 
+          Yield: Large missile
+	- Better AI against tanks with SDI.
+	- Update client ground surface more often.
+	- When switching languages, player menu should display correct text.
+	- Client needs a buying screen.
+	- Make tank size variable.
+	- Add rocks as semi-destructable items.
+        - First aid kit that you can shoot to a friendly tank.
+
+
+
+===============================================
+
+	   Items from here to the bottom of the file
+	   are under consideration by the development
+	   team and may (or may not) be implemented.   
+
+===============================================
+
+
+        -- under ground mines
+
+	-- rocket like fireworks
+
+	-- Make it possible to shoot down the UFO
+
+	-- Make main window scalable
+           (Needs to wait until Allegro 5.x)
+
+	-- Harder ground
+
+	-- High voltage missiles (discharge on impact or when within range)
+		(Bharat Dhareshwar)
+
+	-- Tornadoes (pick up tanks and objects) (Bharat Dhareshwar)
+
+	-- Another level of armour improvement
+

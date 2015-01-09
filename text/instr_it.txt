@@ -1,0 +1,33 @@
+Istruzioni di Base
+
+Obiettivi
+Obiettivo Primario: Distruggere tutti i tank nel panorama!
+Obiettivo Secondario: Upgradare il vostro tank con le migliori armi ed
+equipaggiamenti usando il denaro preso dai tank uccisi.
+
+Partenza del Gioco:
+1. Cliccare 'Play' sul main menu.
+2. Sul Characters menu, settare la lunghezza dei round,
+scegliere i giocatori (10 max.) e cliccare `Okay'.
+I giocatori Human hanno dei cerchi viola, mentre i giocatori computer hanno
+delle barre verticali verdi; quante piu' barre sono indicate, tanto piu' bravi sono i giocatori.
+3. Sul menu Weapon, pagate le armi per il vostro tank e
+cliccare `Done' per iniziare a giocare.
+
+Giocare un Gioco:
+1. Premere Tab per selezionare un'arma.
+2. Usare i tasti con le frecce sinistra/destra per puntare le armi (chiamato Angolo).
+3. Usare i tasti con le frecce su/giu' per settare il range delle armi (chiamato Potenza).
+Voi potete anche controllare la direzione e la forza del vento nella parte superiore 
+dello schermo, poiche' essi possono avere effetto sull'Angolo e la Potenza di tiro. 
+TIP: Premere CTRL mentre si usa un tasto freccia per cambiare Angolo o Potenza piu' lentamente.
+4. Premere la Barra Spaziatrice per far fuoco con le armi.
+5. Se avete del Carburante, voi potete muovere il vostro tank usando i tasti < oppure >.
+Il Menu delle Armi riappare dopo ogni round.
+Usare il denaro guadagnato durante il round per upgradare il vostro tank,
+quindi cliccare 'Done' per iniziare il round.
+Il vincitore del gioco e' quello che vince piu' round.
+
+Altre Informazioni
+Altre e piu' dettagliate istruzioni sull'uso del Menu Opzioni sono nel
+file "Help.txt" presente in questa distribuzione.

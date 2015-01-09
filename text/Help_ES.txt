@@ -1,0 +1,112 @@
+Instrucciones para Atomic Tanks
+
+Contenidos:
+
+	Instrucciones Básicas
+		Objetivos
+		Comenzando un juego
+		Jugando un juego
+
+	Personalizando el juego
+		Cambiando las características generales del juego
+		Cambiando físicas del juego
+		Cambiando tiempo del juego
+		Cambiando finanzas del juego
+		Dirigiendo y personalizando jugadores
+		Cambiando gráficos del juego
+
+-----------------------------
+Instrucciones Básicas:
+
+Objetivos:
+Objetivo primario: Destruir los otros tanques del paisaje!
+Objetivo secundario: Actualizar tu tanque con mejores armas y equipamento usando dinero ganado por tanques destruidos.
+
+Iniciando un juego:
+1. Clic en 'Jugar' del menú principal.
+2. En Jugadores del menú, configurar las rondas, escoger jugadores (10 max.) y clic `Aceptar'.
+   Nota: Jugadores Humanos son marcados con circulo purpura. AI tanques son
+   indicados por barras verdes. Las demás barras, las inteligentes la AI.
+3. En armas del menú, comprar armas para tu tanque y clic `Hecho' para iniciar el juego.
+
+Jugando un juego:
+1. Presiona Tab para seleccionar un arma.
+2. Usa las teclas inzquierda/derecha para apuntar (llamado ángulo).
+3. Usa las teclas arriba/abajo para definir el rango del arma (llamado Potencia).
+Debes chequear también la dirección del viento y fuerza arriba de la pantalla, como estos pueden afectar el ángulo y potencia requerido para acertar a tu oponente. 
+Consejo: Presiona CTRL mientras usas una tecla para cambiar ángulo o potencia más lento.
+4. Presiona espacio para disparar.
+El menú de armas reaparecen después de cada ronda. Usa el dinero ganado durante la ronda para actualizar tu tanque, entonces haz clic en 'Hecho' para iniciar la próxima ronda. El ganador del juego es el jugador que gana más rondas.
+
+Personalizando el juego (para avanzados jugadores):
+Puedes personalizar Atomic Tanks para hacer el juego más estimulante. Lee lo siguiente para aprender como personalizarlo.
+
+Cambiando características generales del juego:
+1. Clic en 'Opciones' del menú principal para ver las opciones.
+2. Definir el Nivel para determinar las armas y equipar disponible para adquirir en la pantalla de armas; Altos niveles ofrecen una larga variedad de armas y equipamente.
+3. Definir paisaje para determinar el tipo en cada ronda jugada.
+4. Definir orden de turnos para determinar el orden por ronda de jugadores es definirda de acuerdo a la puntuación más alta (High+), la menor puntuación (Low+), o es escogida aleatoriamente.
+5. Definir saltos AI-solo Jugar para determinar si los jugadores de la computadora completan una ronda en tiempo-real después de que los jugadores Humanos son eliminados; turno saltar AI-sólo Jugar para acelerar juegos.
+6. Clic en 'Atrás' para  aplicar cambios en el próximo juego.
+
+Cambiando físicas del juego
+1. Clic en 'Opciones' del menú principal, entonces clic en Físicas del menu Opciones.
+2. Aumentar o Disminuir la Gravedad para definir la fuerza total; alta gravedad reduce el rango de la mayoría de armas, especialmente proyectiles como misiles. 
+3. Aumentar o disminuir Viscosidad para definir el factor arrastra 
+aplicado para proyectiles como misiles; alta viscosidad reduce el rango de proyectiles.
+4. Definir el desplazamiento de caida para determinar si una arma golpea las causas de corrimiento del suelo, como bien es severidad.
+5. Clic en 'Atrás' dos veces para aplicar cambios en el próximo juego.
+
+Cambiando tiempo del juego
+1. Clic en 'Opciones' del menu principal, entonces clic en 'Tiempo' de las opciones del menu.
+2. Definirt mostrador de Meteoros para determinar la probabilidad y severidad de meteoros aleatorios durante el juego.
+3. Configura Relámpagos para determinar la probabilidad y severidad de relámpagos ocurridos aleatoriamente durante el juego.
+4. Define Niebla para limitar la cantidad de paisajes que un jugador puede ver alrededor.
+NOTA: Esta característica está actualmente bajo desarrollo.
+5. Configura Max fuerza de Viento para determinar cuan fuerte puede golpear el viento durante un juego.
+6. Configura la variación del viento para limitar cuánto el viento puede cambiar durante una ronda.
+7. Clic 'Atrás' dos veces para aplicar los cambios en el próximo juego.
+
+Cambiando Finanzas del juego
+NOTA: Cambiar las finanzas puede afectar significativamente el Juego. 
+1. Clic en 'Opciones' del menu principal, luego clic en 'Dinero' de las opciones del menu.
+2. Define Inicio de Dinero para determinar el monto de cada jugador (computador y humano) para comprar armas al comenzar un juego.
+4. Define el tipo de Interes para cambiar el tipo de interes aplicado al dinero guardado entre rondas.
+5. Cambia Bonus de ganador de Ronda para definir cuanto dinero puede conseguir por ronda un jugador ganador.
+6. Define gratificación de Daños para determinar cuánto de dinero puede conseguir un jugador por punto de daños a oponentes.
+7. Define Penalidad de Auto-Daño para determinar cuanto de dinero pierde un jugador por punto de daño Auto-Infligido (golpearte a tí mismo con un misil, por ejemplo).
+8. Cambiar Bonus de destrucción de Tanques para definir cuánto consigue un jugador por tanque destruido.
+9. Define Penalidad de Auto-Destrucción de Tanques para determinar cuanto de dinero pierde un jugador por destruir su propio Tanque.
+10. Clic en 'Atrás' dos veces para aplicar los cambios en el próximo juego.
+
+Administrando y Personalizando Jugadores
+1. Clic en 'Jugadores' del menu principal para mostrar el menu de jugadores. 
+2. Hacer lo siguiente: 
+-para crear un nuevo jugador, clic en `Crear Nuevo' y luego completa los pasos 3 al 5.
+-para personalizar un jugador, clic en su nombre y luego completar cualquiera de los siguientes pasos.
+-para eliminar un jugadorr, clic en su nombre, luego clic en `Eliminar este Jugador' y confirma la eliminación.
+NOTA: No puedes restaurar un jugador eliminado.
+3. Cambiar nombre para renombrar un jugador.
+4. Escoge un color para el jugador de la paleta de colores.
+5. Definir el Tipo para determinar si un jugador es Humano u Computador; Jugador de computadora pueden definir la habilidad de los siguientes niveles:
+-Inservible (mas bajo nivel de habilidad): raramente disparos de alguien pero aislado
+-Adivinador: suerte si encuentra el objetivo
+-Encontrador de Rango: encuentra el objetivo cerca de la mitad de tiempo
+-Apuntador: Encuentra el objetivo casi en todo el tiempo
+-Mortal (mas alta habilidad de nivel): este tanque dispara como Robbin Hood
+
+6. Clic en 'Aceptar' para aplicar los cambios en el proximo juego.
+
+Cambiando Gráficos del Juego
+NOTA: Cambiar los gráficos del juego pueden afectar el tiempo requerido para iniciar un juego o ronda.
+1. Clic en 'Opciones' del menu principal, luego clic en 'Graficos' del menu de opciones.
+2. Define vacilando para determinar si los gráficos son vacilados; activa Vacilando para mejores gráficos.
+3. Define Tierra Detallada para determinar el detalle del paisaje; activa Tierra Detallada para mejores gráficos.
+4. Define Cielo Detallado para determinar el detalle del fondo; activa detallado para mejores gráficos.
+5. Click en 'Atrás' dos veces para aplicar los cambios al próximo juego.
+--------------------------------------
+
+Si tu no puedes encontrar la respuesta aquí, visita 
+http://atanks.sourceforge.net, email jessefrgsmith@yahoo.ca
+
+

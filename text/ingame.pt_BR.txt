@@ -1,0 +1,83 @@
+Select Players
+Rounds
+New Game Name
+or Load Game
+Load Game
+Campaign
+Okay
+Voltar
+You must select at least 2 players
+You can only have up to 10 players
+Player
+Money
+Round
+Score
+Press F10 to save your current game.
+Use the up and down arrows to scroll
+through the item list.
+Saved game
+Ângulo:
+Power:
+Team
+Fuel
+Wind:
+Return
+Main Menu
+Quit
+Skip AI
+Players
+Create New
+Name
+Colour
+Type
+Generate Pref
+Played
+Won
+Tank Type
+Delete This Player
+A new version
+is ready for download.
+Could not find a game by that name.
+Qty. in inventory
+Failed to save game.
+Choosing colours
+Rendering Sky
+Rendering Landscape
+Winner: Jedi
+Winner: Sith
+Winner
+Draw
+              Player Scores                   Kill:Die
+Player Scores
+Accelerated AI
+Your Name
+unnamed
+Human
+Useless
+Guesser
+Range
+Targetter
+Deadly
+Per Game
+Only Once
+Normal
+Classic
+Big Grey
+T34
+Sith
+Neutral
+Jedi
+Return
+Main Menu
+Quit
+Skip AI
+Heavy
+Future
+UFO
+Spider
+Server version did not match client version.
+Server screen size does not match ours.
+Client has become disconnected from the server.
+The server is full or the game has not started.
+The server closed our connection.
+The game is finished.

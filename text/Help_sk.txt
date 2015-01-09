@@ -1,0 +1,110 @@
+Manuál k Atomic Tanks
+
+Obsah:
+
+	Zakladné inštrukcie
+		Ciele
+		Spustenie hry
+		Priebeh hry
+
+	Úprava hry
+		Zmena všeobecných herných charakteristík
+		Zmena fyziky
+		Zmena počasia
+		Zmena financovania
+		Správa a úprava hráčov
+		Zmena grafiky v hre
+
+-----------------------------
+Základné inštrukcie:
+
+Ciele:
+Primárny cieľ: Zničiť všetky okolité tanky v krajinke!
+Sekundárny cieľ: Vylepšiť tank dokupením lepších zbraní a vybavenia s využitím peňazí získaných za zničené tanky.
+
+Spustenie hry:
+1. V hlavnom menu kliknite na tlačidlo 'Play'
+2. V menu pre výber hráčov nastavte počet kôl, vyberte hráčov (max. 10) a kliknite na `Okay'.
+   Poznámka: Hráči ovládaní človekom sú označení fialovým kruhom. Počítačoví hráči sú
+   označení zelenými paličkami. Čím viac paličiek, tým lepšiu majú umelú inteligenciu.
+3. V menu pre výber zbraní si zakúpte zbrane pre váš tank a kliknite na `Done'. Tým hru spustíte.
+
+Priebeh hry:
+1. Stlačte Tab pre výber zbrane.
+2. Použite pravé/ľavé kurzorové šípky na mierenie (uhol)
+3. Použite kurzorové šipky hore/dole na nastavenie dosahu zbrane (sila)
+Na vrchu obrazovky by ste mali kontrolovať smer a silu vetra, pretože tieto dva faktory môžu ovplyvniť uhol a silu potrebnú na zasiahnutie súpera.
+
+TIP: Stlačte CTRL počas stlačenia kurzorových kláves na jemnejšiu zmenu uhla alebo sily.
+4. Stlačte medzerník pre vypustenie zbrane.
+Menu s výberom zbraní sa objaví po každom kole. Použite peniaze získané počas kola na vylepšenie vášho tanku, potom kliknite na 'Done' a spustite ďalšie kolo. Výťazom je ten hráč, ktorý vyhrá väčšinu kôl.
+
+Úprava hry (pre pokročilých hráčov):
+Atomic Tanks môžete upraviť tak, aby bola hra náročnejšia. Nasledujúci text popisuje, ako možno hru upraviť.
+
+Zmena všeobecných herných charakteristík:
+1. V hlavnom menu kliknite na 'Options' a zobrazí sa menu s voľbami.
+2. Tech Level určuje zbrane a výbavu, ktorá sa dá zakúpiť v menu s výberom zbraní; vyššie Tech Levely ponúkajú vyššiu rozmanitosť zbraní a vybavenia.
+3. Landscape určuje typ krajinky, na ktorej sa odohráva každé kolo.
+4. Turn Order určuje, či je poradie hráčov pri začiatku každého kola určené najvyšším skóre (High+), najnižším skóre (Low+) alebo je stanovené náhodne.
+5. Skip AI-only Play určuje, či počítačoví hráči dokončia kolo v reálnom čase po tom, ako sú všetci ľudskí hráči eliminovaní; zapnite túto voľbu, ak chcete urýchliť hru.
+6. Kliknite na 'Back' pre použitie vašich zmien v ďalšej hre.
+
+Zmena fyziky
+1. V hlavnom menu kliknite na 'Options', potom kliknite na Physics.
+2. Zväčšite alebo zmenšite hodnotu Gravity a tým zmeňte celkovú silu gravitácie; väčšia gravitácia znižuje dosah väčšiny zbraní, predovšetkým zbraní s projektilom ako sú strely.
+3. Zväčšite alebo zmenšite hodnotu Viscosity a tým zmeňte faktor odporu pre zbrane s projektilom ako sú napr. strely; vyššia viskozita zmenšuje dosah všetkých zbraní s projektilom.
+4. Nastavením Land Slide určíte, či má zbraň, ktorá narazí do zeme spôsobiť zosun pôdy a jeho rozsah.
+5. Kliknite na 'Back' pre použitie vašich zmien v ďalšej hre.
+
+Zmena počasia
+1. V hlavnom menu kliknite na 'Options', potom kliknite na 'Weather'.
+2. Nastavenie Meteor Showers určuje pravdepodobnosť a škodu spôsobenú meteoritovými prehánkami, ktoré sa vyskytujú náhodne počas hry.
+3. Nastavenie Lightning určuje pravdepodobnosť a škodu spôsobenú bleskami, ktoré sa vyskytujú náhodne počas hry.
+4. Nastavenie Fog určuje množstvo krajiny, ktoré vidí hráč okolo seba.
+POZNÁMKA: Táto vlastnosť je momentálne vo vývoji.
+5. Nastavenie Max Wind Strength určuje aký silný vietor môže počas hry fúkať.
+6. Nastavenie Wind Variation stanovuje mieru, s akou sa môže vietor meniť počas kola.
+7. Kliknite na 'Back' pre použitie vašich zmien v ďalšej hre.
+
+Zmena financovania
+POZNÁMKA: Zmena financovania v hre môže významne ovplyvniť hru.
+1. V hlavnom menu kliknite na 'Options', potom kliknite na 'Money'.
+2. Starting Money určuje množstvo peňazí, ktoré každý (počítačový aj ľudský) hráč dostane na nákup zbraní na začiatku hry.
+3. Interest rate mení úrokovú mieru použitú na peniaze, ktoré hráč usporil medzi kolami.
+4. Change Round Win Bonus určuje to, koľko peňazí dostane hráč pri vyhraní kola.
+5. Nastavenie Damage Bounty určuje koľko peňazí dostane hráč za každý bod, ktorý súperovi vzal.
+6. Self-Damage Penalty určuje koľko peňazí hráč stráca pri každom stratenom bode, ak si spôsobil vlastnú škodu (napr. zásahom vlastnej strely).
+7. Tank Destruction Bonus určuje koľko dostane hráč za zničenie jednoho tanku.
+8. Tank Self-Destruction Penalty určuje koľko peňazí hráč stráca, ak si zničí vlastný tank.
+9. Kliknite na 'Back' pre použitie vašich zmien v ďalšej hre.
+
+Správa a úprava hráčov
+1. V hlavnom menu kliknite na 'Players' pre zobrazenie menu s výberom hráčov.
+2. Vyberte jednu z nasledujúcich možností:
+- pre vytvorenie nového hráča kliknite na `Create New' a potom pokračujte krokmi 3 až 5.
+- pre úpravu hráča kliknite na jeho meno a potom pokračujte ktorýmkoľvek z nasledujúcich bodov.
+- pre vymazanie hráča kliknite na jeho meno, potom kliknite na `Delete This Player' a potvrďte vymazanie.
+POZNÁMKA: Vymazaného hráča nemôžete obnoviť.
+3. Kliknutím na Change Name premenujete hráča.
+4. Kliknutím na farebnú paletu môžete zmeniť farbu hráča.
+5. Nastavením Type určíte, či má za hráča hrať človek alebo počítač; počítačom ovládaným hráčom môžete vybrať jeden z nasledujucich levelov:
+- Slepúch (najnižší level): málokedy zasiahne iného než seba
+- Tipovač: je šťastný, ak nájde cieľ
+- Junior: nájde cieľ zhruba v jednom z dvoch prípadov
+- Ostreľovač: nájde cieľ takmer vždy
+- Profík (najvyšší level): tento tank strieľa ako Robin Hood
+
+6. Kliknite na 'OK' pre použitie vašich zmien v ďalšej hre.
+
+Zmena grafiky
+POZNÁMKA: Zmena grafiky v hre môže ovplyvniť čas potrebný na spustenie hry alebo kola.
+1. V hlavnom menu kliknite na 'Options', potom kliknite na 'Graphics'.
+2. Nastavením Dithering určíte, či má grafika používať dithering; zapnite túto voľbu pre krajšiu grafiku.
+3. Nastavenie Detailed Land určuje detaily krajinky; zapnite túto voľbu pre krajšiu grafiku.
+4. Nastavenie Detailed Sky určuje detaily pozadia; zapnite túto voľbu pre krajšiu grafiku.
+5. Kliknite dvakrát na 'Back' pre použitie vašich zmien v ďalšej hre.
+--------------------------------------
+
+Ak ste nenašli odpoveď na svoju otázku tu, na
+http://atanks.sourceforge.net, pošlite e-mail na jessefrgsmith@yahoo.ca

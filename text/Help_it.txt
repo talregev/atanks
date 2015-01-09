@@ -1,0 +1,112 @@
+Atomic Tanks : istruzioni
+
+Sommario :
+
+	Istruzioni di base
+		Obiettivi
+		Iniziare un Gioco
+		Come giocare
+
+	Personalizzazione del gioco
+		 les caractéristiques générales
+		Modificare le caratteristiche fisiche
+		Modificare il meteo del gioco
+		Modificare le finaze
+		Gestire e Modificare i giocatori
+		Caratteristiche Grafiche
+
+-----------------------------
+Istruzioni di base :
+
+Obiettivi :
+Obiettivo Primario: Distruggere tutti i tank nel panorama!
+Obiettivo Secondario: Upgradare il vostro tank con le migliori armi ed equipaggiamenti usando il denaro preso dai tank uccisi.
+
+Partenza del Gioco:
+1. Cliccare 'Play' sul main menu.
+2. Sul menu 'Characters', settare la lunghezza dei round, scegliere i giocatori (10 max.) e cliccare `Ok'.
+   Note : I giocatori Human hanno dei cerchi viola, mentre i giocatori computer hanno delle barre verticali verdi; quante piu' barre sono indicate, tanto piu' bravi sono i giocatori.
+3. Sul menu 'Weapon', pagate le armi per il vostro tank e cliccate `Done' per iniziare a giocare.
+
+Giocare un Gioco:
+1. Premere Tab per selezionare un'arma.
+2. Usare i tasti con le frecce sinistra/destra per puntare le armi (chiamato Angolo).
+3. Usare i tasti con le frecce su/giu' per settare il range delle armi (chiamato Potenza).
+Voi potete anche controllare la direzione e la forza del vento nella parte superiore 
+dello schermo, poiche' essi possono avere effetto sull'Angolo e la Potenza di tiro. 
+TIP: Premere CTRL mentre si usa un tasto freccia per cambiare Angolo o Potenza piu' lentamente.
+4. Premere la Barra Spaziatrice per far fuoco con le armi.
+5. Se avete del Carburante, voi potete muovere il vostro tank usando i tasti < oppure >.
+Il Menu delle Armi riappare dopo ogni round.
+Usare il denaro guadagnato durante il round per upgradare il vostro tank, quindi cliccare 'Done' per iniziare il round.
+Il vincitore del gioco e' quello che vince piu' round.
+
+Personnalizzazione del gioco (Conferma giocatori) :
+Voi avete la possibilita' di personalizzare Atomic Tanks per rendere il gioco piu' interessante. Quanto segue vi indica come procedere.
+
+Modifica delle caratteristiche generali :
+1. Cliccare 'Opzions' nel menu principale per visualizzare le Opzioni del gioco.
+2. Regolare il 'Tech Level' delle armi per determinare le armi e gli equipaggiamenti disponibili nello schermo 'armi' ; i livelli piu' alti rendono disponibili una maggior varietà di armi.
+3. Le Opzioni 'Landscape' permettono di disporre d'altri tipi d'ambiente ad ogni round.
+4. Il 'Turn Order' determina se l'ordine del giocatore per round è dato dal punteggio piu' alto (High+), dal punteggio piu' basso (Low+), o in ordine aleatorio.
+5. Selezionare 'Skip AI-only Play' permette all'Intelligenza Artificiale (IA) di continuare a giocare anche quando tutti i giocatori umani sono stati eliminati; mettere ad on 'Skip AI-only Play' per accellerare il gioco.
+6. Cliccare 'Back' per applicare le modifiche al prossimo gioco.
+
+Modificare le caratteristiche fisiche :
+1. Cliccare 'Opzions' nel menu principal, poi 'Physics' nel menu 'Opzions'.
+2. Aumentate o diminuute la forza di gravita'. Una gravita' elevata riduce la portata delle armi balitiche (missili). 
+3. La viscosita' influenza lo sfregamento subito dai missili nell'aria. Una viscosita' importante riduce la portata di tutti i proietti.
+4. Settare 'Land Slide' determina se il fatto di toccare il suolo causa uno scivolamento del terreno.
+5. Cliccare 'Back' due volte per applicare le modifiche al prossimo gioco.
+
+Modificare il meteo del gioco
+1. Cliccare 'Opzions' nel menu principale, poi 'Weather' nel menu 'Opzions'.
+2. Settare 'Meteor Showers' determina la probabilita' e la potenza di pioggia di meteoriti che appariranno aleatoriamente nel corso del gioco.
+3. Settare 'Lightning' fa lo stesso per quello che concerne i fulmini.
+4. Settare 'Fog' permette di limitare la visibilita' tra giocatori.
+NOTA : Questa caratteristica e' ancora in fase di sviluppo.
+5. Settare 'Max Wind Strength' determina la forza del vento che soffia durante il gioco.
+6. Settare 'Wind Variation' permette di fissare i limiti di variazione del vento durante il gioco.
+7. Doppio clic sul tasto 'Back' per applicare le modifiche al prossimo gioco.
+
+Modificare le finanze
+NOTA: Modificare le finanze puo' fortemente variare lo svolgimento del gioco. 
+1. Cliccare 'Opzions' nel menu principale, poi 'Money' nel menu 'Opzions'.
+2. Settare 'Starting Money' serve a fissare il montante che ogni giocatore (computer o umano) dispone all'inizio del gioco per comprare le sue armi.
+4. Settare 'Interest Rate' per determinare quale rateo e' applicato al denaro salvato ad ogni round.
+5. Cambiare 'Round Win Bonus' determina il montante guadagnato ad ogni vittoria.
+6. Settare 'Damage Bounty' determina il montante guadagnato ad ogni distruzione inflitta all'avversario.
+7. Settare 'Self-Damage Penalty' determina il montante perso ad ogni distruzione che voi infliggete a voi stessi.
+8. Cambiare 'Tank Destruction Bonus' e' il montante guadagnato ad ogni distruzione di tank avversario.
+9. Settare 'Tank Self-Destruction Penalty' e' il montante perso ad ogni distruzione di uno dei vostri tank da parte di voi stessi.
+10. Cliccare 'Back' per applicare le modifiche al prossimo gioco.
+
+Gestire e Modificare i giocatori
+1. Cliccare 'Players' nel menu principal per accedere a quanto segue.
+2. Voi potete... 
+-creare un nuovo giocatore : cliccare 'Create New', poi completare i passi da 3 a 5.
+-modificare un giocatore : cliccare il suo nome, poi completare i passi seguenti.
+-cancellare un giocatore : cliccare il suo nome, poi cliccare 'Delete This Player' e confermare la cancellazione.
+NOTA: Voi non potete recuperare un giocatore cancellato.
+3. 'Change Name' serve a rinominare un giocatore (ma va' ?).
+4. Selezionare un colore nella palette per assegnarla al giocatore.
+5. Settare 'Type' per determinare se il giocatore e' umano o gestito dall'IA (programma). 
+I livelli possibili per i giocatori sono :
+-sotto-dotato (Useless) : (il piu' basso !) : raramente uccide qualcuno, a parte se stesso
+-mediocre (Guesser) : puo' colpire fortunosamente qualcuno !
+-medio (Range Finder) : colpisce il suo obiettivo per meta' delle volte
+-elevato (Targetter) : colpisce il suo obiettivo la maggior parte delle volte
+-mortale (Deadly) : (il piu' alto !) colpisce il suo obiettivo quasi sempre, come Robin Hood
+
+Caratteristiche Grafiche:
+NOTE: Le modifiche possono rallentare la partenza del gioco o del cambio di round.
+1. Cliccare 'Options' nel menu principale, poi 'Grafica' nel menu 'Options'.
+2. 'Dithering' : Dithering ON migliora la grafica.
+3. 'Detailed Land' : migliora il suolo.
+4. 'Detailed Sky' : migliora i dettagli dello sfondo.
+5. Doppio clic sul tasto 'Back' per applicare le modifiche al prossimo gioco.
+
+--------------------------------------
+
+Se non potete trovare delle risposte alle vostre domande, consultate il sito (in Inglese)
+http://atanks.sourceforge.net, o contattatemi per mail (in Inglese) : jessefrgsmith@yahoo.ca

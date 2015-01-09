@@ -1,0 +1,110 @@
+Atomic Tanks : instructions
+
+Sommaire :
+
+	Instructions de base
+		Objectifs
+		Démarrer un jeu
+		Comment jouer
+
+	Personnalisations du jeu
+		Modifier les caractéristiques générales
+		Modifier les caractéristiques physiques
+		Modifier la météo du jeu
+		Modifier les finances
+		Gérer et modifier les joueurs
+		Caractéristiques graphiques
+
+-----------------------------
+Instructions de base :
+
+Objectifs :
+Objectif basique : éliminer tous les autres tanks du paysage !
+Objectif secondaire : gagner de l'argent en détruisant les autres tanks pour améliorer votre tank avec de meilleures armes et équipements.
+
+Démarrer un jeu :
+1. Cliquer 'jouer' dans le menu principal.
+2. Dans le menu 'joueurs', modifier le nombre de tours, choisir des joueurs (10 maxi.) et cliquer 'OK'.
+   Note : le joueur humain est marqué d'un cercle violet. Les tanks gérés par l'ordinateur sont indiqués par une barre verte.    La taille de la barre reflète l'intelligence des adversaires.
+3. Dans le menu 'armes', achetez des armes et cliquer 'terminé' pour démarrer le jeu.
+
+Comment jouer :
+1. Appuyer sur Tabulation pour sélectionner une arme.
+2. Régler l'angle de tir par les touches gauche/droite.
+3. Régler la portée par les touches haut/bas (puissance du tir).
+Pensez à vérifier la force et la direction du vent en haut de l'écran, elles ont une influence sur l'angle et la puissance de tir nécessaires à atteindre votre adversaire. 
+Astuce : la touche CTRL permet d'obtenir des réglages plus fins lors de l'utilisation des touches de direction (angle, portée)
+4. Pressez la touche Espace pour lancer l'arme.
+Le menu 'armes' réapparaît à chaque tour de jeu. Utilisez l'argent gagné pour améliorer votre tank, puis cliquez 'Terminé' pour passer au tour suivant. Le vainqueur est le joueur qui a remporté le plus de jeux.
+
+Personnalisations du jeu (joueurs confirmés) :
+Vous avez la possibilité de personnaliser Atomic Tanks pour rendre le jeu plus intéressant. Ce qui suit vous indique comment procéder.
+
+Modification des caractéristiques générales :
+1. Cliquer 'Options' dans le menu principal pour afficher les options du jeu.
+2. Réglez le niveau technique armes pour déterminer les armes et équipements disponibles dans l'écran 'armes' ; les niveaux les plus hauts rendent disponibles une plus grande variété d'armes et d'équipements.
+3. Les options de paysage permettent de disposer d'autres types d'environnement à chaque tour.
+4. L'ordre de passage peut être réglé : le score le plus haut en premier (plus fort +), le plus bas (moins fort+), ou ordre aléatoire.
+5. La sélection de 'Jeu IA seule' permet à l'Intelligence Artificielle (IA) de continuer à jouer en temps réel une fois tous les joueurs humains éliminés, alors que 'éviter IA seule' accélère le jeu.
+6. Le bouton 'Précédent' applique les modifications au prochain jeu.
+
+Modifier les caractéristiques physiques :
+1. Cliquer 'Options' dans le menu principal, puis 'Physique' dans le menu 'Options'.
+2. Augmentez ou diminuez la force de gravité. Une gravité élevée réduit la porté de la pluspart des armes, en particulier celle des projectiles de type missiles. 
+3. La viscosité influence les frottements subis par les projectile de type missiles. Une viscosité importante réduit la portée de tous les projectiles.
+4. Le facteur 'glissements de terrain' détermine si le fait de toucher le sol cause un glissement de terrain, ainsi que l'importance de ce dernier.
+5. Le bouton 'Précédent' applique les modifications au prochain jeu.
+
+Modifier la météo du jeu
+1. Cliquer 'Options' dans le menu principal, puis 'Météo' dans le menu 'Options'.
+2. 'Orages de météorites' détermine la probabilité et lé sévérité des orages de météorites qui apparaissent aléatoirement au cours du jeu.
+3. 'Éclairs' fait de même en ce qui concerne les éclairs.
+4. 'Brouillard' permet de limiter l'environnement visible par les joueurs.
+NOTE : Cette caractériqtique est encore à l'état de développement.
+5. 'Force maxi du vent' détermine la force du vent qui pourra souffler au cours du jeu.
+6. 'Variation du vent' affecte les changements du vent au cours du jeu.
+7. Deux clics sur Le bouton 'Précédent' appliquent les modifications au prochain jeu.
+
+Modifier les finances
+NOTE: Modifier les finances peut fortement affecter le déroulement d'une partie. 
+1. Cliquer 'Options' dans le menu principal, puis 'Finances' dans le menu 'Options'.
+2. 'Somme de départ' sert à fixer le montant dont chaque joueur dispose en début de partie pour acheter ses armes.
+4. Le 'Taux d'intérêt' est appliqué à la somme restante entre les tours.
+5. 'Gains par victoire' détermine le montant gagné à chaque victoire.
+6. 'Bonus dommages' détermine le montant gagné à chaque point de dommages infligé à l'adversaire.
+7. 'Pénalité auto-dommages' détermine le montant perdu à chaque point de dommages que vous vous infligez à vous-même (en vous touchant avec un de vos missiles par exemple).
+8. 'Bonus destruction tank' est le montant gagné à chaque destruction de tank adverse.
+9. 'Pénalité autodestruction tank' est le montant perdu à chaque destruction d'un de vos propres tanks par vous-même.
+10. Le bouton 'Précédent' applique les modifications au prochain jeu.
+
+Gérer et modifier les joueurs
+1. Cliquer 'Joueurs' dans le menu principal pour accéder à ce qui suit.
+2. Vous pouvez... 
+-créer un nouveau joueur : cliquez 'créer nouveau', puis compléter les étapes 3 à 5.
+-modifier un joueur : cliquez son nom, puis suivez les étapes suivantes.
+-effacer un joueur : cliquez son nom, puis cliquez 'Effacer ce joueur' et confirmez l'effacement.
+NOTE: Vous ne pouvez pas restaurer un joueur détruit.
+3. 'Renommer' sert à renommer un joueur (mais si !).
+4. Sélectionnez une couleur dans la palette pour l'affecter au joueur.
+5. 'Type' détermine si le joueur est humain ou géré par l'IA (programme). 
+Les niveaux possibles pour les joueurs sont :
+-sous-doué : (le plus bas !) : atteint rarement autre chose que lui-même
+-médiocre : peut atteindre sa cible avec de la chance !
+-moyen : atteint sa cible la moitié du temps
+-élevé : atteint sa cible la pluspart du temps
+-mortel : (le plus haut) un vrai tireur d'élite !
+6. Cliquez 'OK' pour appliquer les modifications à la prochaine partie.
+
+Caractéristiques graphiques
+NOTE: Les modifications peuvent affecter la durée du démarrage ou du changement de tour.
+1. Cliquer 'Options' dans le menu principal, puis 'Graphismes' dans le menu 'Options'.
+2. 'Tramage' : le tramage améliore les graphismes.
+3. 'Détails du terrain' : améliore le sol.
+4. 'Ciel détaillé' : améliore les détails de l'arrière-plan.
+5. Deux clics sur Le bouton 'Précédent' appliquent les modifications au prochain jeu.
+--------------------------------------
+
+Si vous ne pouvez trouver de réponses à vos questions, consultez le site (en Anglais)
+http://atanks.sourceforge.net, ou contactez par mél (en Anglais) : jessefrgsmith@yahoo.ca
+
+

@@ -1,0 +1,35 @@
+Basic Instructions
+
+Objectives
+Primary Objective: Destroy all other tanks on the landscape!
+Secondary Objective: Upgrade your own tank with better weapons and
+equipment using money earned from tank kills.
+
+Starting a Game:
+1. Click 'Play' on the main menu.
+2. On the Characters menu, set game length in rounds,
+choose players (10 max.) and click `Okay'.
+Human players have purple circles, while computer players have
+green skill bars; more skill bars indicate better computer players.
+3. On the Weapons menu, buy weapons for your tank and
+click `Done' to start the game.
+
+Playing a Game:
+1. Press Tab to select a weapon.
+2. Use the left/right arrow keys to aim the weapon (called Angle).
+3. Use the up/down keys to set the range of the weapon (called Power).
+You should also check the wind direction and strength at the top of
+the screen, as these may affect the Angle and Power required to
+hit your opponent. 
+TIP: Press CTRL while using an arrow key to change Angle
+or Power more slowly.
+4. Press Space to fire the weapon.
+5. If you have bought fuel, you may move your tank using the < and > keys.
+The weapons menu reappears after each round.
+Use money earned during the round to upgrade your tank,
+then click 'Done' to begin the next round.
+The winner of the game is the player who wins the most rounds.
+
+More Information
+There are more detailed instructions about using the menu options in the
+file "Help.txt" which comes with this distribution.

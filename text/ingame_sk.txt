@@ -1,0 +1,83 @@
+Výber hráčov
+Kolá
+Názov novej hry
+alebo načítať hru
+Načítať hru
+Kampaň
+OK
+Späť
+Musíte vybrať aspoň 2 hráčov
+Môžete vybrať najviac 10 hráčov
+Hráč
+Peniaze
+Kolo
+Skóre
+Stlačte F10 pre uloženie aktuálnej hry.
+Použite šípky hore/dole na skrolovanie
+v zozname položiek.
+Uložená hra
+Uhol:
+Sila:
+Team
+Palivo
+Vietor:
+Návrat
+Hlavné menu
+Ukončiť
+Preskočiť AI
+Hráči
+Vytvoriť nového
+Meno
+Farba
+Typ
+Generovať pref
+Odohrané
+Vyhrané
+Typ tanku
+Vymazať tohto hráča
+Nová verzia
+je dostupná na stiahnutie.
+Nepodarilo sa nájsť hru s týmto názvom.
+Množstvo v inventári
+Nepodarilo sa uložiť hru.
+Výber farieb
+Renderujem oblohu
+Renderujem krajinku
+Víťaz: Jedi
+Víťaz: Sith
+Víťaz
+Remíza
+              Hráčske skóre                   Výhry:Prehry
+Skóre hráčov
+Zrýchlené AI
+Vaše meno
+bezmena
+Človek
+Nepoužiteľný
+Ten, čo háda
+Ten, čo hľadá správnu silu
+Ten, čo mieri
+Ten, čo prináša smrť
+Na hru
+Iba raz
+Bežný
+Klasický
+Veľký šedý
+T34
+Sith
+Neutrálny
+Jedi
+Návrat
+Hlavné menu
+Ukončiť
+Preskočiť AI
+Ťažký
+Futuristický
+UFO
+Spider
+Server version did not match client version.
+Server screen size does not match ours.
+Client has become disconnected from the server.
+The server is full or the game has not started.
+The server closed our connection.
+The game is finished.

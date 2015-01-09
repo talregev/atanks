@@ -1,0 +1,104 @@
+Instruções de Tanques Atômicos (Atomic Tanks)
+
+Índice:
+
+	Instruções Básicas
+		Objetivos
+		Iniciando um Jogo
+		Jogando
+
+	Configurando o Jogo
+		Alterando as Características Gerais do Jogo
+		Alterando a Física do Jogo
+		Alterando as Condições Meteorológicas do Jogo
+		Alterando a Economia do Jogo
+		Gerenciando e Configurando os Jogadores
+		Alterando os Gráficos do jogo
+
+-----------------------------
+Instruções Básicas
+
+Objetivos:
+Objetivo Primário: Destruir todos os outros tanques do cenário!
+Objetivo Secundário: Incrementar seu próprio tanque com armas e equipamentos melhores usando o dinheiro que conseguiu destruindo tanques.
+
+Iniciando um Jogo:
+1. Clique em 'Jogar' no menu principal.
+2. No menu 'Personagens', ajuste a duração do jogo em rodadas, Escolha os jogadores (máximo de 10) e clique em `Okay'.
+Jogadores humanos tem círculos púrpura, enquanto robôs tem barras de habilidade verdes; quanto mais barras, melhor o robô.
+3. No menu Armas, compre armas para seu tanque e clique `terminei' para começar o jogo.
+
+Jogando:
+1. Pressione Tab para selecionar uma arma.
+2. Use as teclas de seta esquerda/direita para apontar a arma (ângulo).
+3. Use as teclas de seta para cima/para baixo para ajustar o alcance da arma (potência).
+Você também tem que verificar a direção e força do vento no topo da tela, já que eles influem no ângulo e potência certos para atingir seus adversários. 
+DICA: Pressione CTRL enquanto estiver usando uma seta para mudar o ângulo ou a potência lentamente.
+4. Pressione Espaço para atirar.
+O menu Armas reaparece após cada rodada. Use o dinheiro ganho durannte a rodada para incrementar seu tanque, então clique em 'Terminei' para começar a próxima rodada. O vencedor do jogo é o jogador que ganhar o maior número de rodadas.
+
+Configurando o Jogo (para jogadores experientes):
+Você pode configurar Tanques Atômicos para tornar o jogo mais desafiador. Leia o que segue para aprender como configurar o jogo.
+
+Alterando as Características Gerais do Jogo:
+1. Clique em 'Opções' no menu principal para ver o menu Opções.
+2. Ajuste o nível Tecnológico para determinar as armas e equipamentos à venda na tela de armas; níveis tecnológicos mais altos oferecem maior variedade de armas e equipamentos.
+3. Ajuste o cenário para determinar o tipo de cenário no qual o as rodadas se realizarão.
+4. Ajuste a Ordem de Jogadas para determinar se a ordem dos jogadores numa rodada será pela maior pontuação (melhores+), a menor pontuação (Piores+), ou aleatoriamente.
+5. Ajuste Pular Jogo Só com Robôs para determinar se os robôs devem terminar o jogo em tempo real depois de todos os humanos terem sidos eliminados; desligue a opção Pular Jogo Só com Robôs para acelerar o jogo.
+6. Clique 'Voltar' para aplicar as alterações no próximo jogo.
+
+Alterando a Física do Jogo:
+1. Clique em 'Opções' no menu principal, então clique em Física no menu Opções.
+2. Aumente ou diminua a Gravidade para ajustar a força da gravidade; Gravidada alta reduz o alcance da maioria das armas, especialmente de projéteis como mísseis.
+3. Aumente ou diminua a Viscosidade para ajustas o fator de arrasto aplicado a armas de projéteis como mísseis; viscosidade alta reduz o alcance de todas as armas de projéteis.
+4. Ajuste o desabamento de Terra para determinar se uma arma ao atingir a terra causa um desabamento, assim como sua severidade.
+5. Clique duas vezes em 'Voltar' para aplicar as alterações no próximo jogo.
+
+Alterando as Condições Meteorológicas do Jogo:
+1. Clique em 'Opções' no menu principal, então clique em 'Condições Meteorológicas' no menu Opções.
+2. Ajuste Chuva de Meteoros para determinar a probabilidade e severidade das ocorrências de chuvas de meteoros aleatórias ao longo do jogo.
+3. Ajuste Relâmpagos para determinar a probabilidade e severidade de relâmpagos ocorrerem aleatóriamente ao longo do jogo.
+4. Ajuste Neblina para limitar a quantidade de terreno que um jogador pode ver ao seu redor.
+OBSERVAÇÃO: este recurso está atualmente em desenvolvimento.
+5. Ajuste Força Máxima do Vento para determinar quão forte o vento pode soprar durante o jogo.
+6. Ajuste a variação do vento para limitar quanto o vento muda numa rodada.
+7. Clique duas vezes em 'Voltar' para aplicar as alterações no próximo jogo.
+
+Alterando a Economia do Jogo
+OBSERVAÇÃO: Mudanças na economia do jogo pode afetar significativamente a forma de jogar.
+1. Clique em 'Opções' no menu principal, então clique em 'Dinheiro' no menu opções.
+2. Ajuste Dinheiro Inicial para determinar qual o valor que cada jogador (humano ou robô) recebe para comprar armas no começo do jogo.
+4. Ajuste Taxa de Juros para alterar a taxa de juros aplicada ao dinheiro entre uma rodada e outra.
+5. Altere Bônus por Vitória para definir quanto dinheiro um jogador ganha por vencer uma rodada.
+6. Ajuste Bônus por Estrago para determinar quanto dinheiro um jogador ganha por ponto de estrago que ele faça num adversário.
+7. Ajuste Penalidade por Auto-Estrago para determinar quanto dinheiro um jogador perde por ponto de estrago feito em si mesmo (Ser atingido por seu próprio míssil, por exemplo).
+8. Altere Bônus por Tanque Destruído para definir quanto dinheiro um jogador ganhar ao destruir um tanque.
+9. Ajuste Penalidade por Auto-Destruição para determinar quanto dinheiro um jogador perde por destruir seu próprio tanque.
+10. Clique duas vezes em 'Voltar' para aplicar as alterações no próximo jogo.
+
+Gerenciando e Configurando os Jogadores
+1. Clique em 'Jogadores' no menu principal para mostrar o menu Jogadores. 
+2. Faça uma das seguintes ações: 
+-para criar um novo jogador, clique em `Criar Novo' e então complete os passos 3 a 5.
+-para configurar um jogador, clique no seu nome e então complete qualquer um dos passos seguintes.
+-para apagar um jogador, clique em seu nome e então clique `Apagar Este Jogador' e confirme.
+OBSERVAÇÃO: Não há como recuperar um jogador apagado.
+3. Mude o Nome para renomear o jogador.
+4. Mude a cor para o jogador na paleta de cores.
+5. Ajuste o tipo para determinar se um jogador é humano ou robô; robôs podem ter os seguintes níveis de habilidade:
+-Chutador (pior nível de habilidade): se acertar algo foi por sorte
+-"Range Finder": acerta o alvo em mais ou menos metade das vezes
+-Mirador (melhor nível de habilidade): acerta quase sempre
+6. Clique em 'OK' para aplicar as alterações no próximo jogo.
+
+Alterando os Gráficos do jogo
+OBSERVAÇÃO: Alterações nos gráficos do jogo podem afetar o tempo necessário para iniciar um jogo ou uma rodada.
+1. Clique em 'Opções' no menu principal, então clique em 'Gráficos' no menu Opções.
+2. Ajuste Pontilhamento para determinar se os gráficos serão pontilhados; desligue Pontilhamento para melhores gráficos.
+3. Ajuste Detalhes do Terreno para determinar os detalhes do cenário; ligue Detalhes do Terreno para gráficos melhores.
+4. Ajuste Detalhes do Céu para determinar os detalhes do fundo; ligue Detalhes do Céu para gráficos melhores.
+5. Clique duas vezes em 'Voltar' para aplicar suas alterações no próximo jogo.
+--------------------------------------
+
+Se você não encontrou a resposta para sua pergunta aqui, nem em http://sourceforge.net/projects/atanks e nem em http://atanks.sourceforge.net, mande e-mail (em inglês) para atanks@singular.org.uk

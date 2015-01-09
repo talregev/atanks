@@ -1,0 +1,83 @@
+Seleziona i giocatori
+Round
+Nome del Nuovo Gioco
+o Carica Gioco
+Carica Gioco
+Campagna
+Okay
+Indietro
+Devi selezionare almeno due giocatori
+Puoi avere soltanto dieci giocatori
+Giocatori
+Soldi
+Round
+Score
+Premi F10 per salvare il gioco corrente.
+Usa le frecce su e giu' per scorrere
+attraverso gli item della lista.
+Gioco Salvato
+Angolo:
+Potenza:
+Team
+Carburante
+Vento:
+Return
+Menu Pricipale
+Esci
+Salta AI
+Giocatori
+Crea Nuovo
+Nome
+Colore
+Tipo
+Genera Pref
+Giocato
+Vinto
+Tipo di Tank
+Cancella questo Giocatore
+Una nuova versione
+e' pronta per il download.
+Non trovo il Gioco con questo nome.
+Qta. in inventario
+Salvataggio gioco fallito.
+Scegli i colori
+Rendering Cielo
+Rendering Panorama
+Vincitore: Jedi
+Vincitore: Sith
+Vincitore
+Draw
+              Punteggio Giocatore                   Ucciso:Morto
+Punteggio Giocatori
+Accelerazione AI
+Tuo Nome
+senza nome
+Umano
+Sottodotato
+Mediocre
+Medio
+Elevato
+Mortale
+Per Gioco
+Only Once
+Normale
+Classico
+Big Grey
+T34
+Sith
+Neutrale
+Jedi
+Return
+Menu Pricipale
+Esci
+Salta AI
+Pesante
+Futuro
+UFO
+Spider
+Versione Server non coincide con versione client.
+Dimensioni del video Server non coincide con la nostra.
+Client disconnesso dal server.
+Il server e' completo o il gioco non e' partito.
+Il server ha chiuso la nostra connessione.
+Il gioco e' finito.
