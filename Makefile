@@ -1,4 +1,4 @@
-VERSION=6.1
+VERSION=6.2
 PREFIX ?= /usr/
 DESTDIR ?= 
 BINPREFIX = $(PREFIX)
@@ -65,10 +65,10 @@ clean:
 dist: source-dist i686-dist win32-dist
 
 tarball: clean
-	cd .. && tar czf atanks-$(VERSION).tar.gz atanks-$(VERSION)
+	cd .. && tar czf atanks-$(VERSION).tar.gz atanks-$(VERSION) --exclude=.git
 
 zipfile: clean
-	cd .. && zip -r atanks-$(VERSION)-source.zip atanks-$(VERSION)
+	cd .. && zip -r atanks-$(VERSION)-source.zip atanks-$(VERSION) -x *.git*
 
 source-dist:
 	cd ../; \
