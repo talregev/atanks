@@ -25,26 +25,23 @@
 class TEXTBLOCK
 {
 public:
-   int total_lines, current_line;
-   char **complete_text;
+    int total_lines, current_line;
+    char **complete_text;
 
 
-   TEXTBLOCK();
-   TEXTBLOCK(char *filename);
-   ~TEXTBLOCK();
+    TEXTBLOCK();
+    TEXTBLOCK(char *filename);
+    ~TEXTBLOCK();
 
-   void Trim_Newline(char *line);     // hack the newline off a string
-   int Load_File(char *filename);    // load lines from a file
-   char *Get_Random_Line();   // give us a random line
-   char *Get_Current_Line();  // return current line
-   int Next_Line();           // advance the current line counter one
-   int Previous_Line();       // move the current line counter back one
-   int Display_All(int line_numbers); // display all text
+    void Trim_Newline(char *line);     // hack the newline off a string
+    int Load_File(char *filename);    // load lines from a file
+    char *Get_Random_Line();   // give us a random line
+    char *Get_Current_Line();  // return current line
+    int Next_Line();           // advance the current line counter one
+    int Previous_Line();       // move the current line counter back one
+    int Display_All(int line_numbers); // display all text
 
 };
-
-
-
 
 // Functions we can use anywhere
 
@@ -53,7 +50,4 @@ public:
 // There is no need to free the returned string.
 char *Add_Comma(int number);
 
-
-
 #endif
-

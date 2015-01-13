@@ -1,5 +1,5 @@
-#ifndef	PHYSOBJ_DEFINE
-#define	PHYSOBJ_DEFINE
+#ifndef PHYSOBJ_DEFINE
+#define PHYSOBJ_DEFINE
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -27,33 +27,31 @@
 //#include "environment.h"
 
 class PHYSICAL_OBJECT: public VIRTUAL_OBJECT
-  {
-  public:
-    int	noimpact;
-    int	hitSomething;
-    double	mass;
-    double	drag;
-    int	spin;
+{
+public:
+    int noimpact;
+    int hitSomething;
+    double mass;
+    double drag;
+    int spin;
 
     /* --- constructor --- */
-    PHYSICAL_OBJECT ():VIRTUAL_OBJECT(),hitSomething(0) { }
+    PHYSICAL_OBJECT() : VIRTUAL_OBJECT(),hitSomething(0) { }
 
     /* --- pure virtual methods --- */
-    virtual int	isSubClass (int classNum)_PURE;
-    virtual int	getClass ()_PURE;
+    virtual int isSubClass(int classNum)_PURE;
+    virtual int getClass()_PURE;
 
     /* --- non-virtual methods --- */
 
     /* --- inline methods --- */
-    int	applyPhysics ();
+    int applyPhysics();
 
+    int checkPixelsBetweenPrevAndNow();
 
-    int	checkPixelsBetweenPrevAndNow ();
+    void initialise();
 
-    void	initialise ();
-
-    void	draw (BITMAP *dest);
-  };
+    void draw(BITMAP *dest);
+};
 
 #endif
-

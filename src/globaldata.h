@@ -70,72 +70,71 @@
 
 enum skipComputerPlayType
 {
-  SKIP_NONE, SKIP_HUMANS_DEAD// , SKIP_AUTOPLAY
+    SKIP_NONE, SKIP_HUMANS_DEAD// , SKIP_AUTOPLAY
 };
 
 class PLAYER;
 class TANK;
 class GLOBALDATA
-  {
-  private:
-  DIR *music_dir;
-  public:
+{
+private:
+    DIR *music_dir;
+public:
     ~GLOBALDATA();
-    int	WHITE, BLACK, PINK;
-    double	slope[360][2];
+    int WHITE, BLACK, PINK;
+    double slope[360][2];
 
-    char	*dataDir;
-    char    *configDir;
-    BOX	*updates, *lastUpdates, window;
-    int	updateCount, lastUpdatesCount;
-    int	stopwindow;
-    int	command;
-    double  frames_per_second;
+    char *dataDir;
+    char *configDir;
+    BOX *updates, *lastUpdates, window;
+    int updateCount, lastUpdatesCount;
+    int stopwindow;
+    int command;
+    double frames_per_second;
 
-    PLAYER	**allPlayers;
-    int	numPermanentPlayers;
-    #ifdef THREADS
+    PLAYER **allPlayers;
+    int numPermanentPlayers;
+#ifdef THREADS
     pthread_rwlock_t* command_lock;
-    #endif
-    void wr_lock_command ();
-    void unlock_command ();
-    int get_command ();
-    PLAYER	**players;
-    int	numPlayers;
-    int	numHumanPlayers;
-    int	computerPlayersOnly;
-    double	skipComputerPlay;	/* options requires doubles - grr */
+#endif
+    void wr_lock_command();
+    void unlock_command();
+    int get_command();
+    PLAYER **players;
+    int numPlayers;
+    int numHumanPlayers;
+    int computerPlayersOnly;
+    double skipComputerPlay; /* options requires doubles - grr */
     /* It's a lot simpler than having
      * special cases for each type */
-    int	numTanks;
-    int	maxNumTanks;
-    TANK	*currTank;
+    int numTanks;
+    int maxNumTanks;
+    TANK *currTank;
 
-    int	updateMenu;
+    int updateMenu;
 
-    int	curland, cursky;
+    int curland, cursky;
     int get_curland();
     void unlock_curland();
     void lock_curland();
     void destroy_curland_lock();
     void init_curland_lock();
-    #ifdef THREADS
+#ifdef THREADS
     pthread_mutex_t* curland_lock;
-    #endif
-    int	colourDepth;
-    int	screenWidth, screenHeight;
+#endif
+    int colourDepth;
+    int screenWidth, screenHeight;
     int menuBeginY, menuEndY;
-    int	halfWidth, halfHeight;
-    int     width_override, height_override;
-    double  temp_screenWidth, temp_screenHeight;
+    int halfWidth, halfHeight;
+    int width_override, height_override;
+    double temp_screenWidth, temp_screenHeight;
     PLAYER *client_player;     // the index we use to know which one is the player on the client side
-    gfxDataStruct	gfxData;
-    // DATAFILE	*SOUND;
+    gfxDataStruct gfxData;
+    // DATAFILE *SOUND;
     ENVIRONMENT *env;
 
-    // bool            full_screen;
-    // int		cacheCirclesBG ;	// This is just a flag, so it need only be
-						// 		an integer, not a double 
+    // bool full_screen;
+    // int cacheCirclesBG; // This is just a flag, so it need only be an integer, not a double
     void Reset_Options();
 
     /* Logically, these three variables should be ints.  However, converting
@@ -152,16 +151,16 @@ class GLOBALDATA
     /* All this money data; couldn't it be moved into some separate data
     structure or object */
     /* It could, but it's not a problem */
-    double	startmoney;
-    double	interest;
-    double	scoreHitUnit;
-    double	scoreSelfHit;
-    double	scoreUnitDestroyBonus;
-    double	scoreUnitSelfDestroy;
-    double	scoreRoundWinBonus;
-    double  sellpercent;
-    double  divide_money;
-    double  play_music;
+    double startmoney;
+    double interest;
+    double scoreHitUnit;
+    double scoreSelfHit;
+    double scoreUnitDestroyBonus;
+    double scoreUnitSelfDestroy;
+    double scoreRoundWinBonus;
+    double sellpercent;
+    double divide_money;
+    double play_music;
     double full_screen;
     int show_scoreboard;
     char server_name[128], server_port[128];
@@ -169,20 +168,20 @@ class GLOBALDATA
     /* double? */
     /* double for options() reasons, no messing about with casting or
      * special cases. */
-    double	turntype;
-    double	rounds;
-    int     currentround;
-    double  sound;
-    double  language;
-    int     name_above_tank;
-    int     tank_status_colour;
-    char   *tank_status;
-    char    game_name[GAME_NAME_LENGTH];
-    double  load_game;
-    double  campaign_mode;
-    double  violent_death;
-    double  saved_game_index;
-    char    **saved_game_list;
+    double turntype;
+    double rounds;
+    int currentround;
+    double sound;
+    double language;
+    int name_above_tank;
+    int tank_status_colour;
+    char *tank_status;
+    char game_name[GAME_NAME_LENGTH];
+    double load_game;
+    double campaign_mode;
+    double violent_death;
+    double saved_game_index;
+    char **saved_game_list;
     double  max_fire_time;
     bool close_button_pressed;
     char *update_string;
@@ -199,22 +198,22 @@ class GLOBALDATA
     char *client_message;   // message sent from client to main menu
 
 
-    GLOBALDATA ();
-    void	initialise ();
-    int     saveToFile_Text (FILE *file);
-    int     loadFromFile_Text (FILE *file);
-    int     loadFromFile(ifstream &my_file);
-    void	addPlayer (PLAYER *player);
-    void	removePlayer (PLAYER *player);
-    PLAYER	*getNextPlayer (int *playerCount);
-    PLAYER	*createNewPlayer (ENVIRONMENT *env);
-    void	destroyPlayer (PLAYER *player);
-    char    *Get_Config_Path();
-    bool    Check_Time_Changed();      // check to see if one second has passed
-    bool		bIsGameLoaded;
-    bool		bIsBoxed;
-    int			iHumanLessRounds;
-    double	dMaxVelocity;
+    GLOBALDATA();
+    void initialise();
+    int saveToFile_Text(FILE *file);
+    int loadFromFile_Text(FILE *file);
+    int loadFromFile(ifstream &my_file);
+    void addPlayer(PLAYER *player);
+    void removePlayer(PLAYER *player);
+    PLAYER *getNextPlayer(int *playerCount);
+    PLAYER *createNewPlayer(ENVIRONMENT *env);
+    void destroyPlayer(PLAYER *player);
+    char *Get_Config_Path();
+    bool Check_Time_Changed();    // check to see if one second has passed
+    bool bIsGameLoaded;
+    bool bIsBoxed;
+    int iHumanLessRounds;
+    double dMaxVelocity;
     int Load_Sounds();
     int Load_Bitmaps();
     SAMPLE *Load_Background_Music();
@@ -222,9 +221,9 @@ class GLOBALDATA
     void Change_Font();
     void Update_Player_Menu();
     int Load_Text_Files();
-    #ifdef NETWORK
-    int Send_To_Clients(char *message);        // send a short message to all network clients
-    #endif
+#ifdef NETWORK
+    int Send_To_Clients(char *message);    // send a short message to all network clients
+#endif
 #ifdef DEBUG_AIM_SHOW
     bool bASD;
 #endif
@@ -233,6 +232,6 @@ class GLOBALDATA
     int Count_Humans();
     int Check_For_Winner();    // returns winner index or -1 for no winner
     void Credit_Winners(int winner);
-  };
+};
 
 #endif

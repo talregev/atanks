@@ -5,11 +5,11 @@
 #include "environment.h"
 
 class BUTTON
-  {
+{
     GLOBALDATA *_global;
     ENVIRONMENT *_env;
 
-  public:
+public:
     BOX location;
     int xl, yl;
     char *text;
@@ -18,13 +18,12 @@ class BUTTON
     BITMAP *depressed;
     SAMPLE *click;
 
-    BUTTON (GLOBALDATA *global, ENVIRONMENT *env, int x1, int y1, char *text1,
-            BITMAP *bmp1, BITMAP *hover1, BITMAP *depressed1);
+    BUTTON(GLOBALDATA *global, ENVIRONMENT *env, int x1, int y1, char *text1,
+           BITMAP *bmp1, BITMAP *hover1, BITMAP *depressed1);
 
-    int     isPressed (); //if button pressed returns 1
-    int     isMouseOver (); //Cursor is over button
-    void    draw (BITMAP *dest);
-  };
+    int isPressed(); //if button pressed returns 1
+    int isMouseOver(); //Cursor is over button
+    void draw(BITMAP *dest);
+};
 
 #endif
-

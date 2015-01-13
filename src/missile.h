@@ -32,43 +32,42 @@
 #define SDI_DISTANCE 100
 
 class MISSILE: public PHYSICAL_OBJECT
-  {
-  private:
+{
+private:
     // New values for growing napalm jelly:
     int iGrowRadius;
     int bIsGrowing;
 
-  public:
-    int	countdown;
-    int	expSize;
-    int	etime;
-    int	damage;
-    int	eframes;
-    int	picpoint;
-    int	type;
-    int	sound;
+public:
+    int countdown;
+    int expSize;
+    int etime;
+    int damage;
+    int eframes;
+    int picpoint;
+    int type;
+    int sound;
     int funky_colour;
-    WEAPON	*weap;
+    WEAPON *weap;
 
-    virtual ~MISSILE ();
-    MISSILE (GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, double xvel, double yvel, int weaponType);
-    void	draw (BITMAP *dest);
-    int	triggerTest ();
-    void	trigger ();
-    // void	explode ();
-    int	applyPhysics ();
-    void	initialise ();
-    int	isSubClass (int classNum);
+    virtual ~MISSILE();
+    MISSILE(GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, double xvel, double yvel, int weaponType);
+    void draw(BITMAP *dest);
+    int triggerTest();
+    void trigger();
+    // void explode();
+    int applyPhysics();
+    void initialise();
+    int isSubClass(int classNum);
     void setEnvironment(ENVIRONMENT *env);
 
-    inline virtual int	getClass ()
+    inline virtual int getClass()
     {
-      return (MISSILE_CLASS);
+        return MISSILE_CLASS;
     }
 
-    int     Height_Above_Ground ();
+    int Height_Above_Ground();
     TANK *Check_SDI(GLOBALDATA *global);       // see if missile should be shot down
-  };
+};
 
 #endif
-

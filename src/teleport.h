@@ -25,35 +25,35 @@
 #include "virtobj.h"
 
 class TELEPORT: public VIRTUAL_OBJECT
-  {
-  public:
-    int	radius;
-    int	clock;
-    int	startClock;
-    int	peaked;
-    int	dispersing;
+{
+public:
+    int radius;
+    int clock;
+    int startClock;
+    int peaked;
+    int dispersing;
     VIRTUAL_OBJECT *object;
     TELEPORT *remote;
 
-    virtual ~TELEPORT ();
-    TELEPORT (GLOBALDATA *global, ENVIRONMENT *env, VIRTUAL_OBJECT *targetObj, int destinationX, int destinationY, int objRadius, int duration);
-    TELEPORT (GLOBALDATA *global, ENVIRONMENT *env, TELEPORT *remoteEnd, int destX, int destY);
-    void	initialise ();
-    void	draw (BITMAP *dest);
-    int	applyPhysics ();
-    int	isSubClass (int classNum);
-    inline virtual int	getClass ()
+    virtual ~TELEPORT();
+    TELEPORT(GLOBALDATA *global, ENVIRONMENT *env, VIRTUAL_OBJECT *targetObj, int destinationX, int destinationY, int objRadius, int duration);
+    TELEPORT(GLOBALDATA *global, ENVIRONMENT *env, TELEPORT *remoteEnd, int destX, int destY);
+    void initialise();
+    void draw(BITMAP *dest);
+    int applyPhysics();
+    int isSubClass(int classNum);
+    inline virtual int getClass()
     {
-      return (TELEPORT_CLASS);
+        return TELEPORT_CLASS;
     }
     inline virtual void setEnvironment(ENVIRONMENT *env)
     {
-      if (!_env || (_env != env))
+        if (!_env || (_env != env))
         {
-          _env = env;
-          _index = _env->addObject (this);
+            _env = env;
+            _index = _env->addObject(this);
         }
     }
-  };
+};
 
 #endif

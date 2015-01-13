@@ -23,4 +23,3 @@ do not fit anywhere else.
 int Team_Won(GLOBALDATA *global);
 
 #endif
-

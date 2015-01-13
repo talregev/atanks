@@ -1,5 +1,5 @@
 #ifndef EXTERNS_DEFINE
-#define	EXTERNS_DEFINE
+#define EXTERNS_DEFINE
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -21,39 +21,35 @@
  * */
 
 
-extern char	*errorMessage;
-extern int	errorX, errorY;
+extern char *errorMessage;
+extern int errorX, errorY;
 
-extern int	WHITE, BLACK, PINK, COLOR[];
+extern int WHITE, BLACK, PINK, COLOR[];
 
-extern int	k;
-extern int	ctrlUsedUp;
+extern int k;
+extern int ctrlUsedUp;
 
-extern int	cclock,
-  fps, frames,
-  fi, lx, ly,
-  order[];
+extern int cclock, fps, frames, fi, lx, ly, order[];
 
-//extern char	cacheCirclesBG;
-//extern char	ditherGradients;
-//extern int	startmoney;
-//extern int	turntype;
+//extern char cacheCirclesBG;
+//extern char ditherGradients;
+//extern int startmoney;
+//extern int turntype;
 
-extern double	height[];
-//extern int	landtable[];
+extern double height[];
+//extern int landtable[];
 
-//extern int	steep, mheight, mbase;
-//extern double	msteep, smooth;
-//extern double	gravity;
-//extern double	windstrength, windvariation;
-//extern double	interest;
-//extern char	name[][11];
+//extern int steep, mheight, mbase;
+//extern double msteep, smooth;
+//extern double gravity;
+//extern double windstrength, windvariation;
+//extern double interest;
+//extern char name[][11];
 
 extern int winner;
 
-extern WEAPON	weapon[];
-extern WEAPON	naturals[];
-extern ITEM	item[];
+extern WEAPON weapon[];
+extern WEAPON naturals[];
+extern ITEM item[];
 
 #endif
-

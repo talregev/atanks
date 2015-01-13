@@ -1,5 +1,5 @@
-#ifndef	ENVIRONMENT_DEFINE
-#define	ENVIRONMENT_DEFINE
+#ifndef ENVIRONMENT_DEFINE
+#define ENVIRONMENT_DEFINE
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -25,23 +25,23 @@
 
 enum landscapeTypes
 {
-  LANDTYPE_RANDOM,
-  LANDTYPE_CANYONS,
-  LANDTYPE_MOUNTAINS,
-  LANDTYPE_VALLEYS,
-  LANDTYPE_HILLS,
-  LANDTYPE_FOOTHILLS,
-  LANDTYPE_PLAIN,
-  LANDTYPE_NONE
+    LANDTYPE_RANDOM,
+    LANDTYPE_CANYONS,
+    LANDTYPE_MOUNTAINS,
+    LANDTYPE_VALLEYS,
+    LANDTYPE_HILLS,
+    LANDTYPE_FOOTHILLS,
+    LANDTYPE_PLAIN,
+    LANDTYPE_NONE
 };
 
 enum landSlideTypes
 {
-  LANDSLIDE_NONE,       // gravity does not exist
-  LANDSLIDE_TANK_ONLY,  // dirt falls, tank does not
-  LANDSLIDE_INSTANT,    // dirt falls without you seeing it
-  LANDSLIDE_GRAVITY,    // normal
-  LANDSLIDE_CARTOON     // gravity is delayed
+    LANDSLIDE_NONE,       // gravity does not exist
+    LANDSLIDE_TANK_ONLY,  // dirt falls, tank does not
+    LANDSLIDE_INSTANT,    // dirt falls without you seeing it
+    LANDSLIDE_GRAVITY,    // normal
+    LANDSLIDE_CARTOON     // gravity is delayed
 };
 
 #ifndef MAX_GRAVITY_DELAY
@@ -51,13 +51,12 @@ enum landSlideTypes
 
 enum wallTypes
 {
-  WALL_RUBBER,
-  WALL_STEEL,
-  WALL_SPRING,
-  WALL_WRAP,
-  WALL_RANDOM
+    WALL_RUBBER,
+    WALL_STEEL,
+    WALL_SPRING,
+    WALL_WRAP,
+    WALL_RANDOM
 };
-
 
 // stages
 #define STAGE_AIM 0
@@ -87,60 +86,60 @@ enum wallTypes
 //class GLOBALDATA;
 //class VIRTUAL_OBJECT;
 class ENVIRONMENT
-  {
-  public:
-    GLOBALDATA	*_global;
-    TANK	*order[MAXPLAYERS * 3];
-    PLAYER  *playerOrder[MAXPLAYERS * 3];
-    VIRTUAL_OBJECT	*objects[MAX_OBJECTS];
-    int	availableItems[THINGS];
-    int	numAvailable;
-    int	realm, am;
-    double	wind, lastwind;
-    double	windstrength, windvariation;
-    double	viscosity;
-    double	gravity;
-    double	weapontechLevel, itemtechLevel;
-    double	meteors;
-    double	lightning;
-    double  falling_dirt_balls;
-    double	fog;
-    // int	oldFogX, oldFogY;
-    double	landType;
-    double	landSlideType;
-    double  landSlideDelay;
-    char	*done;
-    int	*fp;
-    int	*h;
-    int	*surface;
-    int	*dropTo;
-    double	*velocity;
-    double	*dropIncr;
-    double	*height;
-    BITMAP	*db, *terrain, *sky;
+{
+public:
+    GLOBALDATA *_global;
+    TANK *order[MAXPLAYERS * 3];
+    PLAYER *playerOrder[MAXPLAYERS * 3];
+    VIRTUAL_OBJECT *objects[MAX_OBJECTS];
+    int availableItems[THINGS];
+    int numAvailable;
+    int realm, am;
+    double wind, lastwind;
+    double windstrength, windvariation;
+    double viscosity;
+    double gravity;
+    double weapontechLevel, itemtechLevel;
+    double meteors;
+    double lightning;
+    double falling_dirt_balls;
+    double fog;
+    // int oldFogX, oldFogY;
+    double landType;
+    double landSlideType;
+    double landSlideDelay;
+    char *done;
+    int *fp;
+    int *h;
+    int *surface;
+    int *dropTo;
+    double *velocity;
+    double *dropIncr;
+    double *height;
+    BITMAP *db, *terrain, *sky;
     BITMAP *waiting_sky, *waiting_terrain;     // sky saved in background
-    #ifdef THREADS
+#ifdef THREADS
     pthread_mutex_t* waiting_terrain_lock;
     pthread_mutex_t* waiting_sky_lock;
     void destroy_lock(pthread_mutex_t* lock);
     pthread_mutex_t* init_lock(pthread_mutex_t* lock);
     void lock(pthread_mutex_t* lock);
     void unlock(pthread_mutex_t* lock);
-    #endif
+#endif
     BITMAP* get_waiting_sky();
     BITMAP* get_waiting_terrain();
     const gradient **my_sky_gradients, **my_land_gradients;
-    int	pclock, mouseclock;
-    int	stage;
-    int	combineUpdates;
-    double  wallType;
-    double	dBoxedMode;			// Can be 0.0 = off, 1.0 = on, 2.0 = random
-    double	dFadingText;		// 0.0 = off, 1.0 = on
-    double	dShadowedText;	// 0.0 = off, 1.0 = on
-    int     current_wallType, wallColour;
-    int     time_to_fall;    // amount of time dirt will hover
-    double  satellite;
-    int     naturals_since_last_shot;
+    int pclock, mouseclock;
+    int stage;
+    int combineUpdates;
+    double wallType;
+    double dBoxedMode; // Can be 0.0 = off, 1.0 = on, 2.0 = random
+    double dFadingText; // 0.0 = off, 1.0 = on
+    double dShadowedText; // 0.0 = off, 1.0 = on
+    int current_wallType, wallColour;
+    int time_to_fall;    // amount of time dirt will hover
+    double satellite;
+    int naturals_since_last_shot;
     double custom_background;
     char **bitmap_filenames;
     int number_of_bitmaps;
@@ -148,35 +147,34 @@ class ENVIRONMENT
     int global_tank_index;
     int volume_factor;  // from 0 (no volume) to MAX_VOLUME_FACTOR
 
-
-    ENVIRONMENT (GLOBALDATA *global);
-    ~ENVIRONMENT ();
-    void initialise ();
-    void setGlobaldata (GLOBALDATA *global)
+    ENVIRONMENT(GLOBALDATA *global);
+    ~ENVIRONMENT();
+    void initialise();
+    void setGlobaldata(GLOBALDATA *global)
     {
-      _global = global;
+        _global = global;
     }
     GLOBALDATA *Get_Globaldata()
     {
-         return _global;
+        return _global;
     }
-    void generateAvailableItemsList ();
-    int isItemAvailable (int itemNum);
-    int addObject (VIRTUAL_OBJECT *object);
-    int removeObject (VIRTUAL_OBJECT *object);
-    VIRTUAL_OBJECT *getNextOfClass (int classNum, int *index);
-    void newRound ();
-    int ingamemenu ();
+    void generateAvailableItemsList();
+    int isItemAvailable(int itemNum);
+    int addObject(VIRTUAL_OBJECT *object);
+    int removeObject(VIRTUAL_OBJECT *object);
+    VIRTUAL_OBJECT *getNextOfClass(int classNum, int *index);
+    void newRound();
+    int ingamemenu();
     void make_fullUpdate();
-    int getAvgBgColor(int, int, int, int, double, double); 
-    void do_updates ();
-    void replaceCanvas ();
-    void make_update (int x, int y, int w, int h);
-    void make_bgupdate (int x, int y, int w, int h);
+    int getAvgBgColor(int, int, int, int, double, double);
+    void do_updates();
+    void replaceCanvas();
+    void make_update(int x, int y, int w, int h);
+    void make_bgupdate(int x, int y, int w, int h);
 
-    int saveToFile_Text (FILE *file);
-    int loadFromFile_Text (FILE *file);
-    int loadFromFile (ifstream &ifsFile);
+    int saveToFile_Text(FILE *file);
+    int loadFromFile_Text(FILE *file);
+    int loadFromFile(ifstream &ifsFile);
 
     void Reset_Options();
     void Set_Wall_Colour();
@@ -185,7 +183,6 @@ class ENVIRONMENT
     void increaseVolume();
     void decreaseVolume();
     int scaleVolume(int vol) const;
-  };
+};
 
 #endif
-

@@ -1,5 +1,5 @@
-#ifndef	VIRTOBJ_DEFINE
-#define	VIRTOBJ_DEFINE
+#ifndef VIRTOBJ_DEFINE
+#define VIRTOBJ_DEFINE
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -24,70 +24,73 @@
 #define _PURE =0
 #endif // _PURE
 
-enum    alignType { CENTRE, LEFT, RIGHT };
+enum alignType
+{
+    CENTRE,
+    LEFT,
+    RIGHT
+};
 
 #include "main.h"
-
 #include "player.h"
 
 class VIRTUAL_OBJECT
-  {
-  public:
-    BOX	_current, _old;
-    alignType	_align;
-    BITMAP	*_bitmap;
-    ENVIRONMENT	*_env;
-    GLOBALDATA	*_global;
-    int	_requireUpdate;
-    int	_index;
+{
+public:
+    BOX _current, _old;
+    alignType _align;
+    BITMAP *_bitmap;
+    ENVIRONMENT *_env;
+    GLOBALDATA *_global;
+    int _requireUpdate;
+    int _index;
     PLAYER *player;
-    double	x, y;
-    double	xv, yv;
-    int	angle;
-    int	destroy;
-    int	age, maxAge;
-    int	physics;	// Special physics processing?
+    double x, y;
+    double xv, yv;
+    int angle;
+    int destroy;
+    int age, maxAge;
+    int physics;    // Special physics processing?
 
     /* --- constructor --- */
     VIRTUAL_OBJECT();
 
     /* --- destructor --- */
-    virtual	~VIRTUAL_OBJECT ();
+    virtual ~VIRTUAL_OBJECT();
 
     /* --- non-inline methods --- */
-    void	update();
+    void update();
 
     /* --- pure virtual (abstract) methods --- */
-    virtual int	  isSubClass (int classNum)_PURE;
-    virtual int	  getClass ()_PURE;
-    virtual void  setEnvironment(ENVIRONMENT *env)_PURE; // This is virtual, so objects add themselves to _env!
+    virtual int isSubClass(int classNum)_PURE;
+    virtual int getClass()_PURE;
+    virtual void setEnvironment(ENVIRONMENT *env)_PURE; // This is virtual, so objects add themselves to _env!
 
     /* --- inline methods --- */
-    void	requireUpdate ()
+    void requireUpdate()
     {
-      _requireUpdate = TRUE;
+        _requireUpdate = TRUE;
     }
 
-    virtual void	initialise ();
+    virtual void initialise();
 
-    virtual int	applyPhysics ();
+    virtual int applyPhysics();
 
-    inline void	setGlobalData (GLOBALDATA *global)
+    inline void setGlobalData(GLOBALDATA *global)
     {
-      if (!_global || (_global != global))
-        _global = global;
+        if (!_global || (_global != global))
+            _global = global;
     }
 
-virtual void	draw (BITMAP *dest);
+    virtual void draw(BITMAP *dest);
 
-void	setUpdateArea (int left, int top, int width, int height);
+    void setUpdateArea(int left, int top, int width, int height);
+    void addUpdateArea(int left, int top, int width, int height);
 
-void	addUpdateArea (int left, int top, int width, int height);
-
-    inline int	getIndex ()
+    inline int getIndex()
     {
-      return (_index);
+        return _index;
     }
-  };
+};
 
 #endif // VIRTOBJ_DEFINE

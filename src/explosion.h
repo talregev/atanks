@@ -28,41 +28,41 @@
 
 
 class EXPLOSION: public PHYSICAL_OBJECT
-  {
-  public:
-    int	etime;
-    int	damage;
-    int	eframes;
-    int	radius;
-    int	sound;
-    int	exclock;
-    int	type, a;
-    int	peaked;
-    int	dispersing;
-    WEAPON	*weap;
-		/* to allow synchronous tank explosions, explosions need to know what they are */
-		bool bIsWeaponExplosion;
+{
+public:
+    int etime;
+    int damage;
+    int eframes;
+    int radius;
+    int sound;
+    int exclock;
+    int type, a;
+    int peaked;
+    int dispersing;
+    WEAPON *weap;
+    /* to allow synchronous tank explosions, explosions need to know what they are */
+    bool bIsWeaponExplosion;
 
-    virtual ~EXPLOSION ();
-    EXPLOSION (GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, int weaponType);
-    EXPLOSION (GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, double xvel, double yvel, int weaponType);
-    void	draw (BITMAP *dest);
-    void	initialise ();
-    int	applyPhysics ();
-    void	explode ();
-    int	isSubClass (int classNum);
-    inline virtual int	getClass ()
+    virtual ~EXPLOSION();
+    EXPLOSION(GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, int weaponType);
+    EXPLOSION(GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, double xvel, double yvel, int weaponType);
+    void draw(BITMAP *dest);
+    void initialise();
+    int applyPhysics();
+    void explode();
+    int isSubClass(int classNum);
+    inline virtual int getClass()
     {
-      return (EXPLOSION_CLASS);
+        return (EXPLOSION_CLASS);
     }
     inline virtual void setEnvironment(ENVIRONMENT *env)
     {
-      if (!_env || (_env != env))
+        if (!_env || (_env != env))
         {
-          _env = env;
-          _index = _env->addObject (this);
+            _env = env;
+            _index = _env->addObject (this);
         }
     }
-  };
+};
 
 #endif

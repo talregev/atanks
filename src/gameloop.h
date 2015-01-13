@@ -6,11 +6,10 @@
 
 #define MAX_TEXT_BOUNCE 40
 
-// The massive game loop, re-wrrite here for
+// The massive game loop, re-write here for
 // all sorts of reasons.
 #ifdef NEW_GAMELOOP
 int game(GLOBALDATA *global, ENVIRONMENT *env);
 #endif
 
 #endif
-

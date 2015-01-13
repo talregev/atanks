@@ -9,7 +9,6 @@ updated to run on other operating systems.
 -- Jesse
 */
 
-
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -21,41 +20,37 @@ updated to run on other operating systems.
 
 typedef struct message_struct
 {
-  char *text;
-  int to;   // which client does the message go to? May not be used as most will go to everyone
-  void *next;
+    char *text;
+    int to;   // which client does the message go to? May not be used as most will go to everyone
+    void *next;
 } MESSAGE;
-
- 
 
 class MESSAGE_QUEUE
 {
 public:
-   MESSAGE *first_message, *last_message;
+    MESSAGE *first_message, *last_message;
 
-   MESSAGE_QUEUE();
-   ~MESSAGE_QUEUE();
+    MESSAGE_QUEUE();
+    ~MESSAGE_QUEUE();
 
-   // add a message to the queue
-   bool Add(char *some_text, int to);
+    // add a message to the queue
+    bool Add(char *some_text, int to);
 
-   // pull the first message from the queue and erase it from the queue
-   MESSAGE *Read();
+    // pull the first message from the queue and erase it from the queue
+    MESSAGE *Read();
 
-   // read the next message in the queue without erasing it
-   MESSAGE *Peek();
+    // read the next message in the queue without erasing it
+    MESSAGE *Peek();
 
-   MESSAGE *Read_To(int to);
+    MESSAGE *Read_To(int to);
 
-   // erases the next message in the queue without reading it
-   void Erase();
+    // erases the next message in the queue without reading it
+    void Erase();
 
-   // erase all messages in the queue
-   void Erase_All();
-   
+    // erase all messages in the queue
+    void Erase_All();
+
 };
-
-
 
 typedef struct send_receive_struct
 {
@@ -90,9 +85,6 @@ int Check_For_Errors(int socket_number);
 
 void *Send_And_Receive(void *data_we_need);
 
-#endif
-
-
+#endif // NETWORK
 
 #endif
-

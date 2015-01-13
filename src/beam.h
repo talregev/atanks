@@ -28,47 +28,46 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 enum beamType
 {
-  LIGHTNING_BEAM,
-  LAZER_BEAM
+    LIGHTNING_BEAM,
+    LAZER_BEAM
 };
 
 class BEAM: public PHYSICAL_OBJECT
-  {
-  public:
-    int	radius;
-    int	length;
-    double	damage;
-    int	clock;
-    int	type;
-    WEAPON	*weap;
-    int	*points;	// Allows jagged lines
-    int	numPoints;
-    int	color;
-    int	targetX;
-    int	targetY;
+{
+public:
+    int radius;
+    int length;
+    double damage;
+    int clock;
+    int type;
+    WEAPON *weap;
+    int *points; // Allows jagged lines
+    int numPoints;
+    int color;
+    int targetX;
+    int targetY;
 
-    virtual ~BEAM ();
-    //BEAM (GLOBALDATA *global, ENVIRONMENT *env, double tX, double tY, double tXv, double tYv, int weaponType);
-    BEAM (GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, int angle, int weaponType);
-    void	setLightningPath();
-    void	initialise ();
-    void	draw (BITMAP *dest);
-    //void	update ();
-    int	applyPhysics ();
-    virtual int	isSubClass (int classNum);
-    inline virtual int	getClass ()
+    virtual ~BEAM();
+    //BEAM(GLOBALDATA *global, ENVIRONMENT *env, double tX, double tY, double tXv, double tYv, int weaponType);
+    BEAM(GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, int angle, int weaponType);
+    void setLightningPath();
+    void initialise();
+    void draw(BITMAP *dest);
+    //void update();
+    int applyPhysics();
+    virtual int isSubClass(int classNum);
+    inline virtual int getClass()
     {
-      return (BEAM_CLASS);
+        return BEAM_CLASS;
     }
     inline virtual void setEnvironment(ENVIRONMENT *env)
     {
-      if (!_env || (_env != env))
+        if (!_env || (_env != env))
         {
-          _env = env;
-          _index = _env->addObject (this);
+            _env = env;
+            _index = _env->addObject (this);
         }
     }
-  };
+};
 
 #endif
-

@@ -44,14 +44,12 @@
 // The game stage is returned.
 int Parse_Client_Data(GLOBALDATA *global, ENVIRONMENT *env, char *buffer);
 
-
 // Draws a background
 void Create_Sky(ENVIRONMENT *env, GLOBALDATA *global);
 
 // Sends fire command to the server
 // Message must be in format "FIRE item angle power"
 int Client_Fire(PLAYER *my_player, int my_socket);
-
 
 int Client_Power(PLAYER *my_player, int up_or_down);
 
@@ -64,4 +62,3 @@ int Client_Cycle_Weapon(PLAYER *my_player, int forward_or_back);
 char *Explain_Error(GLOBALDATA *global, int error_code);
 
 #endif
-

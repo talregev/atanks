@@ -1,7 +1,6 @@
 #ifndef SATELLITE_HEADER_FILE__
 #define SATELLITE_HEADER_FILE__
 
-
 #include "environment.h"
 #include "globaldata.h"
 #include "virtobj.h"
@@ -11,8 +10,8 @@
 
 
 class SATELLITE
-  {
-  public:
+{
+public:
     int x, y;
     int xv, previous_x;
     GLOBALDATA *_global;
@@ -25,7 +24,6 @@ class SATELLITE
     void Draw(BITMAP *dest);
     void Shoot();
 
-  };
+};
 
 #endif
-

@@ -1,5 +1,5 @@
-#ifndef	MENU_HEADER
-#define	MENU_HEADER
+#ifndef MENU_HEADER
+#define MENU_HEADER
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -29,41 +29,41 @@
 #define TEXT_BOX_LENGTH 14
 
 
-enum	menuEntryType
+enum menuEntryType
 {
-  OPTION_MENUTYPE, OPTION_DOUBLETYPE, OPTION_TOGGLETYPE, OPTION_SPECIALTYPE, OPTION_ACTIONTYPE, OPTION_TEXTTYPE, OPTION_COLORTYPE
+    OPTION_MENUTYPE, OPTION_DOUBLETYPE, OPTION_TOGGLETYPE, OPTION_SPECIALTYPE, OPTION_ACTIONTYPE, OPTION_TEXTTYPE, OPTION_COLORTYPE
 };
-typedef struct
-  {
-    const char	*name;
-    int	(*displayFunc) (ENVIRONMENT*, int, int, void*);
-    int	color;
-    double	*value;
-    void	*data;
-    const char	*format;
-    double	min, max;
-    double	increment;
-    double	defaultv;
-    char	**specialOpts;
-    char	type;
-    int	viewonly;
-    int	x;
-    int	y;
-  } MENUENTRY;
 
 typedef struct
-  {
+{
+    const char *name;
+    int (*displayFunc) (ENVIRONMENT*, int, int, void*);
+    int color;
+    double *value;
+    void *data;
+    const char *format;
+    double min, max;
+    double increment;
+    double defaultv;
+    char **specialOpts;
+    char type;
+    int viewonly;
+    int x;
+    int y;
+} MENUENTRY;
+
+typedef struct
+{
     const char *title;
     int numEntries;
     MENUENTRY *entries;
     int quitButton;
     int okayButton;
-  } MENUDESC;
-
+} MENUDESC;
 
 // Set the menus to appear in English or Portugese
 void Select_Menu_Language(GLOBALDATA *global);
 
-int options (GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu);
+int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu);
 
 #endif

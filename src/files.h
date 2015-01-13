@@ -27,17 +27,14 @@ int Copy_Config_File(GLOBALDATA *global);
 // Make sure there is a music folder in .atanks
 int Create_Music_Folder(GLOBALDATA *global);
 
+void renderTextLines(GLOBALDATA *global, ENVIRONMENT *env, TEXTBLOCK *lines, int scrollOffset,
+                     const FONT* fnt, const int spacing );
 
-void renderTextLines (GLOBALDATA *global, ENVIRONMENT *env,
-                      TEXTBLOCK *lines, int scrollOffset,
-                      const FONT* fnt, const int spacing );
+void scrollTextList(GLOBALDATA *global, ENVIRONMENT *env, TEXTBLOCK *lines);
 
-void scrollTextList (GLOBALDATA *global, ENVIRONMENT *env,
-                     TEXTBLOCK *lines);
+int draw_circlesBG(GLOBALDATA *global, BITMAP *dest, int x, int y, int width, int height, bool image);
 
-int draw_circlesBG (GLOBALDATA *global, BITMAP *dest, int x, int y, int width, int height, bool image);
-
-void drawMenuBackground (GLOBALDATA *global, ENVIRONMENT *env, int itemType, int tOffset, int numItems);
+void drawMenuBackground(GLOBALDATA *global, ENVIRONMENT *env, int itemType, int tOffset, int numItems);
 
 void flush_inputs();
 
@@ -53,21 +50,17 @@ int Filter_File( const struct dirent *my_file );
 
 struct dirent ** Find_Saved_Games(GLOBALDATA *global, int *num_files_found);
 
-
-
 char ** Find_Bitmaps(GLOBALDATA *global, int *bitmaps_found);
 
-BITMAP *create_gradient_strip (const gradient *gradient, int length);
+BITMAP *create_gradient_strip(const gradient *gradient, int length);
 
-int gradientColorPoint (const gradient *grad, double length, double line);
+int gradientColorPoint(const gradient *grad, double length, double line);
 
 double colorDistance(int col1, int col2);
-
 
 // This function removes all weapon, natural and item data.
 // Should be called before re-loading weapon file.
 void Clear_Weapons();
-
 
 // Draw a tank bitmap on the screen at the given location'
 int Display_Tank_Bitmap(ENVIRONMENT *env, int xpos, int ypos, void *image_number);
@@ -76,7 +69,7 @@ int Display_Tank_Bitmap(ENVIRONMENT *env, int xpos, int ypos, void *image_number
 void doNaturals(GLOBALDATA *global, ENVIRONMENT *env);
 
 // give people the chance to buy items
-bool buystuff (GLOBALDATA *global, ENVIRONMENT *env);
+bool buystuff(GLOBALDATA *global, ENVIRONMENT *env);
 
 // display the bar at the top of the game screen
 void drawTopBar(GLOBALDATA *global, ENVIRONMENT *env, BITMAP *dest);
@@ -88,6 +81,6 @@ int slideLand(GLOBALDATA *global, ENVIRONMENT *env);
 
 void set_level_settings(GLOBALDATA *global, ENVIRONMENT *env);
 
-void showRoundEndScoresAt (GLOBALDATA *global, ENVIRONMENT *env, BITMAP *bitmap, int x, int y, int winner);
+void showRoundEndScoresAt(GLOBALDATA *global, ENVIRONMENT *env, BITMAP *bitmap, int x, int y, int winner);
 
 #endif

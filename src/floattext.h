@@ -1,5 +1,5 @@
-#ifndef	FLOATTEXT_DEFINE
-#define	FLOATTEXT_DEFINE
+#ifndef FLOATTEXT_DEFINE
+#define FLOATTEXT_DEFINE
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -40,56 +40,56 @@
 #endif
 
 class FLOATTEXT: public VIRTUAL_OBJECT
-  {
-  private:
+{
+private:
     // empty ctor, copy-ctor and assign operator are private, so the compiler won't create implicit ones!
     // inline const FLOATTEXT& operator= (const FLOATTEXT &sourceText) { return(sourceText); }
 
     char *_text;
-    int	_color;
+    int _color;
     int _halfColor; // for shadowd text!
     int original_x;
     int delta_x;
 
-  public:
+public:
     int sway;
 
     /* --- constructor --- */
-    FLOATTEXT (GLOBALDATA *global, ENVIRONMENT *env, char *text, int xpos, int ypos, int color, alignType alignment);
-   
+    FLOATTEXT(GLOBALDATA *global, ENVIRONMENT *env, char *text, int xpos, int ypos, int color, alignType alignment);
+
     /* --- destructor --- */
-    ~FLOATTEXT ();
+    ~FLOATTEXT();
     void setEnvironment(ENVIRONMENT *env);
-   
-    inline virtual void		initialise ()
+
+    inline virtual void initialise()
     {
-      VIRTUAL_OBJECT::initialise ();
+        VIRTUAL_OBJECT::initialise();
     }
 
-    int	applyPhysics ();
-    void draw (BITMAP *dest);
-    int set_text (char * text);
-    void set_pos (int x, int y);
-    void set_color (int color);
+    int applyPhysics();
+    void draw(BITMAP *dest);
+    int set_text(char * text);
+    void set_pos(int x, int y);
+    void set_color(int color);
     void set_speed(double x_speed, double y_speed);
     
 
-    inline virtual int		isSubClass (int classNum)
+    inline virtual int isSubClass(int classNum)
     {
-      if (classNum != FLOATTEXT_CLASS)
-        return (FALSE);
-      //return (VIRTUAL_OBJECT::isSubClass (classNum));
-      else
-        return (TRUE);
+        if (classNum != FLOATTEXT_CLASS)
+            return FALSE;
+        //return (VIRTUAL_OBJECT::isSubClass (classNum));
+        else
+            return TRUE;
     }
 
-    inline virtual int		getClass ()
+    inline virtual int getClass()
     {
-      return (FLOATTEXT_CLASS);
+        return FLOATTEXT_CLASS;
     }
 
     void newRound();
 
-  };
+};
 
 #endif
