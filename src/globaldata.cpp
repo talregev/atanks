@@ -84,15 +84,6 @@ GLOBALDATA::GLOBALDATA() : dataDir(NULL),configDir(NULL),updates(NULL),lastUpdat
     frames_per_second = FRAMES_PER_SECOND;
     numPermanentPlayers = 10;
     violent_death = FALSE;
-    /*
-#ifndef DOS
-    cacheCirclesBG = 1;
-#endif
-
-#ifdef DOS
-    cacheCirclesBG = 0;
-#endif
-*/
     ditherGradients = 1;
     detailedLandscape = 0;
     detailedSky = 0;
@@ -132,13 +123,13 @@ GLOBALDATA::GLOBALDATA() : dataDir(NULL),configDir(NULL),updates(NULL),lastUpdat
     updates = new BOX[MAXUPDATES];
     if (!updates)
     {
-        perror("globaldata.cc: Failed allocating memory for updates in GLOBALDATA::GLOBALDATA");
+        perror("globaldata.cpp: Failed allocating memory for updates in GLOBALDATA::GLOBALDATA");
         // exit (1);
     }
     lastUpdates = new BOX[MAXUPDATES];
     if (!lastUpdates)
     {
-        perror("globaldata.cc: Failed allocating memory for lastUpdates in GLOBALDATA::GLOBALDATA");
+        perror("globaldata.cpp: Failed allocating memory for lastUpdates in GLOBALDATA::GLOBALDATA");
         // exit (1);
     }
     updateCount = 0;
@@ -148,7 +139,7 @@ GLOBALDATA::GLOBALDATA() : dataDir(NULL),configDir(NULL),updates(NULL),lastUpdat
     players = (PLAYER **) calloc(MAXPLAYERS, sizeof(PLAYER *));
     if (!players)
     {
-        perror("globaldata.cc: Failed allocating memory for players in GLOBALDATA::GLOBALDATA");
+        perror("globaldata.cpp: Failed allocating memory for players in GLOBALDATA::GLOBALDATA");
         // exit (1);
     }
     numPlayers = 0;
@@ -557,10 +548,10 @@ int GLOBALDATA::loadFromFile_Text(FILE *file)
         result = fgets(line, MAX_CONFIG_LINE, file);
         if (!result)     // eof
             return FALSE;
-        if (!strncmp(line, (char *)"***", 3))     // end of record
+        if (!strncmp(line, "***", 3))     // end of record
             return FALSE;
     }
-    while (strncmp(line, (char *)"*GLOBAL*", 5));     // read until we hit new record
+    while (strncmp(line, "*GLOBAL*", 5));     // read until we hit new record
 
     while (result && (!done))
     {
@@ -570,7 +561,7 @@ int GLOBALDATA::loadFromFile_Text(FILE *file)
         if (result)
         {
             // if we hit end of the record, stop
-            if (!strncmp(line, (char *)"***", 3))
+            if (!strncmp(line, "***", 3))
                 return TRUE;
             // find equal sign
             line_length = strlen(line);
@@ -749,13 +740,13 @@ PLAYER *GLOBALDATA::createNewPlayer(ENVIRONMENT *env)
         allPlayers = reallocatedPlayers;
     else
     {
-        perror((char *)"atanks.cc: Failed allocating memory for reallocatedPlayers in GLOBALDATA::createNewPlayer");
+        perror("atanks.cpp: Failed allocating memory for reallocatedPlayers in GLOBALDATA::createNewPlayer");
         // exit (1);
     }
     player = new PLAYER (this, env);
     if (!player)
     {
-        perror((char *)"globaldata.cc: Failed allocating memory for player in GLOBALDATA::createNewPlayer");
+        perror("globaldata.cpp: Failed allocating memory for player in GLOBALDATA::createNewPlayer");
         // exit (1);
     }
     allPlayers[numPermanentPlayers] = player;
@@ -790,7 +781,7 @@ char *GLOBALDATA::Get_Config_Path()
     // figure out file name
     homedir = getenv(HOME_DIR);
     if (!homedir)
-        homedir = (char *)".";
+        homedir = ".";
     my_config_dir = (char *) calloc(strlen(homedir) + 24, sizeof(char));
     if (!my_config_dir)
         return NULL;

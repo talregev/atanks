@@ -324,7 +324,7 @@ void colorBar(ENVIRONMENT *env, int left, int top, int width, int height)
 int textEntryBox(GLOBALDATA *global, ENVIRONMENT *env, int modify, int x, int y, char *text, unsigned int textLength)
 {
     int ke = 0;
-    int fontWidth = text_length(font, (char *)"Z");
+    int fontWidth = text_length(font, "Z");
     int fontHeight = text_height(font);
     int leftX = x - (fontWidth * textLength / 2);
     int rightX = x + (fontWidth * textLength / 2);
@@ -344,7 +344,7 @@ int textEntryBox(GLOBALDATA *global, ENVIRONMENT *env, int modify, int x, int y,
     }
 
     if (!text)
-        text = (char *)"";
+        text = "";
     rectfill(env->db, leftX, y - 2, rightX, y + fontHeight + 2, WHITE);
     rect(env->db, leftX, y - 2, rightX, y + fontHeight + 2, BLACK);
     if (!modify)
@@ -395,7 +395,7 @@ int textEntryBox(GLOBALDATA *global, ENVIRONMENT *env, int modify, int x, int y,
             // tempText[strlen (tempText)] = ke & 0xff;
             tempText[strlen(tempText) + 1] = 0;
             tempText[strlen(tempText)] = ke & 0xff;
-            //textprintf (screen, font, x + text_length (font, tempText), y, WHITE, (char *)"%c", ke & 0xff);
+            //textprintf(screen, font, x + text_length (font, tempText), y, WHITE, "%c", ke & 0xff);
         }
         else
             env->do_updates();
@@ -451,7 +451,7 @@ int loadPlayers_Text(GLOBALDATA *global, ENVIRONMENT *env, FILE *file)
     global->allPlayers = (PLAYER **) malloc(sizeof(PLAYER*) * max);
     if (!global->allPlayers)
     {
-        perror("atanks.cc: Failed to allocate memory for allPlayers in loadPlayers_Text");
+        perror("atanks.cpp: Failed to allocate memory for allPlayers in loadPlayers_Text");
         return FALSE;
     }
 
@@ -462,7 +462,7 @@ int loadPlayers_Text(GLOBALDATA *global, ENVIRONMENT *env, FILE *file)
         new_player = new PLAYER(global, env);
         if (!new_player)
         {
-            perror((char *)"atanks.cc: Failed to allocate memory for players in loadPlayers_Text");
+            perror("atanks.cpp: Failed to allocate memory for players in loadPlayers_Text");
             return FALSE;
         }
         status = new_player->loadFromFile_Text(file);
@@ -903,7 +903,7 @@ ENVIRONMENT *init_game_settings(GLOBALDATA *global)
     env = new ENVIRONMENT(global);
     if (!env)
     {
-        perror("atanks.cc: Allocating env in init_game_settings");
+        perror("atanks.cpp: Allocating env in init_game_settings");
         exit(1);
     }
 
@@ -920,7 +920,7 @@ int createNewPlayer(GLOBALDATA *global, ENVIRONMENT *env)
     PLAYER *newPlayer = global->createNewPlayer(env);
     if (!newPlayer)
     {
-        perror("atanks.cc: Failed allocating memory in createNewPlayer");
+        perror("atanks.cpp: Failed allocating memory in createNewPlayer");
         // exit (1);
     }
     options(global, env, (MENUDESC*) newPlayer->menudesc);
@@ -1035,7 +1035,7 @@ int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu)
         but_okay = new BUTTON(global, env, xpos, global->menuBeginY + 360 , "Okay", (BITMAP*)global->misc[7], (BITMAP*)global->misc[7], (BITMAP*)global->misc[8]);
         if (!but_okay)
         {
-            perror("atanks.cc: Failed allocating memory for but_okay in options");
+            perror("atanks.cpp: Failed allocating memory for but_okay in options");
             // exit (1);
         }
     }
@@ -1048,7 +1048,7 @@ int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu)
         // but_quit = new BUTTON(global, env, xpos, global->halfHeight + 160, back_text, (BITMAP*)global->misc[7], (BITMAP*)global->misc[7], (BITMAP*)global->misc[8]);
         if (!but_quit)
         {
-            perror("atanks.cc: Failed allocating memory for but_quit in options");
+            perror("atanks.cpp: Failed allocating memory for but_quit in options");
             // exit (1);
         }
     }
@@ -1489,7 +1489,7 @@ int editPlayers(GLOBALDATA *global, ENVIRONMENT *env)
     playersOpts = (MENUENTRY *) calloc(global->numPermanentPlayers + 1, sizeof(MENUENTRY));
     if (!playersOpts)
     {
-        perror("atanks.cc: Failed allocating memory for playersOpts in editPlayers");
+        perror("atanks.cpp: Failed allocating memory for playersOpts in editPlayers");
         return 0;
         // exit (1);
     }
@@ -1595,7 +1595,7 @@ int selectPlayers(GLOBALDATA *global, ENVIRONMENT *env)
     playersOpts = (MENUENTRY *) calloc(global->numPermanentPlayers + 5, sizeof(MENUENTRY));
     if (!playersOpts)
     {
-        perror("atanks.cc: Failed allocating memory for playersOpts in selectPlayers");
+        perror("atanks.cpp: Failed allocating memory for playersOpts in selectPlayers");
         // exit (1);
     }
 
@@ -1848,9 +1848,9 @@ int menu(GLOBALDATA *global, ENVIRONMENT *env)
         if (fi)
         {
             draw_circlesBG(global, env->db, 0, 0, global->screenWidth, global->screenHeight, true);
-            //textout (env->db, font, (char *)"Rounds: ", global->halfWidth - 45, global->halfHeight + 200, BLACK);
+            //textout(env->db, font, "Rounds: ", global->halfWidth - 45, global->halfHeight + 200, BLACK);
             //draw_sprite_v_flip (env->db, (BITMAP *) global->gfxData.M[6].dat, global->halfWidth - 60, global->halfHeight + 199);
-            //draw_sprite (env->db, (BITMAP *) global->gfxData.M[6].dat, global->halfWidth + 64, global->halfHeight + 199);
+            //draw_sprite(env->db, (BITMAP *) global->gfxData.M[6].dat, global->halfWidth + 64, global->halfHeight + 199);
             for (z = 0; z < MENUBUTTONS; z++)
             {
                 button[z]->draw (env->db);
@@ -1869,11 +1869,11 @@ int menu(GLOBALDATA *global, ENVIRONMENT *env)
         if (ban > -1)
         {
             button[ban]->draw(env->db);
-            //env->make_update (button[ban]->location.x, button[ban]->location.y, button[ban]->location.w, button[ban]->location.h);
+            //env->make_update(button[ban]->location.x, button[ban]->location.y, button[ban]->location.w, button[ban]->location.h);
         }
-        //rectfill (env->db, global->halfWidth + 27, global->halfHeight + 198, global->halfWidth + 59, global->halfHeight + 210, WHITE);
-        //rect (env->db, global->halfWidth + 27, global->halfHeight + 198, global->halfWidth + 59, global->halfHeight + 210, BLACK);
-        //textprintf_centre (env->db, font, global->halfWidth + 43, global->halfHeight + 200, BLACK, (char *)"%d", global->rounds);
+        //rectfill(env->db, global->halfWidth + 27, global->halfHeight + 198, global->halfWidth + 59, global->halfHeight + 210, WHITE);
+        //rect(env->db, global->halfWidth + 27, global->halfHeight + 198, global->halfWidth + 59, global->halfHeight + 210, BLACK);
+        //textprintf_centre(env->db, font, global->halfWidth + 43, global->halfHeight + 200, BLACK, "%d", global->rounds);
         if (!global->os_mouse)
             show_mouse(env->db);
         env->make_update(mouse_x, mouse_y, ((BITMAP *) (global->misc[0]))->w, ((BITMAP *) (global->misc[0]))->h);
@@ -2208,9 +2208,9 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
         {
 #ifdef DEBUG
             if (iJediCount)
-                printf((char *)"The Jedi summed up a pool of %13d bucks!\n", iJediMoney);
+                printf("The Jedi summed up a pool of %13d bucks!\n", iJediMoney);
             if (iSithCount)
-                printf((char *)"The Sith summed up a pool of %13d bucks!\n", iSithMoney);
+                printf("The Sith summed up a pool of %13d bucks!\n", iSithMoney);
 #endif // DEBUG
             if (iJediCount)
                 iJediMoney = (int) (((double) iJediMoney * 0.90) / (double) iJediCount);
@@ -2218,9 +2218,9 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
                 iSithMoney = (int) (((double) iSithMoney * 0.90) / (double) iSithCount);
 #ifdef DEBUG
             if (iJediCount)
-                printf((char *)"Every Jedi will receive %10d credits out of the pool!\n", iJediMoney);
+                printf("Every Jedi will receive %10d credits out of the pool!\n", iJediMoney);
             if (iSithCount)
-                printf((char *)"Every Sith will receive %10d credits out of the pool!\n", iSithMoney);
+                printf("Every Sith will receive %10d credits out of the pool!\n", iSithMoney);
 #endif // DEBUG
             for (z = 0; z < global->numPlayers; z++)
             {
@@ -2784,8 +2784,8 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
         int iInterSum = 0;    // The summed up interest
 #ifdef DEBUG
         cout << endl << "======================================================" << endl;
-        printf((char *)"%2d.: %s enters the bank to get interest:\n", (z+1), global->players[z]->getName());
-        printf((char *)"     Starting Account: %10d\n", global->players[z]->money);
+        printf("%2d.: %s enters the bank to get interest:\n", (z+1), global->players[z]->getName());
+        printf("     Starting Account: %10d\n", global->players[z]->money);
         cout << "------------------------------------------------------" << endl;
 #endif // DEBUG
         while (iMoney && (iLevel < 5))
@@ -2801,24 +2801,24 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
             iInterSum += iInterest;
             iMoney -= (int) ((float) iInterest / fIntPerc);
 #ifdef DEBUG
-            printf((char *)"     Level %1d:  %8d credits are rated,\n", iLevel, (int)(iInterest / fIntPerc));
-            printf((char *)"     Interest: %8d credits. (%5.2f%%)\n", iInterest, (fIntPerc * 100));
+            printf("     Level %1d:  %8d credits are rated,\n", iLevel, (int)(iInterest / fIntPerc));
+            printf("     Interest: %8d credits. (%5.2f%%)\n", iInterest, (fIntPerc * 100));
 #endif // DEBUG
             // To get rid of (possible) rounding errors, add a security check:
             if ((iMoney < (4 * iLevel)) || (iInterest < 1))
                 iMoney = 0;    // With less there won't be any more interest anyway!
 #ifdef DEBUG
-            printf((char *)"     Unrated : %8d credits left.\n", iMoney);
+            printf("     Unrated : %8d credits left.\n", iMoney);
 #endif // DEBUG
         }
         // Now giv'em their money:
 #ifdef DEBUG
-        printf((char *)"     Sum:      %8d credits.\n", iInterSum);
+        printf("     Sum:      %8d credits.\n", iInterSum);
         cout << "------------------------------------------------------" << endl;
 #endif // DEBUG
         global->players[z]->money += iInterSum;
 #ifdef DEBUG
-        printf((char *)"     Final Account   : %10d\n", global->players[z]->money);
+        printf("     Final Account   : %10d\n", global->players[z]->money);
         cout << "======================================================" << endl;
 #endif // DEBUG
     }
@@ -3820,7 +3820,7 @@ void doNaturals(GLOBALDATA *global, ENVIRONMENT *env)
                 env->naturals_since_last_shot++;
             }
             else
-                perror("atanks.cc: Failed allocating memory for newbeam in doNaturals");
+                perror("atanks.cpp: Failed allocating memory for newbeam in doNaturals");
         }
     }      // end of lightning
 
@@ -3846,7 +3846,7 @@ void doNaturals(GLOBALDATA *global, ENVIRONMENT *env)
                 env->naturals_since_last_shot++;
             }
             else
-                perror("atanks.cc: Failed allocating memory for newmis in doNaturals");
+                perror("atanks.cpp: Failed allocating memory for newmis in doNaturals");
         }
     }
 
@@ -3868,7 +3868,7 @@ void doNaturals(GLOBALDATA *global, ENVIRONMENT *env)
                 env->naturals_since_last_shot++;
             }
             else
-                perror("atanks.cc: Failed to allocate memory for falling dirt ball in doNaturals");
+                perror("atanks.cpp: Failed to allocate memory for falling dirt ball in doNaturals");
         }
     }
 }
@@ -4934,7 +4934,7 @@ int Save_Game_Settings_Text(GLOBALDATA *global, ENVIRONMENT *env, char *text_fil
 {
     FILE *my_file;
 
-    my_file = fopen(text_file, (char *) "w");
+    my_file = fopen(text_file, "w");
     if (!my_file)
     {
         perror("Error trying to open text file for writing.\n");

@@ -261,7 +261,7 @@ int Copy_Config_File(GLOBALDATA *global)
     // figure out where home is
     my_home_folder = getenv(HOME_DIR);
     if (!my_home_folder)
-        my_home_folder = (char *)".";
+        my_home_folder = ".";
 
     // check to see if the config file has already been copied
     snprintf(source_path, 1024, "%s/atanks-config.txt", global->configDir);
@@ -289,7 +289,7 @@ int Copy_Config_File(GLOBALDATA *global)
 #endif
     if (status == -1)
     {
-        printf((char *)"Error occured. Unable to create sub directory.\n");
+        printf("Error occured. Unable to create sub directory.\n");
         return FALSE;
     }
 
@@ -304,7 +304,7 @@ int Copy_Config_File(GLOBALDATA *global)
     dest_file = fopen(dest_path, "wb");
     if (!dest_file)
     {
-        printf((char *)"Unable to create destination file.\n");
+        printf("Unable to create destination file.\n");
         fclose(source_file);
         return FALSE;
     }
@@ -715,7 +715,7 @@ struct dirent ** Find_Saved_Games(GLOBALDATA *global, int *num_files_found)
     status = scandir(global->configDir, &my_list, Filter_File, alphasort);
     if (status < 0)
     {
-        printf((char *)"Error trying to find saved games.\n");
+        printf("Error trying to find saved games.\n");
         return NULL;
     }
 

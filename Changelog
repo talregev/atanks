@@ -2,12 +2,16 @@ NOTE: From now on, new changes appear at the top of this file.
 
 	- Large code clean-up by Bruno Victal
 	- More style/code clean-up by Bruno Victal
-          * Indentation
-          * Removing unnecessary braces
-          * Removing unnecessary parentheses
-          * Removing unnecessary spaces
-          * Removing many blank lines (line wasting)
-          * Expanding some ifs and switch cases
+            Indentation
+            Removing unnecessary braces
+            Removing unnecessary parentheses
+            Removing unnecessary spaces
+            Removing many blank lines (line wasting)
+            Expanding some ifs and switch cases
+        - Bruno Victal provided further code clean-up
+            Renamed old referenced files in the perror calls (from .cc to .cpp)
+            Removed some useless casts in printf calls [ printf((char *)"String here"); ]
+            Deleted the macros about DOS support (they were already commented out)
 
 =========== Atanks-6.1 released ==============
 	All of this releases patches were provided by Bill Buerger.

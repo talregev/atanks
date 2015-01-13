@@ -290,7 +290,7 @@ int MISSILE::triggerTest ()
                         newmis->setUpdateArea((int) newmis->x - 20, (int) newmis->y - 20, 40, 40);
                     }
                     else
-                        perror("missile.cc: Failed allocating memory for newmis in MISSILE::triggerTest (CLUSTER)");
+                        perror("missile.cpp: Failed allocating memory for newmis in MISSILE::triggerTest (CLUSTER)");
                 }
             }
             destroy = TRUE;
@@ -394,7 +394,7 @@ int MISSILE::applyPhysics()
             decor = new DECOR(_global, _env, x, y, xv, yv, expSize / 20, DECOR_SMOKE);
             if (!decor)
             {
-                perror("missile.cc: Failed allocating memory for decor in MISSILE::applyPhysics (METEOR)");
+                perror("missile.cpp: Failed allocating memory for decor in MISSILE::applyPhysics (METEOR)");
                 // exit (1);
             }
         }
@@ -572,7 +572,7 @@ void MISSILE::trigger()
 
     if (!explosion)
     {
-        perror("missile.cc: Failed allocating memory for explosion in MISSILE::trigger");
+        perror("missile.cpp: Failed allocating memory for explosion in MISSILE::trigger");
         // exit (1);
     }
     else
@@ -589,7 +589,7 @@ void MISSILE::trigger()
                 cSecondExplo = new EXPLOSION (_global, _env, _global->screenWidth + x, y, type);
             if (!cSecondExplo)
             {
-                perror("missile.cc: Failed allocating memory for cSecondExplo in MISSILE::trigger");
+                perror("missile.cpp: Failed allocating memory for cSecondExplo in MISSILE::trigger");
                 // exit (1);
             }
         }
@@ -601,7 +601,7 @@ void MISSILE::trigger()
                 cSecondExplo = new EXPLOSION (_global, _env, x - _global->screenWidth, y, type);
             if (!cSecondExplo)
             {
-                perror("missile.cc: Failed allocating memory for cSecondExplo in MISSILE::trigger");
+                perror("missile.cpp: Failed allocating memory for cSecondExplo in MISSILE::trigger");
                 // exit (1);
             }
         }

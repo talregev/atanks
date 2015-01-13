@@ -164,14 +164,14 @@ TANK::TANK(GLOBALDATA *global, ENVIRONMENT *env) : PHYSICAL_OBJECT(),_target(NUL
     healthText = new FLOATTEXT(global, env, NULL, 0, 0, WHITE, CENTRE);
     if (!healthText)
     {
-        perror("tank.cc: Failed allocating memory for healthText in TANK::TANK");
+        perror("tank.cpp: Failed allocating memory for healthText in TANK::TANK");
         // exit (1);
     }
 
     shieldText = new FLOATTEXT(global, env, NULL, 0, 0, makecol (200, 200, 255), CENTRE);
     if (!shieldText)
     {
-        perror("tank.cc: Failed allocating memory for shieldText in TANK::TANK");
+        perror("tank.cpp: Failed allocating memory for shieldText in TANK::TANK");
         // exit (1);
     }
 
@@ -180,7 +180,7 @@ TANK::TANK(GLOBALDATA *global, ENVIRONMENT *env) : PHYSICAL_OBJECT(),_target(NUL
         nameText = new FLOATTEXT(global, env, NULL, 0, 0, WHITE, CENTRE);
         if (!nameText)
         {
-            perror("tank.cc: Failed allocating memory for nameText in TANK::TANK");
+            perror("tank.cpp: Failed allocating memory for nameText in TANK::TANK");
             // exit(1);
         }
     }
@@ -417,7 +417,7 @@ void TANK::applyDamage()
                         gloatText->maxAge = 300;
                     }
                     else
-                        perror("tank.cc: Failed allocating memory for gloatText in applyDamage.");
+                        perror("tank.cpp: Failed allocating memory for gloatText in applyDamage.");
                     creditTo->gloating = true;
                 }
             }
@@ -444,7 +444,7 @@ void TANK::applyDamage()
                         revengeText->maxAge = 300;
                     }
                     else
-                        perror("tank.cc: Failed allocating memory for revengeText in applyDamage");
+                        perror("tank.cpp: Failed allocating memory for revengeText in applyDamage");
                 }
             }
         }
@@ -468,7 +468,7 @@ void TANK::applyDamage()
                     suicideText->maxAge = 300;
                 }
                 else
-                    perror("tank.cc: Failed allocating memory for suicideText in applyDamage.");
+                    perror("tank.cpp: Failed allocating memory for suicideText in applyDamage.");
             }
         }
     }
@@ -500,7 +500,7 @@ void TANK::applyDamage()
             // damageText->sway = NORMAL_SWAY;
         }
         else
-            perror("tank.cc: Failed allocating memory for damageText in TANK::TANK");
+            perror("tank.cpp: Failed allocating memory for damageText in TANK::TANK");
     }
     if (sh > 0)
     {
@@ -658,7 +658,7 @@ void TANK::explode()
             revengeText->maxAge = 300;
         }
         else
-            perror("tank.cc: Failed allocating memory for revengeText in TANK::explode");
+            perror("tank.cpp: Failed allocating memory for revengeText in TANK::explode");
     }
     explosion = new EXPLOSION(_global, _env, x, y, 1);
     if (explosion)
@@ -667,7 +667,7 @@ void TANK::explode()
         explosion->bIsWeaponExplosion = false;
     }
     else
-        perror("tank.cc: Failed allocating memory for explosion in TANK::explode");
+        perror("tank.cpp: Failed allocating memory for explosion in TANK::explode");
 
 
     destroy = TRUE;
@@ -979,7 +979,7 @@ void TANK::activateCurrentSelection()
                     newmis->player = player;
                 }
                 else
-                    perror("tank.cc: Failed allocating memory for newmis in TANK::activateCurrentSelection");
+                    perror("tank.cpp: Failed allocating memory for newmis in TANK::activateCurrentSelection");
                 // set up volley
                 if (!fire_another_shot)
                 {
@@ -1019,7 +1019,7 @@ void TANK::activateCurrentSelection()
                     newbeam->player = player;
                 }
                 else
-                    perror("tank.cc: Failed allocating memory for newbeam in TANK::activateCurrentSelection");
+                    perror("tank.cpp: Failed allocating memory for newbeam in TANK::activateCurrentSelection");
             }
 
         }
@@ -1039,7 +1039,7 @@ void TANK::activateCurrentSelection()
             teleport = new TELEPORT(_global, _env, this, teleXDest, teleYDest, TANKHEIGHT * 4 + GUNLENGTH, 120);
             if (!teleport)
             {
-                perror("tank.cc: Failed allocating memory for teleport in TANK::activateCurrentSelection");
+                perror("tank.cpp: Failed allocating memory for teleport in TANK::activateCurrentSelection");
                 // exit (1);
             }
         }

@@ -47,7 +47,7 @@ TELEPORT::TELEPORT(GLOBALDATA *global, ENVIRONMENT *env, VIRTUAL_OBJECT *targetO
     radius = objRadius;
     remote = new TELEPORT(global, env, this, destinationX, destinationY);
     if (!remote)
-        perror("teleport.cc: Failed allocating memory for remote in TELEPORT::TELEPORT");
+        perror("teleport.cpp: Failed allocating memory for remote in TELEPORT::TELEPORT");
 
     play_sample((SAMPLE *) _global->sounds[item[ITEM_TELEPORT].sound], _env->scaleVolume(255), 128, 1000, 0);
 

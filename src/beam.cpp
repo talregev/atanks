@@ -119,7 +119,7 @@ BEAM::BEAM(GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos,
     points = new int[numPoints * 2];
     if (!points)
     {
-        perror ( "beam.cc: Failed allocating memory for points in BEAM::BEAM");
+        perror("beam.cpp: Failed allocating memory for points in BEAM::BEAM");
         // exit (1);
     }
     setLightningPath();
@@ -196,7 +196,7 @@ int BEAM::applyPhysics()
     decor = new DECOR(_global, _env, targetX, targetY, rand() % 6 - 3, rand() % 6 - 3, radius, DECOR_SMOKE);
     if (!decor)
     {
-        perror ( "beam.cc: Failed allocating memory for decor in applyPhysics");
+        perror("beam.cpp: Failed allocating memory for decor in applyPhysics");
         // exit (1);
     }
     tracePath(&targetX, &targetY, _global, _env, radius + 2, x, y, angle);

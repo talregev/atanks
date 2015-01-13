@@ -211,7 +211,7 @@ void PLAYER::initMenuDesc()
     menudesc = (MENUDESC *) calloc(1, sizeof(MENUDESC));
     if (!menudesc)
     {
-        perror("player.cc: Failed allocating memory for menudesc in PLAYER::initMenuDesc");
+        perror("player.cpp: Failed allocating memory for menudesc in PLAYER::initMenuDesc");
         return;
         // exit (1);
     }
@@ -226,7 +226,7 @@ void PLAYER::initMenuDesc()
     menuopts = (MENUENTRY *) calloc(menudesc->numEntries, sizeof(MENUENTRY));
     if (!menuopts)
     {
-        perror("player.cc: Failed allocating memory for menuopts in PLAYER::initMenuDesc");
+        perror("player.cpp: Failed allocating memory for menuopts in PLAYER::initMenuDesc");
         return;
         // exit (1);
     }
@@ -571,7 +571,7 @@ void PLAYER::newRound()
             tank->initialise();
         }
         else
-            perror("player.cc: Failed allocating memory for tank in PLAYER::newRound");
+            perror("player.cpp: Failed allocating memory for tank in PLAYER::newRound");
     }
     // newRound() doesn't need to be called, because ENVIRONMENT::newRound() has already done that!
 
@@ -1990,7 +1990,7 @@ int PLAYER::rangeFind(int &aAngle, int &aPower)
 
 #ifdef DEBUG_AIM
         printf("--> %d. rangeFind:\n", iAttempts);
-        printf((char *)" Angle: %3d Power: %4d\n", (iAngle - 90), iPower);
+        printf(" Angle: %3d Power: %4d\n", (iAngle - 90), iPower);
 #endif // DEBUG_AIM
 
         /* --- Step 1: Calculate angle for spreads: --- */
@@ -2055,11 +2055,11 @@ int PLAYER::rangeFind(int &aAngle, int &aPower)
             if (iSpreadCount > 1)
             {
                 if (iSpreadCount == 2)
-                    printf( (char *)" (%3d ", iCalcAngle - 90);
+                    printf(" (%3d ", iCalcAngle - 90);
                 else
-                    printf( (char *)",%3d ", iCalcAngle - 90);
+                    printf(",%3d ", iCalcAngle - 90);
                 if (iSpread == iSpreadCount)
-                    printf( (char *)"\b)");
+                    printf("\b)");
             }
 #endif // DEBUG_AIM
         }
@@ -2099,7 +2099,7 @@ int PLAYER::rangeFind(int &aAngle, int &aPower)
         }
 
 #ifdef DEBUG_AIM
-        printf((char *)" Overshoot: %6d (%4d x %4d) SH: %1d\n", iOvershoot, (int)dHitX, (int)dHitY, iSelfHitMult);
+        printf(" Overshoot: %6d (%4d x %4d) SH: %1d\n", iOvershoot, (int)dHitX, (int)dHitY, iSelfHitMult);
 #endif // DEBUG_AIM
 
         /* --- Step 4.: Alter angle, or power if the angle can't be manipulated anymore, and start over: --- */
@@ -2232,7 +2232,7 @@ int PLAYER::rangeFind(int &aAngle, int &aPower)
                 iAngle = 180 + (180 - iAngle); // flip back!
 
 #ifdef DEBUG_AIM
-            printf((char *)" --> AngleMod: %3d PowerMod: %4d\n", (iAngle - iLastAngle), (iPower - iLastPower));
+            printf(" --> AngleMod: %3d PowerMod: %4d\n", (iAngle - iLastAngle), (iPower - iLastPower));
 #endif // DEBUG_AIM
         } // end of if(iOvershoot)
     }
@@ -2244,7 +2244,7 @@ int PLAYER::rangeFind(int &aAngle, int &aPower)
     if (abs(iBestOvershoot) < tank->smallestOvershoot)
     {
 #ifdef DEBUG_AIM
-        printf((char *)" New best Overshoot: %5d\n", iBestOvershoot);
+        printf(" New best Overshoot: %5d\n", iBestOvershoot);
 #endif // DEBUG_AIM
         tank->smallestOvershoot = abs(iBestOvershoot);
         tank->bestAngle = iBestAngle;
@@ -2929,7 +2929,7 @@ int PLAYER::calculateAttack(TANK *aTarget)
                 DIEText->maxAge = 150;
             }
             else
-                perror("player.cc: Failed allocating memory for DieText in calculateAttack().");
+                perror("player.cpp: Failed allocating memory for DieText in calculateAttack().");
         }
         // As we might finish here because of a good overshoot, iTargettingRounds need to be maxed!
         iTargettingRound = retargetAttempts;
@@ -3804,7 +3804,7 @@ int PLAYER::computerSelectItem()
                     kamikazeText->maxAge = 300;
                 }
                 else
-                    perror("player.cc: Failed allocating memory for kamikazeText in computerSelectItem.");
+                    perror("player.cpp: Failed allocating memory for kamikazeText in computerSelectItem.");
             }
         }
     }
@@ -4425,10 +4425,10 @@ int PLAYER::getMoneyToSave()
 
     dMoneyToSave = (double) iMaxCost * 0.25;
 #ifdef DEBUG
-    printf((char *)"% 4d Prefs, worth % 6d\n", iPrefCount, iAvgPref);
-    printf((char *)"% 4d Items, worth % 6d\n", iInvCount, iInvMoney);
-    printf((char *)"MoneyToSave:      % 6d\n", (int)dMoneyToSave);
-    printf((char *)"Money: % 6d -> MaxCost: %6d\n", (int)money, iMaxCost);
+    printf("% 4d Prefs, worth % 6d\n", iPrefCount, iAvgPref);
+    printf("% 4d Items, worth % 6d\n", iInvCount, iInvMoney);
+    printf("MoneyToSave:      % 6d\n", (int)dMoneyToSave);
+    printf("Money: % 6d -> MaxCost: %6d\n", (int)money, iMaxCost);
 #endif // DEBUG
     // Whenever dMoneyToSave is less than the money owned, iBoostItemsBought is resetted
     if (money > (int) dMoneyToSave)

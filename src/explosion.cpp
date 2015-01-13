@@ -131,7 +131,7 @@ int EXPLOSION::applyPhysics()
             decor = new DECOR (_global, _env, x, y, xv, yv, radius / 2, DECOR_SMOKE);
             if (!decor)
             {
-                perror("explosion.cc: Failed allocating memory for decor in applyPhysics");
+                perror("explosion.cpp: Failed allocating memory for decor in applyPhysics");
                 // exit (1);
             }
             // If the dirt below is falling away, napalm can fall, too:
