@@ -12,6 +12,9 @@ NOTE: From now on, new changes appear at the top of this file.
             Renamed old referenced files in the perror calls (from .cc to .cpp)
             Removed some useless casts in printf calls [ printf((char *)"String here"); ]
             Deleted the macros about DOS support (they were already commented out)
+     	    Fixed abs() related math functions so they do not throw compiler warnings.
+
+	- Removed extra call to Get_Team_Name() that was not required.
 
 =========== Atanks-6.1 released ==============
 	All of this releases patches were provided by Bill Buerger.

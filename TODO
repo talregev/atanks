@@ -15,6 +15,12 @@ lower priority at the bottom. It is currently only vaguely correct.
 	- AI controlled tanks buy a limited number of defensive
           upgrades during very long games. Plating, for example.
 
+In player.cpp the PLAYER::computerSelectItem selects a weapon or item for the bot to use.
+Values less than WEAPONS are weapons and values from WEAPONS to THINGS are items.
+After lots of black magic to select a weapon or item, finally in line 3567 the current_weapon containing a value from 0 to THINGS is passed to PLAYER::computerSelectTarget, which in line 3189 uses it as index into the array weapon which only has size WEAPONS, resulting in a segfault.
+Line 3561 also calls PLAYER::computerSelectTarget with a value from 0 to THINGS, so probably the same can happen there.
+I don't know how to fix this, since I don't know how PLAYER::computerSelectTarget should behave when an item is passed instead of a weapon, but probaly some of you know this and can fix.
+
 
 	Features:
 	- Add scroll bar to buying screen.

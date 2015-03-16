@@ -252,7 +252,7 @@ void TANK::newRound()
     sprintf(buf, "%d", l);
     healthText->set_text(buf);
     // delay_fall = GRAVITY_DELAY;
-    delay_fall = (int) labs(_env->landSlideDelay * 100);
+    delay_fall = static_cast<int>(std::abs(_env->landSlideDelay * 100));
     fire_another_shot = 0;
     shots_fired = 0;
 

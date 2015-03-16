@@ -345,6 +345,8 @@ int textEntryBox(GLOBALDATA *global, ENVIRONMENT *env, int modify, int x, int y,
 
     if (!text)
         text = "";
+    else if ( (text == (void*)0xb) || (text == (void*)0xc) )
+        text = "";
     rectfill(env->db, leftX, y - 2, rightX, y + fontHeight + 2, WHITE);
     rect(env->db, leftX, y - 2, rightX, y + fontHeight + 2, BLACK);
     if (!modify)
@@ -3721,7 +3723,7 @@ void drawScoreboard(GLOBALDATA *global, ENVIRONMENT *env, BITMAP *dest, TANK *cu
             // Draw the tank score
             char *name = player->getName();
             int color = player->color;
-            char *team_name = player->Get_Team_Name();
+            // char *team_name = player->Get_Team_Name();
             char *money = Add_Comma(player->money);
             
             // TODO: if team_name != "", add (team name) after player name

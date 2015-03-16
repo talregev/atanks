@@ -591,7 +591,7 @@ void PLAYER::newRound()
         else if ( (team == TEAM_NEUTRAL) || ((team != TEAM_NEUTRAL) && (revenge->team == TEAM_NEUTRAL)) )
         {
             // neutral to !neutral and vice versa might forget...
-            if ((!(rand() % (int)labs((type + 3) / 2))) || ((rand() % 100) > vengeful))
+            if ((!(rand() % static_cast<int>(std::abs((type + 3) / 2)))) || ((rand() % 100) > vengeful))
                 revenge = NULL;
             /* This gives:
            * USELESS: (1 + 3) / 2) = 2 => 50%

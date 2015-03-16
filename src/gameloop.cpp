@@ -202,7 +202,7 @@ int game(GLOBALDATA *global, ENVIRONMENT *env)
                     if (shooting_tank)
                     {
                         // (shooting_tank->x < missile->x) ? angle_to_fire = 135 : angle_to_fire = 225;
-                        int angle_to_fire = atan2(labs(shooting_tank->y - 10 - missile->y), (missile->x - shooting_tank->x)) * 180 / 3.14159265 + 90;
+                        int angle_to_fire = atan2(std::abs(shooting_tank->y - 10 - missile->y), (missile->x - shooting_tank->x)) * 180 / 3.14159265 + 90;
                         new BEAM(global, env, shooting_tank->x, shooting_tank->y - 10, angle_to_fire, SML_LAZER);
                         missile->trigger();
                     }
