@@ -17,8 +17,6 @@
 
 #include "gameloop.h"
 
-#ifdef NEW_GAMELOOP
-
 int game(GLOBALDATA *global, ENVIRONMENT *env)
 {
     int humanPlayers = 0;
@@ -598,5 +596,3 @@ int game(GLOBALDATA *global, ENVIRONMENT *env)
 
     return done;
 }
-
-#endif

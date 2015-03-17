@@ -673,7 +673,7 @@ void ENVIRONMENT::replaceCanvas()
             blit(sky, db, _global->lastUpdates[count].x, _global->lastUpdates[count].y - MENUHEIGHT, _global->lastUpdates[count].x, _global->lastUpdates[count].y, _global->lastUpdates[count].w, _global->lastUpdates[count].h);
             masked_blit(terrain, db, _global->lastUpdates[count].x, _global->lastUpdates[count].y, _global->lastUpdates[count].x, _global->lastUpdates[count].y, _global->lastUpdates[count].w, _global->lastUpdates[count].h);
         }
-#ifdef NEW_GAMELOOP
+
         int iLeft = 0;
         int iRight = _global->screenWidth - 1;
         int iTop = MENUHEIGHT;
@@ -686,7 +686,7 @@ void ENVIRONMENT::replaceCanvas()
         hline(db, iLeft, iBottom, iRight, wallColour);// bottom edge
         if (_global->bIsBoxed)
             hline(db, iLeft, iTop, iRight, wallColour);// top edge
-#endif
+
         _global->lastUpdatesCount = 0;
         // The menu needs to be redrawn:
         make_update(0, 0, _global->screenWidth - 1, MENUHEIGHT);

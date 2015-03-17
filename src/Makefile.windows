@@ -11,7 +11,7 @@ CC=gcc
 LD=g++
 LIB=ar
 WINDRES=windres.exe
-FLAGS += -DNEW_GAMELOOP -DDATA_DIR=\".\" -Wno-write-strings
+FLAGS += -DDATA_DIR=\".\" -Wno-write-strings
 #FLAGS += -DDATA_DIR=\"${INSTALLDIR}\"  -Wno-write-strings -DTHREADS
 OUTPUT = ../atanks.exe
 WFLAGS = 

@@ -951,11 +951,8 @@ int PLAYER::controlTank()
     }
 
     k = 0;
-#ifdef NEW_GAMELOOP
+
     if (keypressed())
-#else
-    if (keypressed() && !fi)
-#endif
     {
         k = readkey();
 
@@ -3547,10 +3544,7 @@ int PLAYER::computerSelectItem()
         }
         if (!_target)
             _target = computerSelectTarget(current_weapon);
-#ifdef OLD_GAMELOOP
-        if (!_target && _oldTarget)
-            _target = _oldTarget;
-#endif
+
         if (!_target)
             return 0;    // If there is no target available, we have nothing more to do.
         _targetX = _target->x;
@@ -3905,12 +3899,6 @@ int PLAYER::computerControls()
                 _turnStage = CALCULATE_ATTACK; // Not finished, do some more aiming
         }
     }
-#ifdef OLD_GAMELOOP
-    else if (fi)
-    {
-        // if (fi) don't do any of the following
-    }
-#endif
     else if (_turnStage == FIRE_WEAPON)
     {
         // tank->activateCurrentSelection();
@@ -4012,10 +4000,6 @@ int PLAYER::humanControls()
         }
     }
 
-#ifdef OLD_GAMELOOP
-    if (k && !fi)
-#endif
-#ifdef NEW_GAMELOOP
         // if (keypressed())
         //    k = readkey();
         // else
@@ -4026,7 +4010,6 @@ int PLAYER::humanControls()
                 k = readkey();
         }
     if (k)
-#endif
     {
         status = CONTROL_PRESSED;
         if (_env->stage == STAGE_AIM)

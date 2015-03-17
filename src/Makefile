@@ -8,7 +8,7 @@ CXX?=clang++
 LIB=ar
 WINDRES=
 # FLAGS += -DDATA_DIR=\".\" -Wno-write-strings -DNETWORK -DTHREADS
-FLAGS += -DDATA_DIR=\"${INSTALLDIR}\" -DNEW_GAMELOOP -Wno-write-strings -DNETWORK -DTHREADS -pthread -Wextra -pedantic -ggdb3
+FLAGS += -DDATA_DIR=\"${INSTALLDIR}\" -Wno-write-strings -DNETWORK -DTHREADS -pthread -Wextra -pedantic -ggdb3
 OUTPUT = ../atanks
 WFLAGS = 
 OFLAGS = 

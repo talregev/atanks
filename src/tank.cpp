@@ -587,13 +587,9 @@ int TANK::applyPhysics()
             if ((delay_fall > 0) && (_env->landSlideType == LANDSLIDE_CARTOON))
                 return stable;
 
-#ifdef OLD_GAMELOOP
-            if (para && para < 3 && !_env->pclock)
-                para++;
-#else
             if (para && (para < 3))
                 para++;
-#endif
+
             if (!para)
             {
                 yv += _env->gravity * (100.0 / _global->frames_per_second);

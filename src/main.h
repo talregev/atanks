@@ -181,11 +181,7 @@ using namespace std;
 #define BACKGROUND_LINE 1
 #define BACKGROUND_BLANK 2
 
-#ifdef NEW_GAMELOOP
 #define WAIT_AT_END_OF_ROUND 300
-#else
-#define WAIT_AT_END_OF_ROUND 100
-#endif
 
 // time between volly shots
 #define VOLLY_DELAY 50

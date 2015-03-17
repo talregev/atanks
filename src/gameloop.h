@@ -8,8 +8,7 @@
 
 // The massive game loop, re-write here for
 // all sorts of reasons.
-#ifdef NEW_GAMELOOP
-int game(GLOBALDATA *global, ENVIRONMENT *env);
-#endif
 
-#endif
+int game(GLOBALDATA *global, ENVIRONMENT *env);
+
+#endif /* GAMELOOP_HEADER_FILE__ */
