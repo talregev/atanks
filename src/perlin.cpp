@@ -72,9 +72,9 @@ double interpolate(double x1, double x2, double i)
     double f = (1 - cos(ft)) * 0.5;
     double result = (x1 * (1 - f) + (x2 * f));
 
-    if ( (isnan(x1)) || (isnan(x2)) )
+    if (std::isnan(x1) || std::isnan(x2))
         return 0.0;
-    if (isnan(result))
+    if (std::isnan(result))
         return (x1+x2)/2.0; /* fall back to linear interpolation */
     return result;
 }
