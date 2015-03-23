@@ -15,9 +15,9 @@ OUTPUT = ../atanks
 WFLAGS = 
 OFLAGS = 
 LFLAGS +=
-LDFLAGS =  `allegro-config --libs`
+LDFLAGS =  `allegro-config --libs` -L/usr/local/lib -lboost_program_options
 
-CFLAGS += -g -Wall -Iinclude -I/usr/local/include 
+CFLAGS += -g -Wall -Iinclude -I/usr/local/include
 
 SRCS  = $(MODULES:.o=.cpp)
 GLOBALS	= main.h imagedefs.h externs.h
