@@ -13,7 +13,7 @@ OUTPUT = ../atanks
 WFLAGS = 
 OFLAGS = 
 LFLAGS +=
-LDFLAGS +=  `allegro-config --libs` -lm -lpthread
+LDFLAGS +=  `allegro-config --libs` -lm -lpthread -lboost_program_options
 
 CXXFLAGS += -Wall -Iinclude # -fprofile-arcs -ftest-coverage 
 

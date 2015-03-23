@@ -47,24 +47,10 @@
 #include "client.h"
 #endif
 
-
-enum cmdTokens
-{
-    ARGV_NOTHING_EXPECTED,
-    ARGV_GFX_DEPTH,
-    ARGV_SCREEN_WIDTH,
-    ARGV_SCREEN_HEIGHT,
-    ARGV_DATA_DIR,
-    ARGV_CONFIG_DIR
-};
-#define SWITCH_HELP "-h"
-#define SWITCH_FULL_SCREEN "-fs"
-#define SWITCH_WINDOWED "--windowed"
-#define SWITCH_NOSOUND "--nosound"
-#define SWITCH_DATADIR "--datadir"
-#define SWITCH_CONFIGDIR "-c"
-#define SWITCH_NO_CONFIG "--noconfig"
-
+#ifndef _WIN32
+#include <boost/program_options.hpp>
+namespace parse_arg = boost::program_options;
+#endif
 
 int screen_mode = GFX_AUTODETECT_WINDOWED;
 
@@ -3875,26 +3861,6 @@ void doNaturals(GLOBALDATA *global, ENVIRONMENT *env)
     }
 }
 
-void print_text_help()
-{
-    cout << "-h\tThis screen\n"
-         << "-fs\tFull screen\n"
-         << "--windowed\tRun in a window\n"
-         << "-w <width> or --width <width>\tSpecify the screen width in pixels\n"
-         << "-t <height> --tall <height>\tSpecify the screen height in pixels\n"
-         << "\tAdjust the screen size at your own risk (default is 800x600)\n"
-         << "-d <depth> or --depth <depth>\tCurrently either 16 or 32\n"
-         << "--datadir <data directory>\t Path to the data directory\n"
-         << "-c <config directory>\t Path to config and saved game directory\n"
-         << "--noconfig\t Do not load game settings from the config file.\n"
-         << "--nosound\t Disable sound\n"
-         << "--noname\t Do not show player name above tank\n"
-         << "--nonetwork\t Do not allow the game to accept network connection.\n"
-         << "--nobackground\t Do not display the green menu background.\n"
-         << "--nothread\t Do not use threads to perform background tasks.\n"
-         << "--thread\t Do use threads to perform background tasks.\n";
-}
-
 void print_text_initmsg()
 {
     printf("Atomic Tanks Version %s (-h for help)\n", VERSION);
@@ -4024,7 +3990,6 @@ void close_button_handler(void)
 int main(int argc, char **argv)
 {
     int status;
-    string tmp;
     ENVIRONMENT *env = NULL;
     GLOBALDATA *global = NULL;
     // ifstream configFile;
@@ -4059,145 +4024,116 @@ int main(int argc, char **argv)
     if (!global->Find_Data_Dir())
         printf("Could not find data dir.\n");
 
-    if (argc >= 2)    /* Parse command-line switches */
+#ifndef _WIN32
+    parse_arg::options_description desc("Allowed options");
+    desc.add_options()
+        ("help,h", "This screen")
+        ("fullscreen,fs", "Full screen")
+        ("windowed", "Run in a window")
+        ("thread", "Use threads to perform background tasks")
+        ("width,w", parse_arg::value<int>(&(global->screenWidth))->value_name("<width>")->default_value(800), "Specify the screen width in pixels. Default is 800, adjust at your own risk.")
+        ("height,t", parse_arg::value<int>(&(global->screenHeight))->value_name("<height>")->default_value(600), "Specify the screen height in pixels. Default is 600, adjust at your own risk.")
+        ("depth,d", parse_arg::value<int>(&(global->colourDepth))->value_name("<depth>"), "Currently either 16 or 32.")
+        ("datadir", parse_arg::value<std::string>()->value_name("<data-directory>"), "Path to the data directory.")
+        ("config,c", parse_arg::value<std::string>()->value_name("<config-directory>"), "Path to config and saved game directory.")
+        ("noconfig", "Do not load game settins from the config file.")
+        ("nosound", "Disable sound.")
+        ("noname", "Do not show player name above tank.")
+        ("nonetwork", "Do not allow the game to accept network connections.")
+        ("nobackground", "Do not display the green menu background.")
+        ("nothread", "Do not use threads to perform background tasks.");
+
+    parse_arg::variables_map varmap;
+    try
     {
-        cmdTokens nextToken = ARGV_NOTHING_EXPECTED;
+        parse_arg::store(parse_arg::parse_command_line(argc, argv, desc), varmap);
+        parse_arg::notify(varmap);
 
-        for (int argument = 1; argument < argc; argument++)
+        if (varmap.count("help"))
         {
-            tmp = argv[argument];
-
-            if (nextToken == ARGV_GFX_DEPTH)
-            {
-                global->colourDepth = strtol(tmp.c_str(), NULL, 10);
-                if (global->colourDepth != 16 && global->colourDepth != 32)
-                {
-                    cout << "Invalid graphics depth, only 16 or 32 are valid\n";
-                    print_text_help();
-                    return 0;
-                }
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-            else if (nextToken == ARGV_SCREEN_WIDTH)
-            {
-                global->screenWidth = strtol(tmp.c_str(), NULL, 10);
-                if (global->screenWidth < 512)
-                {
-                    cout << "Width too small (minimum 512)\n";
-                    return 0;
-                }
-                global->width_override = global->screenWidth;
-                global->halfWidth = global->screenWidth / 2;
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-            else if (nextToken == ARGV_SCREEN_HEIGHT)
-            {
-                global->screenHeight = strtol(tmp.c_str(), NULL, 10);
-                if (global->screenHeight < 320)
-                {
-                    cout << "Height too small (minimum 320)\n";
-                    return 0;
-                }
-                global->height_override = global->screenHeight;
-                global->halfHeight = global->screenHeight / 2;
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-            else if (nextToken == ARGV_DATA_DIR)
-            {
-                // Would use strndup, but the win compiler
-                //   doesn't know of it.
-                if (strlen(tmp.c_str()) > 2048)
-                {
-                    cout << "Datadir path too long:\n"
-                         << "\"" << tmp
-                         << "\"\n\n"
-                         << "Maximum length 2048 characters\n";
-                    return 0;
-                }
-                global->dataDir = strdup(tmp.c_str());
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-            else if (nextToken == ARGV_CONFIG_DIR)
-            {
-                if (strlen (tmp.c_str()) > 2048)
-                {
-                    cout << "Configdir path too long:\n"
-                         << "\"" << tmp
-                         << "\"\n\n"
-                         << "Maximum length 2048 characters\n";
-                    return 0;
-                }
-                global->configDir = strdup(tmp.c_str());
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-            if ((tmp == SWITCH_HELP) || (tmp == "--help"))
-            {
-                print_text_help();
-                return 0;
-            }
-            else if (tmp == SWITCH_FULL_SCREEN)
-            {
-                screen_mode = GFX_AUTODETECT_FULLSCREEN;
-                full_screen = FULL_SCREEN_TRUE;
-            }
-            else if (tmp == SWITCH_WINDOWED)
-            {
-                screen_mode = GFX_AUTODETECT_WINDOWED;
-                full_screen = FULL_SCREEN_FALSE;
-            }
-            else if (tmp == "-d" || tmp == "--depth")
-                nextToken = ARGV_GFX_DEPTH;
-            else if (tmp == "-w" || tmp == "--width")
-                nextToken = ARGV_SCREEN_WIDTH;
-            else if (tmp == "-t" || tmp == "--tall")
-                nextToken = ARGV_SCREEN_HEIGHT;
-            else if (tmp == "--datadir")
-                nextToken = ARGV_DATA_DIR;
-            else if (tmp == "-c")
-                nextToken = ARGV_CONFIG_DIR;
-            else if (tmp == "--noconfig")
-            {
-                nextToken = ARGV_NOTHING_EXPECTED;
-                load_config_file = false;
-            }
-            else if (tmp == "--nosound")
-            {
-                nextToken = ARGV_NOTHING_EXPECTED;
-                global->sound = 0.0;
-            }
-            else if (tmp == "--noname")
-            {
-                nextToken = ARGV_NOTHING_EXPECTED;
-                global->name_above_tank = FALSE;
-            }
-            else if (tmp == "--nonetwork")
-            {
-                allow_network = false;
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-            else if (tmp == "--nobackground")
-            {
-                global->draw_background = FALSE;
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-            else if (tmp == "--nothread")
-            {
-                allow_thread = false;
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-            else if (tmp == "--thread")
-            {
-                allow_thread = true;
-                nextToken = ARGV_NOTHING_EXPECTED;
-            }
-
-        }
-        if (nextToken != ARGV_NOTHING_EXPECTED)
-        {
-            cout << "Expecting an argument to follow " << tmp << endl;
+            std::cout << desc << std::endl;
             return 0;
         }
+        if (varmap.count("fullscreen"))
+        {
+            screen_mode = GFX_AUTODETECT_FULLSCREEN;
+            full_screen = FULL_SCREEN_TRUE;
+        }
+        if (varmap.count("windowed"))
+        {
+            screen_mode = GFX_AUTODETECT_WINDOWED;
+            full_screen = FULL_SCREEN_FALSE;
+        }
+        if (varmap.count("thread"))
+            allow_thread = true;
+        if (varmap.count("width"))
+        {
+            if (global->screenWidth < 512)
+            {
+                std::cout << "Width too small (minimum 512)" << std::endl;
+                return 0;
+            }
+            global->width_override = global->screenWidth;
+            global->halfWidth = global->screenWidth / 2;
+        }
+        if (varmap.count("height"))
+        {
+            if (global->screenHeight < 320)
+            {
+                std::cout << "Height too small (minimum 320)" << std::endl;
+                return 0;
+            }
+            global->height_override = global->screenHeight;
+            global->halfHeight = global->screenHeight / 2;
+        }
+        if (varmap.count("depth"))
+        {
+            if (global->colourDepth != 16 && global->colourDepth != 32)
+            {
+                std::cout << "Invalid graphics depth, only 16 or 32 are valid" << std::endl;
+                return 0;
+            }
+        }
+        if (varmap.count("datadir"))
+        {
+            if (varmap["datadir"].as<std::string>().size() > 2048)
+            {
+                std::cout << "Datadir path too long (maximum 2048 characters)" << std::endl;
+                return 0;
+            }
+            /* We should replace this with something safer */
+            global->dataDir = strdup(varmap["datadir"].as<std::string>().c_str());
+        }
+        if (varmap.count("config"))
+        {
+            if (varmap["config"].as<std::string>().size() > 2048)
+            {
+                std::cout << "Configdir path too long (maximum 2048 characters)" << std::endl;
+                return 0;
+            }
+            /* We should replace this with something safer */
+            global->configDir = strdup(varmap["config"].as<std::string>().c_str());
+        }
+        if (varmap.count("noconfig"))
+            load_config_file = false;
+        if (varmap.count("nosound"))
+            global->sound = 0.0;
+        if (varmap.count("noname"))
+            global->name_above_tank = FALSE;
+        if (varmap.count("nonetwork"))
+            allow_network = false;
+        if (varmap.count("nobackground"))
+            global->draw_background = FALSE;
+        if (varmap.count("nothread"))
+            allow_thread = false;
     }
+    catch(parse_arg::error& e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl << std::endl;
+        std::cerr << desc << std::endl;
+        return 1;
+    }
+#endif /* _WIN32 */
 
     if (!global->configDir)
     {
