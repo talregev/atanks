@@ -4028,7 +4028,7 @@ int main(int argc, char **argv)
     parse_arg::options_description desc("Allowed options");
     desc.add_options()
         ("help,h", "This screen")
-        ("fullscreen,fs", "Full screen")
+        ("fullscreen,f", "Full screen")
         ("windowed", "Run in a window")
         ("thread", "Use threads to perform background tasks")
         ("width,w", parse_arg::value<int>(&(global->screenWidth))->value_name("<width>")->default_value(800), "Specify the screen width in pixels. Default is 800, adjust at your own risk.")
@@ -4126,6 +4126,13 @@ int main(int argc, char **argv)
             global->draw_background = FALSE;
         if (varmap.count("nothread"))
             allow_thread = false;
+
+        if (varmap.count("fullscreen") && varmap.count("windowed"))
+        {
+            std::cout << "Incompatible options specified" << std::endl;
+            return 0;
+        }
+
     }
     catch(parse_arg::error& e)
     {

@@ -25,7 +25,7 @@ of Atomic Tanks, you will need the Allegro graphic
 package. See http://allegro.cc/
 Also, if you are going to compile/build Atomic Tanks
 from source code, you will need the Allegro development
-package. These packages can be found at
+package and Boost. These packages can be found at
 http://allegro.cc/files/
 Please also note, those of you running Linux can
 usually get Allegro packages through your distribution's
@@ -98,25 +98,26 @@ reasonable defaults, so there is rarely a need to
 use the command-line options. However, Atomic Tanks
 supports the following options:
 
-./atanks -h   (Print list of credits, command-line options and exit.)
-./atanks -fs  (Run the game using the entire screen. Full screen mode.)
+./atanks -h, --help   (Print list of credits, command-line options and exit.)
+./atanks -f, --fullscreen  (Run the game using the entire screen. Full screen mode.)
 ./atanks --windowed  (Run the game in a window. This is the default).
+./atanks --thread     (Enabled use of threads to speed up things.)
+./atanks -w, --width <number>  (Run the game in a window with a set width in pixels.)
+./atanks -t, --height <number>  (Run the game in a window with a set height in pixels.)
+./atanks --depth <number>  (Sets pixel depth. Use either 16 or 32 here.)
+./atanks --datadir <data directory>  (Path to the directory with Atank's data files.)
+./atanks -c, --config <config directory> (Path to config and saved game directory.)
+./atanks --noconfig   (Resets all config options back to defaults.)
 ./atanks --nosound  (Run the game without sound. Sound is on by default.)
 ./atanks --noname   (Do not display player names over the tanks.)
-./atanks --width <number>  (Run the game in a window with a set width in pixels.)
-./atanks --tall <number>  (Run the game in a window with a set height in pixels.)
-./atanks --datadir <data directory>  (Path to the directory with Atank's data files.)
-./atanks --depth <number>  (Sets pixel depth. Use either 16 or 32 here.)
-./atanks --noconfig   (Resets all config options back to defaults.)
 ./atanks --nonetwork  (Prevents atanks from setting up a server.)
 ./atanks --nobackground  (Does not display the green menu background. May prevent crashes on 64-bit.)
 ./atanks --nothread   (Stops threads for running in the background.)
-./atanks --thread     (Enabled use of threads to speed up things.)
 
 Most of these options can be used together, with the exception of "-fs"
 for full screen mode. Simply running "./atanks" is the same as running
 Atomic Tanks with the following options:
-./atanks --windowed --width 800 --tall 600 --datadir . depth 32
+./atanks --windowed --width 800 --height 600 --datadir . depth 32
 
 Please note that as of version 4.3, threads are disabled by default. Use
 the "--thread" flag to enable background threads.
