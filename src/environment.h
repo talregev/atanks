@@ -174,7 +174,7 @@ public:
 
     int saveToFile_Text(FILE *file);
     int loadFromFile_Text(FILE *file);
-    int loadFromFile(ifstream &ifsFile);
+    int loadFromFile(std::ifstream &ifsFile);
 
     void Reset_Options();
     void Set_Wall_Colour();

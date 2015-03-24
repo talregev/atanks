@@ -57,8 +57,6 @@ int screen_mode = GFX_AUTODETECT_WINDOWED;
 // BITMAP *create_gradient_strip(const gradient *gradient, int length);
 // int draw_circlesBG(GLOBALDATA *global, BITMAP *dest, int x, int y, int width, int height, bool image);
 
-using namespace std;
-
 void fpsadd()
 {
     fps = frames;
@@ -325,7 +323,7 @@ int textEntryBox(GLOBALDATA *global, ENVIRONMENT *env, int modify, int x, int y,
     if (!tempText)
     {
         // Die hard!
-        cerr << "ERROR: Unable to allocate " << (textLength + 1) << " bytes in textEntryBox() !!!" << endl;
+        std::cerr << "ERROR: Unable to allocate " << (textLength + 1) << " bytes in textEntryBox() !!!" << std::endl;
         // exit (1);
     }
 
@@ -1009,7 +1007,7 @@ int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu)
     if (!updateoption)
     {
         // Die hard!
-        cerr << "ERROR: Unable to allocate " << numEntries << " bytes in options() !!!" << endl;
+        std::cerr << "ERROR: Unable to allocate " << numEntries << " bytes in options() !!!" << std::endl;
         // exit (1);
     }
 
@@ -4461,7 +4459,7 @@ int main(int argc, char **argv)
     // print out if there is an update
     if ((global->update_string) && (global->update_string[0]))
     {
-        cout << global->update_string << endl;
+        std::cout << global->update_string << std::endl;
         free(global->update_string);
         global->update_string = NULL;
     }
@@ -4485,7 +4483,7 @@ int main(int argc, char **argv)
         // This is a very critical issue, but as we are ending here, we just report it
         perror("atanks.cpp: Failed to save game settings from atanks::main()!");
         allegro_exit();
-        cout << "See http://atanks.sourceforge.net for the latest news and downloads." << endl;
+        std::cout << "See http://atanks.sourceforge.net for the latest news and downloads." << std::endl;
 
         return 1;
     }
@@ -4493,7 +4491,7 @@ int main(int argc, char **argv)
     {
         Save_Game_Settings_Text(global, env, fullPath);
         allegro_exit();
-        cout << "See http://atanks.sourceforge.net for the latest news and downloads." << endl;
+        std::cout << "See http://atanks.sourceforge.net for the latest news and downloads." << std::endl;
 
         return 0 ;
     }
@@ -4533,7 +4531,7 @@ void doLaunch(GLOBALDATA *global, ENVIRONMENT *env)
 }
 
 // load a colour from a file
-bool popColo(int &aData, ifstream &ifsFile)
+bool popColo(int &aData, std::ifstream &ifsFile)
 {
     bool bResult = false;
     if (ifsFile.is_open())

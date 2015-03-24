@@ -45,6 +45,7 @@
 #ifdef WIN32
 #include <winalleg.h>
 #endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -82,8 +83,6 @@
 #define LINUX_REST Sleep(40)
 #define LINUX_DREAMLAND Sleep(500)
 #endif
-
-using namespace std;
 
 // place to save config and save games
 #ifdef WIN32
@@ -411,10 +410,10 @@ void generate_sky(GLOBALDATA *global, BITMAP* bmp, const gradient* grad, int fla
 
 // load all game settings
 bool Load_Game_Settings(GLOBALDATA *global, ENVIRONMENT *env, char *text_file) _WARNUNUSED;
-bool loadPlayers(GLOBALDATA *global, ENVIRONMENT *env, ifstream &ifsFile) _WARNUNUSED;
+bool loadPlayers(GLOBALDATA *global, ENVIRONMENT *env, std::ifstream &ifsFile) _WARNUNUSED;
 // save all game settings
 bool Save_Game_Settings(GLOBALDATA *global, ENVIRONMENT *env, char *text_file, bool bIsSaveGame = false) _WARNUNUSED;
-bool savePlayers(GLOBALDATA *global, ofstream &ofsFile) _WARNUNUSED;
+bool savePlayers(GLOBALDATA *global, std::ofstream &ofsFile) _WARNUNUSED;
 int Save_Game_Settings_Text(GLOBALDATA *global, ENVIRONMENT *env, char *path_to_file);
 
 // These defines are needed to identify parts of the binary save files.
@@ -428,10 +427,10 @@ int Save_Game_Settings_Text(GLOBALDATA *global, ENVIRONMENT *env, char *path_to_
 // methods to handle loading and saving of data
 
 /*  --- take data out of filestream -- */
-bool popColo(int &aData, ifstream &ifsFile) _WARNUNUSED;
-bool popData(int &aData, ifstream &ifsFile) _WARNUNUSED;
-bool popData(double &aData, ifstream &ifsFile) _WARNUNUSED;
-bool popData(char * aArea, bool &aIsData, ifstream &ifsFile) _WARNUNUSED;
+bool popColo(int &aData, std::ifstream &ifsFile) _WARNUNUSED;
+bool popData(int &aData, std::ifstream &ifsFile) _WARNUNUSED;
+bool popData(double &aData, std::ifstream &ifsFile) _WARNUNUSED;
+bool popData(char * aArea, bool &aIsData, std::ifstream &ifsFile) _WARNUNUSED;
 //bool popData(const char  * aArea, int    &aData, ifstream &ifsFile) _WARNUNUSED;
 //bool popData(const char  * aArea, double &aData, ifstream &ifsFile) _WARNUNUSED;
 //bool popData(char * aArea, double &aData, ifstream &ifsFile) _WARNUNUSED;
@@ -439,11 +438,11 @@ bool popData(char * aArea, bool &aIsData, ifstream &ifsFile) _WARNUNUSED;
 /*  --- put data into filestream -- */
 //bool pushData(const int aData, ofstream &ofsFile) _WARNUNUSED;
 //bool pushData(const double aData, ofstream &ofsFile) _WARNUNUSED;
-bool pushColo(const char * aArea, const int aData, ofstream &ofsFile) _WARNUNUSED;
-bool pushData(const char * aData, ofstream &ofsFile) _WARNUNUSED;
-bool pushData(const char * aArea, const int aData, ofstream &ofsFile) _WARNUNUSED;
+bool pushColo(const char * aArea, const int aData, std::ofstream &ofsFile) _WARNUNUSED;
+bool pushData(const char * aData, std::ofstream &ofsFile) _WARNUNUSED;
+bool pushData(const char * aArea, const int aData, std::ofstream &ofsFile) _WARNUNUSED;
 //bool pushName(const char  * aData, ofstream &ofsFile) _WARNUNUSED; // Special function for name saving
-bool pushData(const char * aArea, const double aData, ofstream &ofsFile) _WARNUNUSED;
+bool pushData(const char * aArea, const double aData, std::ofstream &ofsFile) _WARNUNUSED;
 
 /*  --- seek specific data within filestream -- */
 //bool seekData(const int aData, ifstream &ifsFile) _WARNUNUSED;

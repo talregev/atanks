@@ -36,7 +36,6 @@
 #include "decor.h"
 #include "beam.h"
 */
-using namespace std;
 
 char *errorMessage;
 int errorX, errorY;

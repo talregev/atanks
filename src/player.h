@@ -184,9 +184,9 @@ public:
     char *selectGloatPhrase();
     char *selectSuicidePhrase();
     int saveToFile_Text(FILE *file);
-    int saveToFile(ofstream &ofsFile);
+    int saveToFile(std::ofstream &ofsFile);
     int loadFromFile_Text (FILE *file);
-    int loadFromFile(ifstream &ifsFile);
+    int loadFromFile(std::ifstream &ifsFile);
     void initMenuDesc();
     char *Get_Team_Name();
     int Select_Random_Weapon();

@@ -21,7 +21,7 @@ void generate_land(GLOBALDATA *global, ENVIRONMENT *env, BITMAP *land, int xoffs
     depthStrip[1] = (double *) calloc(global->screenHeight, sizeof(double));
 
     if (!depthStrip[0] || !depthStrip[1])
-        cerr << "ERROR: Unable to allocate " << (global->screenHeight * 2) << " bytes in generate_land() !!!" << endl;
+        std::cerr << "ERROR: Unable to allocate " << (global->screenHeight * 2) << " bytes in generate_land() !!!" << std::endl;
 
     int landType = (env->landType == LANDTYPE_RANDOM)? (rand() % LANDTYPE_PLAIN) + 1 : (int) env->landType;
 

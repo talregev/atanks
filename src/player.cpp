@@ -3833,7 +3833,7 @@ int PLAYER::computerControls()
     }
     else if (_turnStage == SELECT_TARGET)
     {
-        cout << "ERROR: _turnstage became SELECT_TARGET!" << endl;
+        std::cout << "ERROR: _turnstage became SELECT_TARGET!" << std::endl;
         // Target is already chosen by computerSelectItem()
         _turnStage = SELECT_WEAPON;
     }

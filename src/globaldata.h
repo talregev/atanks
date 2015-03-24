@@ -202,7 +202,7 @@ public:
     void initialise();
     int saveToFile_Text(FILE *file);
     int loadFromFile_Text(FILE *file);
-    int loadFromFile(ifstream &my_file);
+    int loadFromFile(std::ifstream &my_file);
     void addPlayer(PLAYER *player);
     void removePlayer(PLAYER *player);
     PLAYER *getNextPlayer(int *playerCount);

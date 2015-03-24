@@ -62,13 +62,13 @@ ENVIRONMENT::ENVIRONMENT(GLOBALDATA *global) : _global(global),done(NULL),fp(NUL
 
     db = create_bitmap (global->screenWidth, global->screenHeight);
     if (!db)
-        cout << "Failed to create db bitmap: " << allegro_error;
+        std::cout << "Failed to create db bitmap: " << allegro_error;
     terrain = create_bitmap (global->screenWidth, global->screenHeight);
     if (!terrain)
-        cout << "Failed to create terrain bitmap: " << allegro_error;
+        std::cout << "Failed to create terrain bitmap: " << allegro_error;
     sky = create_bitmap (global->screenWidth, global->screenHeight - MENUHEIGHT);
     if (!sky)
-        cout << "Failed to create sky bitmap: " << allegro_error;
+        std::cout << "Failed to create sky bitmap: " << allegro_error;
     waiting_sky = NULL;
     waiting_terrain = NULL;
     _global = global;
