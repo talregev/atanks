@@ -37,15 +37,15 @@ enum menuEntryType
 typedef struct
 {
     const char *name;
-    int (*displayFunc) (ENVIRONMENT*, int, int, void*);
+    int (*displayFunc) (ENVIRONMENT*, int, int, const void*);
     int color;
     double *value;
-    void *data;
+    const void *data;
     const char *format;
     double min, max;
     double increment;
     double defaultv;
-    char **specialOpts;
+    const char * const *specialOpts;
     char type;
     int viewonly;
     int x;
@@ -56,7 +56,7 @@ typedef struct
 {
     const char *title;
     int numEntries;
-    MENUENTRY *entries;
+    const MENUENTRY *entries;
     int quitButton;
     int okayButton;
 } MENUDESC;

@@ -305,7 +305,41 @@ void colorBar(ENVIRONMENT *env, int left, int top, int width, int height)
     }
 }
 
-int textEntryBox(GLOBALDATA *global, ENVIRONMENT *env, int modify, int x, int y, char *text, unsigned int textLength)
+int readOnlyTextEntryBox(ENVIRONMENT *env, int x, int y, const char *text, unsigned int textLength)
+{
+    int fontWidth = text_length(font, "Z");
+    int fontHeight = text_height(font);
+    int leftX = x - (fontWidth * textLength / 2);
+    int rightX = x + (fontWidth * textLength / 2);
+    int boxWidth = fontWidth * textLength;
+    //  char tempText[textLength + 1];
+    char * tempText;
+
+    tempText = (char *) calloc(textLength + 1, sizeof(char));
+
+    if (!tempText)
+    {
+        // Die hard!
+        std::cerr << "ERROR: Unable to allocate " << (textLength + 1) << " bytes in readOnlyTextEntryBox() !!!" << std::endl;
+        // exit (1);
+    }
+
+    if (!text)
+        text = "";
+    else if ( (text == (void*)0xb) || (text == (void*)0xc) )
+        text = "";
+    rectfill(env->db, leftX, y - 2, rightX, y + fontHeight + 2, WHITE);
+    rect(env->db, leftX, y - 2, rightX, y + fontHeight + 2, BLACK);
+    textout_centre_ex (env->db, font, text, x, y, BLACK, -1);
+
+    env->make_update(leftX - 2, y - 4, fontWidth * textLength + 4, fontHeight + 6);
+    env->do_updates();
+
+    free(tempText);
+    return boxWidth;
+}
+
+int textEntryBox(GLOBALDATA *global, ENVIRONMENT *env, int x, int y, char *text, unsigned int textLength)
 {
     int ke = 0;
     int fontWidth = text_length(font, "Z");
@@ -333,17 +367,10 @@ int textEntryBox(GLOBALDATA *global, ENVIRONMENT *env, int modify, int x, int y,
         text = "";
     rectfill(env->db, leftX, y - 2, rightX, y + fontHeight + 2, WHITE);
     rect(env->db, leftX, y - 2, rightX, y + fontHeight + 2, BLACK);
-    if (!modify)
-        textout_centre_ex (env->db, font, text, x, y, BLACK, -1);
 
     env->make_update(leftX - 2, y - 4, fontWidth * textLength + 4, fontHeight + 6);
     env->do_updates();
 
-    if (!modify)
-    {
-        free(tempText);
-        return boxWidth;
-    }
     strncpy(tempText, text, textLength + 1);
 
     while( ((ke >> 8) != KEY_ENTER && (ke >> 8) != KEY_ESC && (ke >> 8) != KEY_ENTER_PAD) || strlen(tempText) < 1 )
@@ -933,7 +960,7 @@ int destroyPlayer(GLOBALDATA *global, ENVIRONMENT *env, void *data)
     return (KEY_SPACE << 8);
 }
 
-int displayPlayerName(ENVIRONMENT *env, int x, int y, void *data)
+int displayPlayerName(ENVIRONMENT *env, int x, int y, const void *data)
 {
     PLAYER *player = (PLAYER*)data;
     char *name = player->getName ();
@@ -963,7 +990,7 @@ int displayPlayerName(ENVIRONMENT *env, int x, int y, void *data)
 
 int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu)
 {
-    MENUENTRY *opts;
+    const MENUENTRY *opts;
     char my_pointer[2];
     BUTTON *reset_button = NULL;
     int selected_index = 0, my_key = 0;
@@ -1123,7 +1150,7 @@ int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu)
                         if ( ((!opts[z].viewonly) && mouse_x > midX - text_length(font, name_buff) && mouse_x < midX && mouse_y >= midY && mouse_y < midY + 10)
                              || ((my_key == KEY_SPACE) && (selected_index == z)) )
                         {
-                            int (*action) (GLOBALDATA*, ENVIRONMENT*, void*) = (int (*)(GLOBALDATA*, ENVIRONMENT*, void*))opts[z].value;
+                            int (*action) (GLOBALDATA*, ENVIRONMENT*, const void*) = (int (*)(GLOBALDATA*, ENVIRONMENT*, const void*))opts[z].value;
                             int actionRetVal = action(global, env, opts[z].data);
                             if (actionRetVal)
                                 return (actionRetVal);
@@ -1138,20 +1165,20 @@ int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu)
                             my_text_length = ADDRESS_LENGTH;
 
                         if (my_text_length == NAME_LENGTH)
-                            boxWidth = textEntryBox(global, env, FALSE, midX + 100, midY, (char*) opts[z].value, my_text_length);
+                            boxWidth = readOnlyTextEntryBox(env, midX + 100, midY, (char*) opts[z].value, my_text_length);
                         else if (my_text_length == ADDRESS_LENGTH)
-                            boxWidth = textEntryBox(global, env, FALSE, midX + 70, midY, (char*) opts[z].value, my_text_length);
+                            boxWidth = readOnlyTextEntryBox(env, midX + 70, midY, (char*) opts[z].value, my_text_length);
                         else
-                            boxWidth = textEntryBox (global, env, FALSE, midX + 50, midY, (char*)opts[z].value, my_text_length);
+                            boxWidth = readOnlyTextEntryBox (env, midX + 50, midY, (char*)opts[z].value, my_text_length);
                         if ( ((!opts[z].viewonly) && mouse_x > midX - text_length(font, name_buff) && mouse_x < midX + 50 + boxWidth && mouse_y >= midY && mouse_y < midY + 10)
                              || ((selected_index == z) && (my_key == KEY_SPACE)) )
                         {
                             if (my_text_length == NAME_LENGTH)
-                                textEntryBox(global, env, TRUE, midX + 100, midY, (char*) opts[z].value, my_text_length);
+                                textEntryBox(global, env, midX + 100, midY, (char*) opts[z].value, my_text_length);
                             else if (my_text_length == ADDRESS_LENGTH)
-                                textEntryBox(global, env, TRUE, midX + 70, midY, (char *) opts[z].value, my_text_length);
+                                textEntryBox(global, env, midX + 70, midY, (char *) opts[z].value, my_text_length);
                             else
-                                textEntryBox(global, env, TRUE, midX + 50, midY, (char*) opts[z].value, my_text_length);
+                                textEntryBox(global, env, midX + 50, midY, (char*) opts[z].value, my_text_length);
                             updateoption[z] = 1;
                         }
                     }
@@ -1377,10 +1404,10 @@ int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu)
                     if (opts[z].type == OPTION_DOUBLETYPE)
                     {
                         sprintf(format_buff, opts[z].format, *opts[z].value);
-                        textEntryBox(global, env, FALSE, midX + 50, midY, format_buff, 11);
+                        readOnlyTextEntryBox(env, midX + 50, midY, format_buff, 11);
                     }
                     else if (opts[z].type == OPTION_TEXTTYPE)
-                        textEntryBox(global, env, FALSE, midX + 100, midY, (char*)opts[z].value, NAME_LENGTH);
+                        readOnlyTextEntryBox(env, midX + 100, midY, (char*)opts[z].value, NAME_LENGTH);
                     else if (opts[z].type == OPTION_COLORTYPE)
                     {
                         colorBar(env, midX, midY, 100, 15);
@@ -1393,7 +1420,7 @@ int options(GLOBALDATA *global, ENVIRONMENT *env, MENUDESC *menu)
                         textout_centre_ex(env->db, font, format_buff, midX, midY, opts[z].color, -1);
                     }
                     else if (opts[z].specialOpts)
-                        textEntryBox(global, env, FALSE, midX + 50, midY, opts[z].specialOpts[(int) *opts[z].value], 11);
+                        readOnlyTextEntryBox(env, midX + 50, midY, opts[z].specialOpts[(int) *opts[z].value], 11);
 
                     env->make_update(midX - 100, midY - 2, 250, 20);
                 }
@@ -3867,7 +3894,8 @@ void print_text_initmsg()
     printf("\t\tKota543 Software (fixes and updates)\n");
     printf("\t\tJesse Smith (additions, fixes and updates)\n");
     printf("\t\tSven Eden (ai rewrite, additions, fixes and updates)\n");
-    printf("\t\tBruno Victal (code clean-up)\n\n");
+    printf("\t\tBruno Victal (code clean-up)\n");
+    printf("\t\tDaniel Gutson (additions, fixes and updates)\n\n");
 
     // putchar ('\n');
 }

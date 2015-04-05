@@ -216,6 +216,7 @@ int Setup_Server_Socket(int port)
     int listensocket;
     struct sockaddr_in myaddr;
 
+    memset(&myaddr, 0, sizeof(myaddr));
     listensocket = socket(AF_INET, SOCK_STREAM, 0);
     myaddr.sin_port = htons(port);
     myaddr.sin_addr.s_addr = INADDR_ANY;
@@ -248,9 +249,9 @@ int Setup_Client_Socket(char *server_name, char *port)
     server = gethostbyname(server_name);
     if (!server)
         return -1;
-    bzero((char *) &server_address, sizeof(server_address));
+    memset((char *) &server_address, 0, sizeof(server_address));
     server_address.sin_family = AF_INET;
-    bcopy((char *) server->h_addr, (char *) &server_address.sin_addr.s_addr, server->h_length);
+    memcpy((char *) &server_address.sin_addr.s_addr, (char *) server->h_addr, server->h_length);
     server_address.sin_port = htons(port_number);
 
     // try to connect
@@ -411,7 +412,7 @@ void *Send_And_Receive(void *all_the_data)
     {
         // check for incoming connections
         int status = Check_For_Incoming_Data(server_socket);
-        if (status)
+        if (status == TRUE) // it could be either -1 (ERROR) or 0 (FALSE)
         {
             new_socket = Accept_Incoming_Connection(server_socket);
             printf("Accepted connection.\n");

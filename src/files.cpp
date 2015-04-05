@@ -983,9 +983,9 @@ void Clear_Weapons()
 
 }
 
-int Display_Tank_Bitmap(ENVIRONMENT *env, int xpos, int ypos, void *image_number)
+int Display_Tank_Bitmap(ENVIRONMENT *env, int xpos, int ypos, const void *image_number)
 {
-    double *temp_number = (double *) image_number;
+    const double *temp_number = (const double *) image_number;
     int my_number = (int) *temp_number;
     int use_tank_bitmap, use_turret_bitmap;
     BITMAP *dest = env->db;

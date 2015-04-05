@@ -63,7 +63,7 @@ double colorDistance(int col1, int col2);
 void Clear_Weapons();
 
 // Draw a tank bitmap on the screen at the given location'
-int Display_Tank_Bitmap(ENVIRONMENT *env, int xpos, int ypos, void *image_number);
+int Display_Tank_Bitmap(ENVIRONMENT *env, int xpos, int ypos, const void *image_number);
 
 // cause natural events to happen
 void doNaturals(GLOBALDATA *global, ENVIRONMENT *env);
