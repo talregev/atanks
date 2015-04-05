@@ -16,6 +16,16 @@ NOTE: From now on, new changes appear at the top of this file.
 
 	- Removed extra call to Get_Team_Name() that was not required.
 
+	Daniel sent in a patch which does the following:
+	- fixes a bug where the address of (stack allocated) temporal arrays
+	was stored in the menu structure causing
+	  wrong behavior, e.g. printing garbage in the Network configuration
+	menu title.
+	- fixes const-correctness for all the menu structure
+	- moves stack-allocated read-only arrays to .rodata so no large stack
+	memory is used.
+
+
 =========== Atanks-6.1 released ==============
 	All of this releases patches were provided by Bill Buerger.
 	- Extend the amount of time the AI will play against itself
