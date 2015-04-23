@@ -216,11 +216,11 @@ void EXPLOSION::explode()
 #ifdef DEBUG
                     if ((dXDistance < (radius + TANKHEIGHT / 2)) && (dYDistance < 25))
                     {
-                        cout << endl << "Shape: " << radius << " x " << (radius / 20) << endl;
+                        std::cout << std::endl << "Shape: " << radius << " x " << (radius / 20) << std::endl;
                         printf( "Tank  X = % 4d, Tank  Y = % 4d\n", (int)tank->x, (int)tank->y);
                         printf( "Explo X = % 4d, Explo Y = % 4d\n", (int)x, (int)y);
                         printf( "Dist  X = % 4d, Dist  Y = % 4d\n", (int)dXDistance, (int)dYDistance);
-                        cout << "Distance: " << distance << endl;
+                        std::cout << "Distance: " << distance << std::endl;
                     }
 #endif // DEBUG
                 }

@@ -152,9 +152,9 @@ int PHYSICAL_OBJECT::applyPhysics()
     if (dActVelocity > dMaxVelocity)
     {
 #ifdef DEBUG
-        cout << "** Missile too fast!" << endl;
-        cout << "mass: " << mass << " - Max Velocity: " << dMaxVelocity << " (FPS: " << _global->frames_per_second << ")" << endl;
-        cout << "xv: " << xv << " - yv: " << yv << " - Act Velocity: " << dActVelocity << endl;
+        std::cout << "** Missile too fast!" << std::endl;
+        std::cout << "mass: " << mass << " - Max Velocity: " << dMaxVelocity << " (FPS: " << _global->frames_per_second << ")" << std::endl;
+        std::cout << "xv: " << xv << " - yv: " << yv << " - Act Velocity: " << dActVelocity << std::endl;
 #endif // DEBUG
         // apply *some* velocity, as the thing is killed on its way
         y += yv / (1.0 + ((double) (rand() % 40) / 10.0)); // This produces somthing

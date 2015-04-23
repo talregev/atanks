@@ -2167,9 +2167,9 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
         // after the first shopping loop the game isn't fresh anymore
 #ifdef DEBUG
     {
-        cout << endl << "===========================================" << endl;
-        cout << "==          New or Loaded Game!          ==" << endl;
-        cout << "===========================================" << endl << endl;
+        std::cout << std::endl << "===========================================" << std::endl;
+        std::cout << "==          New or Loaded Game!          ==" << std::endl;
+        std::cout << "===========================================" << std::endl << std::endl;
 #endif // DEBUG
         global->bIsGameLoaded = false;
 #ifdef DEBUG
@@ -2214,7 +2214,7 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
             }
         }
 #ifdef DEBUG
-        cout << endl << "Jedi Count: " << iJediCount << " - SitH Count: " << iSithCount << endl;
+        std::cout << std::endl << "Jedi Count: " << iJediCount << " - SitH Count: " << iSithCount << std::endl;
 #endif // DEBUG
         // Now apply the team money:
         if (iJediCount || iSithCount)
@@ -2269,38 +2269,38 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
             int pressed = 0;
             int moneyToSave = 0;    // How much money will the player save?
 #ifdef DEBUG
-            cout << "(" << global->players[pl]->getName() << ") Starting to buy:" << endl;
+            std::cout << "(" << global->players[pl]->getName() << ") Starting to buy:" << std::endl;
             if (global->players[pl]->defensive < -0.9)
-                cout << "(True Offensive)" << endl;
+                std::cout << "(True Offensive)" << std::endl;
             if ((global->players[pl]->defensive >=-0.9) && (global->players[pl]->defensive < -0.75))
-                cout << "(Very Offensive)" << endl;
+                std::cout << "(Very Offensive)" << std::endl;
             if ((global->players[pl]->defensive >=-0.75) && (global->players[pl]->defensive < -0.25))
-                cout << "(Offensive)" << endl;
+                std::cout << "(Offensive)" << std::endl;
             if ((global->players[pl]->defensive >=-0.25) && (global->players[pl]->defensive < 0.00))
-                cout << "(Slightly Offensive)" << endl;
+                std::cout << "(Slightly Offensive)" << std::endl;
             if (global->players[pl]->defensive == 0.0)
-                cout << "(Neutral)" << endl;
+                std::cout << "(Neutral)" << std::endl;
             if ((global->players[pl]->defensive >0.0) && (global->players[pl]->defensive <= 0.25))
-                cout << "(Slightly Defensive)"<< endl;
+                std::cout << "(Slightly Defensive)"<< std::endl;
             if ((global->players[pl]->defensive >0.25) && (global->players[pl]->defensive <= 0.75))
-                cout << "(Defensive)" << endl;
+                std::cout << "(Defensive)" << std::endl;
             if ((global->players[pl]->defensive >0.75) && (global->players[pl]->defensive <= 0.9))
-                cout << "(Very Defensive)" << endl;
+                std::cout << "(Very Defensive)" << std::endl;
             if (global->players[pl]->defensive > 0.9)
-                cout << "(True Defensive)" << endl;
-            cout << "Inventory:" << endl <<  "----------" << endl;
+                std::cout << "(True Defensive)" << std::endl;
+            std::cout << "Inventory:" << std::endl <<  "----------" << std::endl;
             for (int i = 1; i < WEAPONS; i++)
             {
                 if (global->players[pl]->nm[i])
-                    cout << global->players[pl]->nm[i] << " x " << weapon[i].name << endl;
+                    std::cout << global->players[pl]->nm[i] << " x " << weapon[i].name << std::endl;
             }
-            cout << " - - - - - - -" << endl;
+            std::cout << " - - - - - - -" << std::endl;
             for (int i = 1; i < ITEMS; i++)
             {
                 if (global->players[pl]->ni[i])
-                    cout << global->players[pl]->ni[i] << " x " << item[i].name << endl;
+                    std::cout << global->players[pl]->ni[i] << " x " << item[i].name << std::endl;
             }
-            cout << "----------" << endl;
+            std::cout << "----------" << std::endl;
 #endif // DEBUG
             // moneysaving will be made possible when:
             // 1. It's not the first three rounds
@@ -2314,12 +2314,12 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
             {
                 moneyToSave = global->players[pl]->getMoneyToSave();
 #ifdef DEBUG
-                cout << "Maximum Money to save: " << moneyToSave << " (I have: " << global->players[pl]->money << ")" << endl;
+                std::cout << "Maximum Money to save: " << moneyToSave << " (I have: " << global->players[pl]->money << ")" << std::endl;
 #endif //DEBUG
             }
 #ifdef DEBUG
             else
-                cout << "No money to save this round!!!" << endl;
+                std::cout << "No money to save this round!!!" << std::endl;
 #endif // DEBUG
             // Check for a minimum of damage dealing weapons and parachutes, then buy until moneyToSave is reached
             buy_count = 0;
@@ -2345,22 +2345,22 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
 #ifdef DEBUG
                 if (pressed > -1)
                 {
-                    cout << "I have bought: ";
+                    std::cout << "I have bought: ";
                     if (pressed < WEAPONS)
-                        cout << weapon[pressed].name;
+                        std::cout << weapon[pressed].name;
                     else
-                        cout << item[pressed - WEAPONS].name;
-                    cout << " (" << global->players[pl]->money << " bucks left)" << endl;
+                        std::cout << item[pressed - WEAPONS].name;
+                    std::cout << " (" << global->players[pl]->money << " bucks left)" << std::endl;
                 }
                 else
-                    cout << "Finished, with " << global->players[pl]->money << " Credits left!" << endl;
+                    std::cout << "Finished, with " << global->players[pl]->money << " Credits left!" << std::endl;
 #endif // DEBUG
                 buy_count++;
             }
             while ((pressed != -1) && (buy_count < 100));
 
 #ifdef DEBUG
-            cout << "============================================" << endl << endl;
+            std::cout << "============================================" << std::endl << std::endl;
 #endif //DEBUG
             continue;  //go to next player
         }        // end of AI player
@@ -2796,10 +2796,10 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
         int iLevel = 0;
         int iInterSum = 0;    // The summed up interest
 #ifdef DEBUG
-        cout << endl << "======================================================" << endl;
+        std::cout << std::endl << "======================================================" << std::endl;
         printf("%2d.: %s enters the bank to get interest:\n", (z+1), global->players[z]->getName());
         printf("     Starting Account: %10d\n", global->players[z]->money);
-        cout << "------------------------------------------------------" << endl;
+        std::cout << "------------------------------------------------------" << std::endl;
 #endif // DEBUG
         while (iMoney && (iLevel < 5))
         {
@@ -2827,12 +2827,12 @@ bool buystuff(GLOBALDATA *global, ENVIRONMENT *env)
         // Now giv'em their money:
 #ifdef DEBUG
         printf("     Sum:      %8d credits.\n", iInterSum);
-        cout << "------------------------------------------------------" << endl;
+        std::cout << "------------------------------------------------------" << std::endl;
 #endif // DEBUG
         global->players[z]->money += iInterSum;
 #ifdef DEBUG
         printf("     Final Account   : %10d\n", global->players[z]->money);
-        cout << "======================================================" << endl;
+        std::cout << "======================================================" << std::endl;
 #endif // DEBUG
     }
     return true;

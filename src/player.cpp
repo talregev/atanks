@@ -708,8 +708,8 @@ void PLAYER::generatePreferences()
             defensive = -1.25; // - 1.25 is SuperAggressive
     }
 #ifdef DEBUG
-    cout << "Generating Preferences for \"" << getName() << "\" (" << defensive << ")" << endl;
-    cout << "----------------------------------------------------" << endl;
+    std::cout << "Generating Preferences for \"" << getName() << "\" (" << defensive << ")" << std::endl;
+    std::cout << "----------------------------------------------------" << std::endl;
 #endif // DEBUG
     _weaponPreference[0] = 0; // small missiles are always zero!
     for (int weapCount = 1; weapCount < THINGS; weapCount++)
@@ -867,7 +867,7 @@ void PLAYER::generatePreferences()
             printf("%23s (weapon): % 5d", weapon[weapCount].name, _weaponPreference[weapCount]);
         else
             printf("%23s ( item ): % 5d", item[weapCount-WEAPONS].name, _weaponPreference[weapCount]);
-        cout << endl;
+        std::cout << std::endl;
 #endif // DEBUG
     }
 
@@ -882,8 +882,7 @@ void PLAYER::generatePreferences()
             {
                 _weaponPreference[weapCount] = (int) ((double) _weaponPreference[weapCount] * dWorth);
 #ifdef DEBUG
-                printf( "%23s (weapon) amplified to: % 5d", weapon[weapCount].name, _weaponPreference[weapCount]);
-                cout << endl;
+                printf("%23s (weapon) amplified to: %5d\n", weapon[weapCount].name, _weaponPreference[weapCount]);
 #endif // DEBUG
             }
         }
@@ -898,15 +897,14 @@ void PLAYER::generatePreferences()
             {
                 _weaponPreference[weapCount] = (int)((double)_weaponPreference[weapCount] * dWorth);
 #ifdef DEBUG
-                printf("%23s ( item ) amplified to: % 5d", item[weapCount-WEAPONS].name, _weaponPreference[weapCount]);
-                cout << endl;
+                printf("%23s (item) amplified to: %5d\n", item[weapCount-WEAPONS].name, _weaponPreference[weapCount]);
 #endif // DEBUG
             }
         }
     }
 
 #ifdef DEBUG
-    cout << "===================================================" << endl << endl;
+    std::cout << "===================================================" << std::endl << std::endl;
 #endif // DEBUG
 }
 
@@ -3109,11 +3107,11 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
     int target_count = 0;
 
 #ifdef DEBUG
-    cout << " -> I need " << iMoneyNeed << " Credits *urgently*!" << endl;
+    std::cout << " -> I need " << iMoneyNeed << " Credits *urgently*!" << std::endl;
     if (aPreferredWeapon < WEAPONS)
-        cout << " -  Searching target for " << weapon[aPreferredWeapon].name << endl;
+        std::cout << " -  Searching target for " << weapon[aPreferredWeapon].name << std::endl;
     else
-        cout << " -  Searching target for " << item[aPreferredWeapon - WEAPONS].name << endl;
+        std::cout << " -  Searching target for " << item[aPreferredWeapon - WEAPONS].name << std::endl;
 #endif // DEBUG
     // find out how many tries we have to find a good target
 
@@ -3174,7 +3172,7 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
                     // the target is weaker, add points modified by how defensive we are
                     current_score += (int) ((double) iDiffStrength * ((defensive + 3.0) / 2.0));
 #ifdef DEBUG
-                cout << " (str)" << current_score;
+                std::cout << " (str)" << current_score;
 #endif
                 // check to see if we are on the same team
                 switch ((int) team)
@@ -3207,7 +3205,7 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
 */
                 }
 #ifdef DEBUG
-                cout << " (team)" << current_score;
+                std::cout << " (team)" << current_score;
 #endif // DEBUG
                 // do we have a grudge against the target
                 if (current_tank->player == revenge)
@@ -3229,7 +3227,7 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
                     //   }
                 }
 #ifdef DEBUG
-                cout << " (rev)" << current_score;
+                std::cout << " (rev)" << current_score;
 #endif // DEBUG
                 // prefer targets further away when violent death is on
                 if (_global->violent_death)
@@ -3241,7 +3239,7 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
                         current_score += 100.0 * ((defensive + 3.0) / 2.0);
                 }
 #ifdef DEBUG
-                cout << " (dis)" << current_score;
+                std::cout << " (dis)" << current_score;
 #endif // DEBUG
                 // Add some points if the target is more intelligent than we are (get'em DOWN!)
                 // or substract if we are the better one. (Deal with the nutter later...)
@@ -3251,7 +3249,7 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
                     current_score += 50 * ((int) DEADLY_PLAYER - (int) type);
                 // Players, last player type and part time bots are counted as deadly bots.
 #ifdef DEBUG
-                cout << " (typ)" << current_score;
+                std::cout << " (typ)" << current_score;
 #endif // DEBUG
                 // Add points for score difference if they have more than us
                 // useless bot: 1 * diff * 60 --> 4 points difference would mean +240 score
@@ -3260,7 +3258,7 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
                     current_score += ((int) type + 1) / 2 * (current_tank->player->score - score) * 60;
 
 #ifdef DEBUG
-                cout << " (scr)" << current_score;
+                std::cout << " (scr)" << current_score;
 #endif // DEBUG
                 if (aPreferredWeapon < WEAPONS)
                 {
@@ -3272,7 +3270,7 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
                          || ((team != TEAM_NEUTRAL) && (current_tank->player->team != team))) )
                         current_score += (double) iDamageDiff * (1.0 + ( (defensive + (double) type) / 10.0));
 #ifdef DEBUG
-                    cout << " (dmg)" << current_score;
+                    std::cout << " (dmg)" << current_score;
 #endif // DEBUG
                     // Check whether the target is buried, and substract points for non-burrower/-penetrator
                     int iBurylevel = current_tank->howBuried();
@@ -3300,7 +3298,7 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
                             // As we *want* to fire an appropriate weapon, the target looks rather nice to us!
                             current_score += ((double) (iBurylevel - BURIED_LEVEL) / (((double) type + 1.0) / 2.0)) * (double) iDamage;
 #ifdef DEBUG
-                        cout << " (bur)" << current_score;
+                        std::cout << " (bur)" << current_score;
 #endif // DEBUG
                     }
 
@@ -3337,12 +3335,12 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
                     else
                         current_score -= iOvershoot;    // substract overshoot!
 #ifdef DEBUG
-                    cout << " (rot)" << current_score;
+                    std::cout << " (rot)" << current_score;
 #endif // DEBUG
                 }
 
 #ifdef DEBUG
-                cout << " => " << current_score<< " : " << current_tank->player->getName() << endl;
+                std::cout << " => " << current_score<< " : " << current_tank->player->getName() << std::endl;
 #endif // DEBUG
 
                 // decide if this target is better than others
@@ -3364,14 +3362,14 @@ TANK * PLAYER::computerSelectTarget(int aPreferredWeapon, bool aRotationMode)
             _targetX= _target->x;
             _targetY= _target->y;
 #ifdef DEBUG
-            cout << " -> " << best_target->player->getName() << " wins! (";
-            cout << best_target->l << " life, " << best_target->sh << " shield)" << endl;
+            std::cout << " -> " << best_target->player->getName() << " wins! (";
+            std::cout << best_target->l << " life, " << best_target->sh << " shield)" << std::endl;
 #endif // DEBUG
         }
     }
 #ifdef DEBUG
     else
-        cout << " -> Unable to find target!!!" << endl;
+        std::cout << " -> Unable to find target!!!" << std::endl;
 #endif // DEBUG
 
     return best_target;
@@ -3413,26 +3411,26 @@ int PLAYER::computerSelectItem()
     _targetY= 0;
 
 #ifdef DEBUG
-    cout << getName() << " : Starting target and weapon evaluation..." << endl;
+    std::cout << getName() << " : Starting target and weapon evaluation..." << std::endl;
     if (defensive < -0.9)
-        cout << "(True Offensive)" << endl;
+        std::cout << "(True Offensive)" << std::endl;
     if ((defensive >=-0.9) && (defensive < -0.75))
-        cout << "(Very Offensive)" << endl;
+        std::cout << "(Very Offensive)" << std::endl;
     if ((defensive >=-0.75) && (defensive < -0.25))
-        cout << "(Offensive)" << endl;
+        std::cout << "(Offensive)" << std::endl;
     if ((defensive >=-0.25) && (defensive < 0.00))
-        cout << "(Slightly Offensive)" << endl;
+        std::cout << "(Slightly Offensive)" << std::endl;
     if (defensive == 0.0)
-        cout << "(Neutral)" << endl;
+        std::cout << "(Neutral)" << std::endl;
     if ((defensive >0.0) && (defensive <= 0.25))
-        cout << "(Slightly Defensive)" << endl;
+        std::cout << "(Slightly Defensive)" << std::endl;
     if ((defensive >0.25) && (defensive <= 0.75))
-        cout << "(Defensive)" << endl;
+        std::cout << "(Defensive)" << std::endl;
     if ((defensive >0.75) && (defensive <= 0.9))
-        cout << "(Very Defensive)" << endl;
+        std::cout << "(Very Defensive)" << std::endl;
     if (defensive > 0.9)
-        cout << "(True Defensive)" << endl;
-    cout << "----------------------------------" << endl;
+        std::cout << "(True Defensive)" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
 #endif // DEBUG
     // 1.: Preselection if buried
 
@@ -3441,9 +3439,9 @@ int PLAYER::computerSelectItem()
         current_weapon = getUnburyingTool();
 #ifdef DEBUGctank
         if (current_weapon < WEAPONS)
-            cout << "I have chosen a \"" << weapon[current_weapon].name << "\" to free myself first!" << endl;
+            std::cout << "I have chosen a \"" << weapon[current_weapon].name << "\" to free myself first!" << std::endl;
         else
-            cout << "I have chosen a \"" << item[current_weapon - WEAPONS].name << "\" to free myself first!" << endl;
+            std::cout << "I have chosen a \"" << item[current_weapon - WEAPONS].name << "\" to free myself first!" << std::endl;
 #endif // DEBUG
     }
     else
@@ -3522,12 +3520,12 @@ int PLAYER::computerSelectItem()
 #ifdef DEBUG
         for (int i = 0; i < iPoolSize; i++)
         {
-            cout << i << ".: ";
-            printf( "% 5d Pref - ", _weaponPreference[iWeaponPool[i]]);
+            std::cout << i << ".: ";
+            printf("% 5d Pref - ", _weaponPreference[iWeaponPool[i]]);
             if (iWeaponPool[i] < WEAPONS)
-                cout << "\"" << weapon[iWeaponPool[i]].name << "\"" << endl;
+                std::cout << "\"" << weapon[iWeaponPool[i]].name << "\"" << std::endl;
             else
-                cout << "\"" << item[iWeaponPool[i] - WEAPONS].name << "\"" << endl;
+                std::cout << "\"" << item[iWeaponPool[i] - WEAPONS].name << "\"" << std::endl;
         }
 #endif // DEBUG
         // if boxed mode is on, we have to try to find a target in rotation mode first!
@@ -3570,9 +3568,9 @@ int PLAYER::computerSelectItem()
                     iWeaponPool[i] = current_weapon = 0;    // revert to small missile
 #ifdef DEBUG
                 if (current_weapon < WEAPONS)
-                    cout << " -> \"" << weapon[current_weapon].name << "\" : ";
+                    std::cout << " -> \"" << weapon[current_weapon].name << "\" : ";
                 else
-                    cout << " -> (ERROR!) \"" << item[current_weapon - WEAPONS].name << "\" : ";
+                    std::cout << " -> (ERROR!) \"" << item[current_weapon - WEAPONS].name << "\" : ";
 #endif // DEBUG
                 // 2.: The closer the weapon damage is to the target health, the:
                 //     - more points added if it kills
@@ -3601,7 +3599,7 @@ int PLAYER::computerSelectItem()
                 // Full offensive, useless: 1.0 + ((1.0 * 1.0) / 50.0) = 1.02 <== The damage is like 102% of the real damage
                 // Full defensive, deadly : 1.0 + ((5.0 * 3.0) / 50.0) = 1.30 <== The damage is like 130% of the real damage
 #ifdef DEBUG
-                cout << iWeaponDamage << " damage, ";
+                std::cout << iWeaponDamage << " damage, ";
 #endif // DEBUG
                 if (iTargetLife > iWeaponDamage)
                 {
@@ -3612,7 +3610,7 @@ int PLAYER::computerSelectItem()
                     else
                         iWeaponScore = (10 - (int) type) * (int) (-10.0 / dDamageMod);
 #ifdef DEBUG
-                    cout << "weak: ";
+                    std::cout << "weak: ";
 #endif // DEBUG
                     /* Example calculations:
                        Bot is deadly: (int)type = 5
@@ -3634,7 +3632,7 @@ int PLAYER::computerSelectItem()
                     else
                         iWeaponScore = (int) type * (int) (100.0 * dDamageMod);
 #ifdef DEBUG
-                    cout << "strong: ";
+                    std::cout << "strong: ";
 #endif // DEBUG
                     /* Example calculations:
                        Bot is deadly: (int)type = 5
@@ -3648,7 +3646,7 @@ int PLAYER::computerSelectItem()
                        iWeaponScore = 5 * (100 * 0.5)  = 5 * 50   = 250 */
                 }
 #ifdef DEBUG
-                cout << dDamageMod << " dMod -> ";
+                std::cout << dDamageMod << " dMod -> ";
 #endif // DEBUG
                 // 3.: Check if the way for a laser is clear if choosen
                 if ((current_weapon >= SML_LAZER) && (current_weapon <= LRG_LAZER))
@@ -3724,7 +3722,7 @@ int PLAYER::computerSelectItem()
                 // (it will only have a slight effect unless the prefs are really wide apart and the
                 //  original points very close to each other)
 #ifdef DEBUG
-                cout << iWeaponScore << " points!" << endl;
+                std::cout << iWeaponScore << " points!" << std::endl;
 #endif // DEBUG
                 // See if the choice fits better
                 if (iWeaponScore > iBestWeapScr)
@@ -4346,7 +4344,7 @@ int PLAYER::getBlastValue(TANK * aTarget, int aDamage, int aWeapon, double aDama
     }
 #ifdef DEBUG
     if ((iDmgValue != 0) && (aDamageMod != 1.0))
-        cout << "(blast: " << iDmgValue << ") ";
+        std::cout << "(blast: " << iDmgValue << ") ";
 #endif
     return iDmgValue;
 }
