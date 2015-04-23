@@ -1147,7 +1147,7 @@ int PLAYER::chooseItemToBuy(int aMaxBoostValue)
     i = 0;
     while (i < iTRIES)
     {
-        currItem = (int) fabs(selectRandomItem());
+        currItem = std::abs(selectRandomItem());
         if (currItem >= THINGS)
             currItem %= THINGS;    // Put in range
         // now currItem is 0<= currItem < THINGS
@@ -2115,8 +2115,8 @@ int PLAYER::rangeFind(int &aAngle, int &aPower)
                 // Power modification is calculated depending on overshoot
                 // To raise or lower by 100 pixels, we need aproximately 100 power (at 45°)
                 dPowerMul = pow(1.0 + (fabs((double) iAngle - 135.0) / 50.0), 2.0);    // between 1.0 and 3,61
-                iPowerModFixed = 5 + (int) ((double) type * (fabs(iOvershoot) / 10.0));    // useless 10%, deadly 50% fix
-                iPowerMod = 5 + (int) ((10.0 - (double) type) * (fabs(iOvershoot) / 10.0));    // useless 90%, deadly 50% variable
+                iPowerModFixed = 5 + (int) ((double) type * (std::abs(iOvershoot) / 10.0));    // useless 10%, deadly 50% fix
+                iPowerMod = 5 + (int) ((10.0 - (double) type) * (std::abs(iOvershoot) / 10.0));    // useless 90%, deadly 50% variable
                 iPowerMod = (rand() % iPowerMod) + iPowerModFixed;
             }
             else
@@ -2373,7 +2373,7 @@ int PLAYER::adjustOvershoot(int &aOvershoot, double aReachedX, double aReachedY)
         }
 
         // Be sure to not give a ridiculously high overshoot back:
-        while (abs(iOvershoot) >= MAX_OVERSHOOT)
+        while (std::abs(iOvershoot) >= MAX_OVERSHOOT)
             iOvershoot /= 2;
     }
     aOvershoot = (int) iOvershoot;
