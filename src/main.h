@@ -185,10 +185,13 @@
 // time between volly shots
 #define VOLLY_DELAY 50
 
-// defines for teams
-#define TEAM_SITH 0
-#define TEAM_NEUTRAL 1
-#define TEAM_JEDI 2
+// teams
+enum teams
+{
+    TEAM_SITH,
+    TEAM_NEUTRAL,
+    TEAM_JEDI,
+};
 
 //turns
 enum turnTypes

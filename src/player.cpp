@@ -284,7 +284,7 @@ void PLAYER::initMenuDesc()
     menuopts[i].color = WHITE;
     menuopts[i].value = (double *) &team;
     menuopts[i].min = 0;
-    menuopts[i].max = TEAM_JEDI;
+    menuopts[i].max = 2;
     menuopts[i].increment = 1;
     menuopts[i].defaultv = TEAM_NEUTRAL;
     menuopts[i].format = "%s";
