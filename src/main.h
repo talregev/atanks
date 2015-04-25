@@ -190,7 +190,7 @@ enum teams
 {
     TEAM_SITH,
     TEAM_NEUTRAL,
-    TEAM_JEDI,
+    TEAM_JEDI
 };
 
 //turns
