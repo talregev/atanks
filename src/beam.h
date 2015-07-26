@@ -21,53 +21,80 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "main.h"
-#include "virtobj.h"
 #include "physobj.h"
 
-#define LIGHTNING_SOUND 12
 
-enum beamType
+/** @enum eBeamType
+  * @brief Determines what kind of beam is generated
+**/
+enum eBeamType
 {
-    LIGHTNING_BEAM,
-    LAZER_BEAM
+	BT_WEAPON = 0, //!< Normal weapon, nothing special
+	BT_SDI,        //!< Not a weapon but an SDI laser
+	BT_NATURAL,    //!< Fired by natural disaster, like lightning.
+	BT_MIND_SHOT   //!< AI thinking.
 };
+
 
 class BEAM: public PHYSICAL_OBJECT
 {
 public:
-    int radius;
-    int length;
-    double damage;
-    int clock;
-    int type;
-    WEAPON *weap;
-    int *points; // Allows jagged lines
-    int numPoints;
-    int color;
-    int targetX;
-    int targetY;
 
-    virtual ~BEAM();
-    //BEAM(GLOBALDATA *global, ENVIRONMENT *env, double tX, double tY, double tXv, double tYv, int weaponType);
-    BEAM(GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, int angle, int weaponType);
-    void setLightningPath();
-    void initialise();
-    void draw(BITMAP *dest);
-    //void update();
-    int applyPhysics();
-    virtual int isSubClass(int classNum);
-    inline virtual int getClass()
-    {
-        return BEAM_CLASS;
-    }
-    inline virtual void setEnvironment(ENVIRONMENT *env)
-    {
-        if (!_env || (_env != env))
-        {
-            _env = env;
-            _index = _env->addObject (this);
-        }
-    }
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
+
+	explicit BEAM ( PLAYER* player_, double x_, double y_,
+					int32_t fireAngle, int32_t weaponType,
+					eBeamType beam_type);
+	BEAM          ( PLAYER* player_, double x_, double y_,
+					double tx, double ty, int32_t weaponType,
+					bool is_burnt_out);
+	~BEAM ();
+
+
+	/* ----------------------
+	 * --- Public methods ---
+	 * ----------------------
+	 */
+
+	void	 applyPhysics();
+    void	 draw        ();
+    void     getEndPoint (int32_t &x, int32_t &y); // For mind shots to fetch
+	void     moveStart   (double x_, double y_);   // For the satellite
+
+	eClasses getClass() { return CLASS_BEAM; }
+
+
+private:
+
+	/* -----------------------
+	 * --- Private methods ---
+	 * -----------------------
+	 */
+
+	void createBeamPath();
+	void makeLightningPath();
+	void traceBeamPath ();
+
+
+	/* -----------------------
+	 * --- Private members ---
+	 * -----------------------
+	 */
+
+	eBeamType beamType  = BT_WEAPON;
+	int32_t   color     = WHITE;
+	double    damage    = 0.;
+	int32_t   numPoints = 0;
+	POINT_t*  points    = nullptr;
+	int32_t   radius    = 0;
+	int32_t   seed      = 0;
+	int32_t   tgtLeftX  = 0;
+	int32_t   tgtRightX = 0;
+	WEAPON*   weap      = nullptr;
 };
 
 #endif
+

@@ -21,144 +21,88 @@
  * */
 
 
-#include "main.h"
 #include "physobj.h"
-#include "environment.h"
-#include "globaldata.h"
+#include "debris_pool.h"
 
 enum decorTypes
 {
-    DECOR_SMOKE
+  DECOR_SMOKE = 0,
+  DECOR_DIRT
 };
 
 class DECOR: public PHYSICAL_OBJECT
 {
 public:
-    int type;
-    int radius;
-    int color;
 
-    /* --- constructor --- */
-    inline DECOR (GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, double xvel, double yvel,
-                  int maxRadius, int decorType):PHYSICAL_OBJECT()
-    {
-        type = decorType;
-        initialise();
-        setEnvironment(env);
-        player = NULL;
-        _align = LEFT;
-        _global = global;
-        x = xpos;
-        y = ypos;
-        xv = xvel;
-        yv = yvel;
-        if (maxRadius <= 3)
-            radius = 3;
-        else
-            radius = 3 + (rand() % (maxRadius - 3));
-    }
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
 
-    /* --- destructor --- */
-    inline virtual ~DECOR()
-    {
-        _env->removeObject(this);
-        _global = NULL;
-        _env    = NULL;
-    }
+	// ctor without bitmap
+	explicit
+	DECOR (double x_, double y_, double xv_, double yv_,
+	       int32_t maxRadius, int32_t type_, int32_t delay_);
 
-    /* --- non-inline methods --- */
+	// ctor with bitmap
+	DECOR (double x_, double y_, double xv_, double yv_,
+	       int32_t maxRadius, int32_t type_, int32_t delay_,
+	       sDebrisItem* deb_item, sDebrisItem* met_item);
 
-    /* --- inline methods --- */
 
-    inline virtual void draw(BITMAP *dest)
-    {
-        if (!destroy)
-        {
-            int iCalcRadius = radius;
-            if (type == DECOR_SMOKE)
-                iCalcRadius = (int) (iCalcRadius * (4.0 * age / maxAge)); // The older, the larger...
-            drawing_mode(DRAW_MODE_TRANS, NULL, 0, 0);
-            set_trans_blender(0, 0, 0, 255 - (255 * age / maxAge));
-            circlefill(dest, (int) x, (int) y, iCalcRadius, color);
-            drawing_mode(DRAW_MODE_SOLID, NULL, 0, 0);
-            setUpdateArea((int) x - (iCalcRadius * 2) - 1, (int) y - (iCalcRadius * 2) - 1,
-                           iCalcRadius * 4 + 2, iCalcRadius * 4 + 2);
-            requireUpdate();
-        }
-    }
+	~DECOR();
 
-    inline virtual int applyPhysics()
-    {
-        /** Update: Smoke will age faster, if the wind is stronger! **/
-        int iAgeMod = 1;
-        if (_env->wind && (type == DECOR_SMOKE))
-            iAgeMod = (int) round(fabs(_env->wind / (_env->windstrength / 2.0))) + 1;
-      /* This produces: (with max wind = 8)
-       * wind = 1 : round(1 / (8 / 2)) + 1 = round(1 / 4) + 1 = 0 + 1 = 1 <-- normal aging
-       * wind = 4 : round(4 / (8 / 2)) + 1 = round(4 / 4) + 1 = 1 + 1 = 2 <-- raised aging
-       * wind = 6 : round(6 / (8 / 2)) + 1 = round(6 / 4) + 1 = 2 + 1 = 3 <-- fast aging
-       * wind = 8 : round(8 / (8 / 2)) + 1 = round(8 / 4) + 1 = 2 + 1 = 3 <-- fast aging */
-        age += iAgeMod;
 
-        if (!physics)
-        {
-            double xaccel = (_env->wind - xv) / mass * drag * _env->viscosity;
-            xv += xaccel;
-            x += xv;
-            if (x < 1 || x > (_global->screenWidth-1))
-                destroy = TRUE;
-            double yaccel = (-1 - yv) / mass * drag * _env->viscosity;
-            yv += yaccel;
-            if (y + yv >= _global->screenHeight)
-            {
-                yv = -yv * 0.5;
-                xv *= 0.95;
-            }
-            y += yv;
-        }
-        if (age > maxAge)
-            destroy = TRUE;
+	/* -----------------------------------
+	 * --- Public methods              ---
+	 * -----------------------------------
+	 */
 
-        return hitSomething;
-    }
+	void     applyPhysics ();
+	void     draw         ();
+	void     force_aging  (int32_t frames); // Helper to work against FPS drops.
+	eClasses getClass     () { return (DECOR_SMOKE == type
+	                           ? CLASS_DECOR_SMOKE
+	                           : CLASS_DECOR_DIRT); }
+	bool     isSmoke      () { return DECOR_SMOKE == type; }
 
-    inline virtual void initialise()
-    {
-        PHYSICAL_OBJECT::initialise();
-        physics = 0;
-        age = 0;
-        if (type == DECOR_SMOKE)
-        {
-            int tempCol = 128 + (rand() % 64);
-            color = makecol(tempCol, tempCol, tempCol);
-            mass = 1 + ((double) (rand() % 5) / 10);
-            drag = 0.9 + ((double) (rand() % 90) / 100);
-            maxAge = 20 + (rand() % 90);
-        }
-    }
 
-    inline virtual int isSubClass (int classNum)
-    {
-        if (classNum == DECOR_CLASS)
-            return TRUE;
-        else
-            return FALSE;
-    }
+private:
 
-    inline virtual int getClass()
-    {
-        return DECOR_CLASS;
-    }
+	typedef sDebrisItem item_t;
 
-    inline virtual void setEnvironment(ENVIRONMENT *env)
-    {
-        if (!_env || (_env != env))
-        {
-            _env = env;
-            _index = _env->addObject(this);
-        }
-    }
 
+	/* -----------------------------------
+	 * --- Private methods             ---
+	 * -----------------------------------
+	 */
+
+	bool isOnFloor   ();
+	void repulseDecor();
+	void updateDirt  ();
+
+
+	/* -----------------------------------
+	 * --- Private members             ---
+	 * -----------------------------------
+	 */
+
+	int32_t color        = BLACK;
+	double  curWind      = 0.;      //!< shortcut to help physics calculations.
+	int32_t delay        = -1;      //!< How long until debris must be on its way.
+	int32_t diameter     = 10;      //!< Pre-calculated shortcut for debris items.
+	item_t* dirt         = nullptr; //!< The debris item to throw around if not smoke.
+	int32_t gotPixels    = 0;       //!< Helper for phased debris creation.
+	int32_t grab_x       = 0;       //!< Helper for phased debris creation.
+	int32_t grab_y       = 0;       //!< Helper for phased debris creation.
+	int32_t grabPerCall  = 0;       //!< Helper for phased debris creation.
+	double  maxGravAccel = 1.;      //!< Pre-calculated physics helper.
+	double  maxWind      = 8;       //!< env.windstrength cast to double.
+	double  maxWindAccel = 1.;      //!< Pre-calculated physics helper.
+	item_t* meteor       = nullptr; //!< Metor data if not enough dirt was found, but a meteor stroke.
+	int32_t radius       = 5;
+	bool    ready        = false;   //!< Whether a debris item is finished or not.
+	int32_t type         = DECOR_SMOKE;
 };
 
 #endif

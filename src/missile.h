@@ -24,50 +24,85 @@
 #include "main.h"
 #include "physobj.h"
 
-#define MAX_MISSLE_AGE 20
-#define MAX_METEOR_AGE 5
+// The ages are *seconds* and transformed to frames in the ctor.
+#define MAX_JELLY_AGE    1
+#define MAX_MISSILE_AGE 15
+#define MAX_METEOR_AGE   5
 
-#define TIGGER_HEIGHT 300
+#define SDI_DISTANCE   100
+#define TRIGGER_HEIGHT 300
 
-#define SDI_DISTANCE 100
+
+/** @enum eMissileType
+  * @brief Determines what kind of weapon is shot
+**/
+enum eMissileType
+{
+	MT_WEAPON = 0, //!< Normal weapon, nothing special
+	MT_ITEM,       //!< Not a weapon but an item
+	MT_NATURAL,    //!< Fired by natural disaster, like meteors and dirt balls.
+	MT_MIND_SHOT   //!< AI thinking.
+};
+
 
 class MISSILE: public PHYSICAL_OBJECT
 {
-private:
-    // New values for growing napalm jelly:
-    int iGrowRadius;
-    int bIsGrowing;
-
 public:
-    int countdown;
-    int expSize;
-    int etime;
-    int damage;
-    int eframes;
-    int picpoint;
-    int type;
-    int sound;
-    int funky_colour;
-    WEAPON *weap;
 
-    virtual ~MISSILE();
-    MISSILE(GLOBALDATA *global, ENVIRONMENT *env, double xpos, double ypos, double xvel, double yvel, int weaponType);
-    void draw(BITMAP *dest);
-    int triggerTest();
-    void trigger();
-    // void explode();
-    int applyPhysics();
-    void initialise();
-    int isSubClass(int classNum);
-    void setEnvironment(ENVIRONMENT *env);
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
 
-    inline virtual int getClass()
-    {
-        return MISSILE_CLASS;
-    }
+	explicit MISSILE (PLAYER* player_, double xpos, double ypos,
+	                  double xvel, double yvel,
+	                  int32_t weapon_type, eMissileType missile_type,
+	                  int32_t ai_level_);
+	~MISSILE ();
 
-    int Height_Above_Ground();
-    TANK *Check_SDI(GLOBALDATA *global);       // see if missile should be shot down
+
+	/* ----------------------
+	 * --- Public methods ---
+	 * ----------------------
+	 */
+
+	void    applyPhysics();
+	int32_t bounced     () const;
+	int32_t direction   () const;
+	void    draw        ();
+
+	eClasses getClass() { return CLASS_MISSILE; }
+
+	void    update_submun(ePhysType p_type, int32_t cnt_down);
+
+
+private:
+
+	/* -----------------------
+	 * --- Private methods ---
+	 * -----------------------
+	 */
+
+	void    Check_SDI(); // see if missile should be shot down
+	int32_t Height_Above_Ground();
+	void    Repulse_Missile();
+	void    trigger     ();
+	void    triggerTest ();
+
+
+	/* -----------------------
+	 * --- Private members ---
+	 * -----------------------
+	 */
+
+	int32_t       ai_level     =  0; // Level of the AI shooting a mind shot
+	int32_t       countdown    = -1;
+	int32_t       funky_colour = BLACK;
+	int32_t       growRadius   =  0;
+	bool          isGrowing    = false;
+	eMissileType  missileType  = MT_WEAPON;
+	WEAPON*       weap         = nullptr;
 };
 
 #endif
+

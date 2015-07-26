@@ -17,221 +17,227 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * */
-
-#include <sys/types.h>
-#include <dirent.h>
+ *
+ */
 
 #include "main.h"
+
+
+#include <sys/types.h>
+#include <atomic>
+
+
+#ifndef HAS_DIRENT
+#  if defined(ATANKS_IS_MSVC)
+#    include "extern/dirent.h"
+#  else
+#    include <dirent.h>
+#  endif // Linux
+#  define HAS_DIRENT 1
+#endif //HAS_DIRENT
+
+
+#ifdef USE_MUTEX_INSTEAD_OF_SPINLOCK
+#  include <mutex>
+#  define CSpinLock std::mutex
+#endif // USE_MUTEX_INSTEAD_OF_SPINLOCK
+
+
 #include "text.h"
-
-#define DEFAULT_SCREEN_WIDTH 800
-#define DEFAULT_SCREEN_HEIGHT 600
-
-#define LANGUAGE_ENGLISH 0.0
-#define LANGUAGE_PORTUGUESE 1.0
-#define LANGUAGE_FRENCH 2.0
-#define LANGUAGE_GERMAN 3.0
-#define LANGUAGE_SLOVAK 4.0
-#define LANGUAGE_RUSSIAN 5.0
-#define LANGUAGE_SPANISH 6.0
-#define LANGUAGE_ITALIAN 7.0
-
-#define COLOUR_THEME_REGULAR 0.0
-#define COLOUR_THEME_CRISPY 1.0
-
-#define GAME_NAME_LENGTH 64
-
-#define VIOLENT_DEATH_OFF 0
-#define VIOLENT_DEATH_LIGHT 1
-#define VIOLENT_DEATH_MEDIUM 2
-#define VIOLENT_DEATH_HEAVY 3
-
-#define MAX_INTEREST_AMOUNT 100000
-#define MAX_TEAM_AMOUNT 500000
-
-#define DEMO_WAIT_TIME 60
-
-#define SOUND_AUTODETECT 0
-#define SOUND_OSS 1
-#define SOUND_ESD 2
-#define SOUND_ARTS 3
-#define SOUND_ALSA 4
-#define SOUND_JACK 5
-
-#define FULL_SCREEN_EITHER 10.0
-#define FULL_SCREEN_TRUE  1.0
-#define FULL_SCREEN_FALSE 0.0
-
-#define MAX_AI_TIME 60
-
-#define ALL_SOCKETS -1
+#include "globaltypes.h"
+#include "environment.h"
 
 
-enum skipComputerPlayType
-{
-    SKIP_NONE, SKIP_HUMANS_DEAD// , SKIP_AUTOPLAY
-};
+extern int32_t BLACK;
 
+
+/// Forwards that do not need to be known here
+struct sDebrisItem;
+struct sDebrisPool;
 class PLAYER;
 class TANK;
+class VIRTUAL_OBJECT;
+
+
+#ifndef USE_MUTEX_INSTEAD_OF_SPINLOCK
+/** @brief minimal spinlock class
+  * It can do nothing but lock and unlock. No recursive locks.
+  * But then it is a lot faster and leaner than mutexes and critical
+  * sections ever can be. ;)
+**/
+class CSpinLock
+{
+public:
+	explicit CSpinLock();
+    ~CSpinLock();
+
+    CSpinLock(const CSpinLock&)            = delete;
+    CSpinLock &operator=(const CSpinLock&) = delete;
+
+	bool hasLock();
+	void lock();
+	void unlock();
+private:
+
+	abool_t          is_destroyed;
+	aflag_t          lock_flag;
+	std::thread::id  owner_id;
+};
+#endif // USE_MUTEX_INSTEAD_OF_SPINLOCK
+
+
+/** @class GLOBALDATA
+  * @brief Values used globally during a game round.
+  *
+  * This class holds all values and the corresponding functions for everything
+  * that can change during a game round.
+  *
+  * Everything that is fixed during a game round is consolidated in ENVIRONMENT.
+**/
 class GLOBALDATA
 {
-private:
-    DIR *music_dir;
+	typedef VIRTUAL_OBJECT vobj_t;
+	typedef sDebrisItem    item_t;
+
 public:
-    ~GLOBALDATA();
-    int WHITE, BLACK, PINK;
-    double slope[360][2];
 
-    char *dataDir;
-    char *configDir;
-    BOX *updates, *lastUpdates, window;
-    int updateCount, lastUpdatesCount;
-    int stopwindow;
-    int command;
-    double frames_per_second;
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
 
-    PLAYER **allPlayers;
-    int numPermanentPlayers;
-#ifdef THREADS
-    pthread_rwlock_t* command_lock;
-#endif
-    void wr_lock_command();
-    void unlock_command();
-    int get_command();
-    PLAYER **players;
-    int numPlayers;
-    int numHumanPlayers;
-    int computerPlayersOnly;
-    double skipComputerPlay; /* options requires doubles - grr */
-    /* It's a lot simpler than having
-     * special cases for each type */
-    int numTanks;
-    int maxNumTanks;
-    TANK *currTank;
-
-    int updateMenu;
-
-    int curland, cursky;
-    int get_curland();
-    void unlock_curland();
-    void lock_curland();
-    void destroy_curland_lock();
-    void init_curland_lock();
-#ifdef THREADS
-    pthread_mutex_t* curland_lock;
-#endif
-    int colourDepth;
-    int screenWidth, screenHeight;
-    int menuBeginY, menuEndY;
-    int halfWidth, halfHeight;
-    int width_override, height_override;
-    double temp_screenWidth, temp_screenHeight;
-    PLAYER *client_player;     // the index we use to know which one is the player on the client side
-    gfxDataStruct gfxData;
-    // DATAFILE *SOUND;
-    ENVIRONMENT *env;
-
-    // bool full_screen;
-    // int cacheCirclesBG; // This is just a flag, so it need only be an integer, not a double
-    void Reset_Options();
-
-    /* Logically, these three variables should be ints.  However, converting
-    them to ints (or even an enumerated type) would require some rewritting
-    of the options function - and that's a lot of work. 2003.09.05 */
-    /* Hence being double. 2004.01.05 */
-    double ditherGradients;
-    double detailedLandscape;
-    double detailedSky;
-    double os_mouse;          // whether we should use the OS or custom mouse
-    double colour_theme;     // land and sky gradiant theme
-    double sound_driver;
-
-    /* All this money data; couldn't it be moved into some separate data
-    structure or object */
-    /* It could, but it's not a problem */
-    double startmoney;
-    double interest;
-    double scoreHitUnit;
-    double scoreSelfHit;
-    double scoreUnitDestroyBonus;
-    double scoreUnitSelfDestroy;
-    double scoreRoundWinBonus;
-    double sellpercent;
-    double divide_money;
-    double play_music;
-    double full_screen;
-    int show_scoreboard;
-    char server_name[128], server_port[128];
-
-    /* double? */
-    /* double for options() reasons, no messing about with casting or
-     * special cases. */
-    double turntype;
-    double rounds;
-    int currentround;
-    double sound;
-    double language;
-    int name_above_tank;
-    int tank_status_colour;
-    char *tank_status;
-    char game_name[GAME_NAME_LENGTH];
-    double load_game;
-    double campaign_mode;
-    double violent_death;
-    double saved_game_index;
-    char **saved_game_list;
-    double  max_fire_time;
-    bool close_button_pressed;
-    char *update_string;
-    double check_for_updates;
-    bool demo_mode;
-    double enable_network, listen_port;
-    int draw_background;
-    BITMAP **button, **misc, **missile, **stock, **tank, **tankgun, **title;
-    SAMPLE **sounds;
-    SAMPLE *background_music;
-    FONT *unicode, *regular_font;
-    TEXTBLOCK *war_quotes, *instructions, *ingame;
-    TEXTBLOCK *gloat, *revenge, *retaliation, *suicide, *kamikaze;
-    char *client_message;   // message sent from client to main menu
+	explicit GLOBALDATA ();
+	~GLOBALDATA();
 
 
-    GLOBALDATA();
-    void initialise();
-    int saveToFile_Text(FILE *file);
-    int loadFromFile_Text(FILE *file);
-    int loadFromFile(std::ifstream &my_file);
-    void addPlayer(PLAYER *player);
-    void removePlayer(PLAYER *player);
-    PLAYER *getNextPlayer(int *playerCount);
-    PLAYER *createNewPlayer(ENVIRONMENT *env);
-    void destroyPlayer(PLAYER *player);
-    char *Get_Config_Path();
-    bool Check_Time_Changed();    // check to see if one second has passed
-    bool bIsGameLoaded;
-    bool bIsBoxed;
-    int iHumanLessRounds;
-    double dMaxVelocity;
-    int Load_Sounds();
-    int Load_Bitmaps();
-    SAMPLE *Load_Background_Music();
-    int Load_Fonts();
-    void Change_Font();
-    void Update_Player_Menu();
-    int Load_Text_Files();
-#ifdef NETWORK
-    int Send_To_Clients(char *message);    // send a short message to all network clients
-#endif
-#ifdef DEBUG_AIM_SHOW
-    bool bASD;
-#endif
-    int Find_Data_Dir();
-    double Calc_Max_Velocity();
-    int Count_Humans();
-    int Check_For_Winner();    // returns winner index or -1 for no winner
-    void Credit_Winners(int winner);
+	/* ----------------------
+	 * --- Public methods ---
+	 * ----------------------
+	 */
+	void    addLandSlide      (int32_t left, int32_t right, bool do_lock);
+	void    addObject         (vobj_t* object);
+	bool    areTanksInBox     (int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+	bool    check_time_changed(); // check to see if one second has passed
+	void    clear_objects     ();
+	void    destroy           ();
+	void    do_updates        ();
+	void    first_init        ();
+	void    free_debris_item  (item_t* item);
+	int32_t get_avg_bgcolor   (int32_t x1, int32_t y1, int32_t x2, int32_t y2,
+	                           double xv, double yv);
+	int32_t get_command       ();
+	TANK*   get_curr_tank     ();
+	item_t* get_debris_item   (int32_t radius);
+	TANK*   get_next_tank     (bool* wrapped_around);
+	void    initialise        ();
+	bool    isCloseBtnPressed ();
+	bool    isDirtInBox       (int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+	void    load_from_file    (FILE* file);
+	void    lockLand          ();
+	void    make_bgupdate     (int32_t x, int32_t y, int32_t w, int32_t h);
+	void    make_fullUpdate   ();
+	void    make_update       (int32_t x, int32_t y, int32_t w, int32_t h);
+	void    newRound          ();
+	void    pressCloseButton  ();
+	void    removeObject      (vobj_t* object);
+	void    removeTank        (TANK* tank);
+	void    replace_canvas    ();
+	bool    save_to_file      (FILE* file);
+	void    set_curr_tank     (TANK* tank_);
+	void    set_command       (int32_t cmd);
+	void    slideLand         ();
+	void    unlockLand        ();
+	void    unlockLandSlide   (int32_t left, int32_t right);
+
+	template<typename Head_T>
+	void    getHeadOfClass    (eClasses class_, Head_T** head_)
+	{
+		if (class_ < CLASS_COUNT) {
+			objLocks[class_].lock();
+			*head_ = static_cast<Head_T*>(heads[class_]);
+			objLocks[class_].unlock();
+		} else
+			*head_ = nullptr;
+	}
+
+
+
+	/* ----------------------
+	 * --- Public members ---
+	 * ----------------------
+	 */
+
+	int32_t     AI_clock              = -1;
+	BITMAP*     canvas                = nullptr;
+	const char* client_message        = nullptr; // message sent from client to main menu
+	PLAYER*     client_player         = nullptr; // the index we use to know which one is the player on the client side
+	int32_t     curland               = 0;
+	int32_t     current_drawing_mode  = DRAW_MODE_SOLID;
+	uint32_t    currentround          = 0;
+	int32_t     cursky                = 0;
+	bool        demo_mode             = false;
+	bool        hasTooMuchDeco        = false; // Set to true if the set FPS are too hard to reach.
+	BOX*        lastUpdates           = nullptr;
+	int32_t     lastUpdatesCount      = 0;
+	double      lastwind              = 0.;
+	int32_t     naturals_activated    = 0;
+	int32_t     numTanks              = 0;
+	TANK*       order[MAXPLAYERS];
+	bool        showScoreBoard        = false;
+	bool        skippingComputerPlay  = false;
+	int32_t     stage                 = STAGE_AIM;
+	bool        stopwindow            = false;
+	ai32_t*     surface               = nullptr;
+	char        tank_status[128];
+	int32_t     tank_status_colour    = BLACK;
+	BITMAP*     terrain               = nullptr;
+	bool        updateMenu            = true;
+	BOX*        updates               = nullptr;
+	char*       update_string         = nullptr;
+	int32_t     used_voices           = 0;
+	double      wind                  = 0.;
+
+
+private:
+
+	typedef sDebrisPool debpool_t;
+
+
+	/* -----------------------
+	 * --- Private methods ---
+	 * -----------------------
+	 */
+
+	// Combine make_update and make_bgupdate with safety checks
+	void addUpdate(int32_t x, int32_t y, int32_t w, int32_t h, BOX* target,
+	               int32_t &target_count);
+
+
+	/* -----------------------
+	 * --- Private members ---
+	 * -----------------------
+	 */
+
+	bool            close_button_pressed = false;
+	CSpinLock       cbpLock; //[c]lose_[b]utton_[p]ressed
+	CSpinLock       cmdLock;
+	bool            combineUpdates       = true;
+	int32_t         command              = 0;
+	TANK*           currTank             = nullptr;
+	debpool_t*      debris_pool          = nullptr;
+	int8_t*         done                 = nullptr;
+	double*         dropIncr             = nullptr;
+	int32_t*        dropTo               = nullptr;
+	int32_t*        fp                   = nullptr;
+    vobj_t*         heads[CLASS_COUNT];
+	CSpinLock       landLock;
+	CSpinLock       objLocks[CLASS_COUNT];
+    vobj_t*         tails[CLASS_COUNT];
+	int32_t         tankindex            = 0;
+	int32_t         updateCount          = 0;
+	double*         velocity             = nullptr;
 };
+
+#define HAS_GLOBALDATA 1
 
 #endif

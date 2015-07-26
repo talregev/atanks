@@ -18,1380 +18,1245 @@
  * */
 
 #include <time.h>
+#include <cassert>
 #include "player.h"
 #include "globaldata.h"
 #include "files.h"
-#include "network.h"
-#include "team.h"
+#include "tank.h"
+#include "sound.h"
+#include "debris_pool.h"
 
-GLOBALDATA::GLOBALDATA() : dataDir(NULL),configDir(NULL),updates(NULL),lastUpdates(NULL),allPlayers(NULL),
-                           players(NULL),currTank(NULL),saved_game_list(NULL)
+
+GLOBALDATA::GLOBALDATA()
 {
-    init_curland_lock();
-
-#ifdef THREADS
-    command_lock = (pthread_rwlock_t*) malloc(sizeof(pthread_rwlock_t));
-    if (command_lock == NULL)
-        printf("%s:%i: Could not allocate memory for command_lock.\n", __FILE__, __LINE__);
-    int result = pthread_rwlock_init(command_lock, NULL);
-    switch (result)
-    {
-    case 0:
-        //Successfully initialized
-        break;
-    case EAGAIN:
-        //resource lack
-        printf("%s:%i: Not enough resources to initialize read-write lock.\n", __FILE__, __LINE__);
-        break;
-    case ENOMEM:
-        //out of memory
-        printf("%s:%i: Not enough memory to initialize read-write lock.\n", __FILE__, __LINE__);
-        break;
-    case EPERM:
-        //not authorized
-        printf("%s:%i: Not authorized.\n", __FILE__, __LINE__);
-        break;
-    default:
-        //If the switch ever gets to here, something very wrong happened and pthread_rwlock_init returned
-        //a random value
-        printf("%s:%i: Unknown error code (%i) returned by pthread_rwlock_init.\n", __FILE__, __LINE__, result);
-        break;
-    }
-#endif
-    tank_status = (char *) calloc(128, sizeof(char));
-    if (!tank_status)
-    {
-        perror("globaldata.cpp: Failed allocating memory for tank_status in GLOBALDATA::GLOBALDATA");
-        // exit (1);
-    }
-
-    initialise();
-    language = LANGUAGE_ENGLISH;
-    sound = 1.0;
-    name_above_tank = TRUE;
-    colourDepth = 0;
-    client_player = NULL;
-    screenWidth = DEFAULT_SCREEN_WIDTH;
-    screenHeight = DEFAULT_SCREEN_HEIGHT;
-    width_override = height_override = 0;
-    temp_screenWidth = screenWidth;
-    temp_screenHeight = screenHeight;
-    halfWidth = screenWidth / 2;
-    halfHeight = screenHeight / 2;
-    menuBeginY = (screenHeight - 400) / 2;
-    if (menuBeginY < 0) menuBeginY = 0;
-    menuEndY = screenHeight - menuBeginY;
-    frames_per_second = FRAMES_PER_SECOND;
-    numPermanentPlayers = 10;
-    violent_death = FALSE;
-    ditherGradients = 1;
-    detailedLandscape = 0;
-    detailedSky = 0;
-    colour_theme = COLOUR_THEME_CRISPY;
-    startmoney = 15000;
-    turntype = TURN_RANDOM;
-    skipComputerPlay = SKIP_HUMANS_DEAD;
-    // dataDir = DATA_DIR;
-    Find_Data_Dir();
-    os_mouse = 1.0;
-    full_screen = FULL_SCREEN_FALSE;
-    interest = 1.25;
-    scoreHitUnit = 75;
-    scoreSelfHit = 0;
-    scoreUnitDestroyBonus = 5000;
-    scoreUnitSelfDestroy = 0;
-    scoreRoundWinBonus = 10000;
-    sellpercent = 0.80;
-    game_name[0] = '\0';
-    load_game = 0.0;
-    campaign_mode = 0.0;
-    saved_game_index = 0;
-    saved_game_list = NULL;
-    max_fire_time = 0.0;
-    close_button_pressed = false;
-    divide_money = 0.0;
-    sound_driver = SOUND_AUTODETECT;
-    update_string = NULL;
-    check_for_updates = 1.0;
-    demo_mode = false;
-    env = NULL;
-    war_quotes = instructions = ingame = NULL;
-    gloat = revenge = retaliation = kamikaze = suicide = NULL;
-    client_message= NULL;
-    show_scoreboard = false;
-
-    updates = new BOX[MAXUPDATES];
-    if (!updates)
-    {
-        perror("globaldata.cpp: Failed allocating memory for updates in GLOBALDATA::GLOBALDATA");
-        // exit (1);
-    }
-    lastUpdates = new BOX[MAXUPDATES];
-    if (!lastUpdates)
-    {
-        perror("globaldata.cpp: Failed allocating memory for lastUpdates in GLOBALDATA::GLOBALDATA");
-        // exit (1);
-    }
-    updateCount = 0;
-    lastUpdatesCount = 0;
-
-    // players = new PLAYER*[MAXPLAYERS];
-    players = (PLAYER **) calloc(MAXPLAYERS, sizeof(PLAYER *));
-    if (!players)
-    {
-        perror("globaldata.cpp: Failed allocating memory for players in GLOBALDATA::GLOBALDATA");
-        // exit (1);
-    }
-    numPlayers = 0;
-    rounds = 5;
-
-    if (allPlayers)
-        free(allPlayers);   // avoid potential leak
-    allPlayers = (PLAYER**) calloc(1, sizeof(PLAYER*));
-    if (!allPlayers)
-    {
-        fprintf (stderr, "Failed allocating memory for players in globaldata.cc\n");
-        // exit (1);
-    }
-
-    for (int count = 0; count < 360; count++)
-    {
-        slope[count][0] = sin(count / (180 / PI));
-        slope[count][1] = cos(count / (180 / PI));
-    }
-    slope[270][1] = 0;
-    configDir = NULL;
-    bIsGameLoaded = true;
-    bIsBoxed = false;
-    iHumanLessRounds = -1;
-    dMaxVelocity = 0.0; // Will be set in game()
-#ifdef DEBUG_AIM_SHOW
-    bASD = false; // will be set to true after the first drawing of the map
-#endif
-    enable_network = 0.0;
-#ifdef NETWORK
-    listen_port = DEFAULT_LISTEN_PORT;
-#endif
-    strcpy(server_name, "127.0.0.1");
-    strcpy(server_port, "25645");
-    play_music = 1.0;
-    background_music = NULL;
-    music_dir = NULL;
-    unicode = NULL;
-    regular_font = font;
-    draw_background = TRUE;
+	// memset initialization, because Visual C++ 2013 can't do lists, yet.
+	memset(order,       0, sizeof(TANK*)   * MAXPLAYERS);
+	memset(tank_status, 0, sizeof(char)    * 128);
+	memset(heads,       0, sizeof(vobj_t*) * CLASS_COUNT);
+	memset(tails,       0, sizeof(vobj_t*) * CLASS_COUNT);
 }
+
 
 GLOBALDATA::~GLOBALDATA()
 {
-    int index;
-
-    if (tank_status)
-    {
-        tank_status[0] = 0;
-        free(tank_status);
-    }
-
-    index = 0;
-    while (sounds[index])
-    {
-        destroy_sample(sounds[index]);
-    }
-    free(sounds);
-
-    if (music_dir)
-        closedir(music_dir);
-    if (unicode)
-        destroy_font(unicode);
-
-    if (war_quotes)
-        delete war_quotes;
-    if (instructions)
-        delete instructions;
-    if (ingame)
-        delete ingame;
-    if (gloat)
-        delete gloat;
-    if (revenge)
-        delete revenge;
-    if (retaliation)
-        delete retaliation;
-    if (kamikaze)
-        delete kamikaze;
-    if (suicide)
-        delete suicide;
-    if (allPlayers)
-        free(allPlayers);
-    if (update_string)
-        free(update_string);
-#ifdef THREADS
-    if (command_lock)
-    {
-        int result = pthread_rwlock_destroy(command_lock);
-        switch (result)
-        {
-        case 0:
-            //Successfully destroyed
-            break;
-        case EBUSY:
-            //Some thread forgot to unlock the read-write lock
-            printf("%s:%i: Can't destroy because command_lock is still locked.\n", __FILE__, __LINE__);
-            break;
-        case EINVAL:
-            //Invalid lock
-            printf("%s:%i: The lock is invalid.\n", __FILE__, __LINE__);
-            break;
-        default:
-            //Something went wrong
-            printf("%s:%i: Unknown error code (%i) returned by pthread_rwlock_destroy.\n", __FILE__, __LINE__, result);
-            break;
-        }
-        free(command_lock);
-    }
-    destroy_curland_lock();
-#endif
+	this->destroy();
 }
-//Destroys curland_lock and frees it. If the lock is NULL or an error occurs, a diagnostic message will be printed.
-void GLOBALDATA::destroy_curland_lock()
+
+/// @brief goes through the columns from @a left to @a right and sets slide type according to @a do_lock
+void GLOBALDATA::addLandSlide(int32_t left, int32_t right, bool do_lock)
 {
-#ifdef THREADS
-    if (curland_lock != NULL)
-    {
-        int result = pthread_mutex_destroy(curland_lock);
-        switch (result)
-        {
-        case 0:
-            //Successfully destroyed
-            break;
-        case EBUSY:
-            //Some thread forgot to unlock result
-            printf("%s:%i: Lock is still held.\n", __FILE__, __LINE__);
-            break;
-        case EINVAL:
-            //Invalid lock
-            printf("%s:%i: Lock is invalid.\n", __FILE__, __LINE__);
-            break;
-        default:
-            printf("%s:%i: Unknown error code (%i) returned by pthread_mutex_destroy.\n", __FILE__, __LINE__, result);
-            break;
-        }
-        free(curland_lock);
-    }
-    else
-        printf("%s:%i: Cannot destroy a null mutex.\n", __FILE__, __LINE__);
-#endif
+	// Opt out soon if no landslide is to be done
+	if ( (SLIDE_NONE      == env.landSlideType)
+	  || (SLIDE_TANK_ONLY == env.landSlideType) )
+		return;
+
+	int32_t minX = std::min(left, right);
+	int32_t maxX = std::max(left, right);
+
+	if (minX < 1)
+		minX = 1;
+	if (minX > (env.screenWidth - 1) )
+		minX =  env.screenWidth - 1;
+	if (maxX < 1)
+		maxX = 1;
+	if (maxX > (env.screenWidth - 1) )
+		maxX =  env.screenWidth - 1;
+
+	if (do_lock)
+		memset(&done[minX], 3, sizeof(char) * (maxX - minX + 1) );
+	else
+		memset(&done[minX], 2, sizeof(char) * (maxX - minX + 1) );
 }
-//init_curland_lock() allocates space for curland_lock and then calls pthread_mutex_init to initialize the lock. If the call fails, then this function will print diagnostic messages.
-void GLOBALDATA::init_curland_lock()
+
+
+void GLOBALDATA::addObject (vobj_t *object)
 {
-#ifdef THREADS
-    curland_lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
-    if (!curland_lock)
-        printf("%s:%i: Could not allocate memory for curland_lock.\n", __FILE__, __LINE__);
-    int result = pthread_mutex_init(curland_lock, NULL);
-    switch (result)
-    {
-    case 0:
-        //Succesfully initialized
-        break;
-    case EAGAIN:
-        //Not enough resources
-        printf("%s:%i: Not enough resources to create mutex.\n", __FILE__, __LINE__);
-        break;
-    case ENOMEM:
-        printf("%s:%i: Not enough memory to create mutex.\n", __FILE__, __LINE__);
-        break;
-    case EPERM:
-        printf("%s:%i: Not authorized.\n", __FILE__, __LINE__);
-        break;
-    case EBUSY:
-        printf("%s:%i: The mutex is already initialized.\n", __FILE__, __LINE__);
-        break;
-    case EINVAL:
-        printf("%s:%i: Invalid attribute.\n", __FILE__, __LINE__);
-        break;
-    default:
-        printf("%s:%i: Unknown error code (%i) returned by pthread_mutex_init.\n", __FILE__, __LINE__, result);
-        break;
-    }
-#endif
+	if (nullptr == object)
+		return;
+
+	eClasses class_ = object->getClass();
+
+	objLocks[class_].lock();
+
+	/// --- case 1: first of its kind ---
+	if (nullptr == tails[class_]) {
+		heads[class_] = object;
+		tails[class_] = object;
+	}
+
+	/// --- case 2: normal addition ---
+	else {
+		tails[class_]->next = object;
+		object->prev = tails[class_];
+		tails[class_] = object;
+	}
+
+	objLocks[class_].unlock();
 }
 
-//lock_curland() locks curland and prints diagnostic messages if the lock operation fails.
-//Use get_curland() to read the value instead of directly using lock_curland()/unlock_curland() pairs.
-void GLOBALDATA::lock_curland()
+
+// Combine both make_update and make_bgupdate with safety checks for
+// the dimensions. This reduces code duplication.
+void GLOBALDATA::addUpdate(int32_t x, int32_t y, int32_t w, int32_t h,
+                           BOX* target, int32_t &target_count)
 {
-#ifdef THREADS
-    int result = pthread_mutex_lock(curland_lock);
-    switch (result)
-    {
-    case 0:
-        //Got the lock.
-        break;
-    case EINVAL:
-        //Priority too high
-        printf("%s:%i: Either this thread's priority is higher than the mutex's priority, or the mutex is uninitialized.\n", __FILE__, __LINE__);
-        break;
-    case EAGAIN:
-        printf("%s:%i: Too many locks on the mutex.\n", __FILE__, __LINE__);
-        break;
-    case EDEADLK:
-        //We have the lock already
-        printf("%s:%i: Already have lock.\n", __FILE__, __LINE__);
-        break;
-    default:
-        //What error is this?
-        printf("%s:%i: Unknown error code (%i) returned by pthread_mutex_lock.\n", __FILE__, __LINE__, result);
-        break;
-    }
-#endif
+	assert (target && "ERROR: addUpdate called with nullptr target!");
+
+	bool combined = false;
+
+	assert ( (w > 0) && (h > 0) ); // No zero/negative updates, please!
+
+	int32_t left   = std::max(x - 1, 0);
+	int32_t top    = std::max(y - 1, 0);
+	int32_t right  = std::min(x + w + 1, env.screenWidth);
+	int32_t bottom = std::min(y + h + 1, env.screenHeight);
+
+	// If the update is outside the screen, it is not needed:
+	if ( (bottom <= 0) /* most common case */
+	  || (left   >= env.screenWidth)
+	  || (right  <= 0)
+	  || (top    >= env.screenHeight) )
+		return;
+
+	assert( (left < right ) );
+	assert( (top  < bottom) );
+
+	if ( combineUpdates && target_count
+	  && (target_count < env.max_screen_updates)) {
+		// Re-purpose BOX::w as x2 and BOX::h as y2:
+		BOX prev(target[target_count - 1].x,
+		         target[target_count - 1].y,
+		         target[target_count - 1].x + target[target_count - 1].w,
+		         target[target_count - 1].y + target[target_count - 1].h);
+		BOX next(left, top, right, bottom);
+
+		if ( (next.w > (prev.x - 3))
+		  && (prev.w > (next.x - 3))
+		  && (next.h > (prev.y - 3))
+		  && (prev.h > (next.y - 3)) ) {
+			next.set(next.x < prev.x ? next.x : prev.x,
+			         next.y < prev.y ? next.y : prev.y,
+			         next.w > prev.w ? next.w : prev.w,
+			         next.h > prev.h ? next.h : prev.h);
+			// recalculate x2/y2 back into w/h
+			target[target_count - 1].set(next.x, next.y,
+			                             next.w - next.x,
+			                             next.h - next.y);
+
+			// Make sure the target update is sane:
+			assert( (target[target_count - 1].w > 0)
+			     && (target[target_count - 1].h > 0) );
+
+			combined = true;
+		}
+	}
+
+	if (!combined)
+		target[target_count++].set(left, top, right - left, bottom - top);
+
+	if (!stopwindow && (target_count <= env.max_screen_updates))
+		env.window_update(left, top, right - left, bottom - top);
 }
 
-//unlock_curland() will unlock curland and print diagnostic messages if the unlock operation fails.
-void GLOBALDATA::unlock_curland()
+
+// return true if any living tank is in the given box.
+// left/right and top/bottom are determined automatically.
+bool GLOBALDATA::areTanksInBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 {
-#ifdef THREADS
-    int result = pthread_mutex_unlock(curland_lock);
-    switch (result)
-    {
-    case 0:
-        //Released the lock
-        break;
-    case EPERM:
-        //Forgot to get a lock on the mutex
-        printf("%s:%i: Mutex isn't locked\n", __FILE__, __LINE__);
-        break;
-    case EINVAL:
-        //Uninitialized mutex
-        printf("%s:%i: waiting_sky_lock is uninitialized.\n", __FILE__, __LINE__);
-        break;
-    default:
-        //?
-        printf("%s:%i: Unknown error code (%i) returned by pthread_mutex_unlock.\n", __FILE__, __LINE__, result);
-        break;
-    }
-#endif
+	TANK* lt = static_cast<TANK*>(heads[CLASS_TANK]);
+
+	while (lt) {
+		// Tank found, is it in the box?
+		if ( (!lt->destroy) && lt->isInBox(x1, y1, x2, y2))
+			return true;
+		lt->getNext(&lt);
+	}
+
+	return false;
 }
 
-//get_curland() locks curland, reads the value, unlocks curland, then returns the value. The value returned cannot be assigned to.
-//Use this only for reading the value of curland, not for writing.
-//For writing, use lock_curland()/unlock_curland().
-int GLOBALDATA::get_curland()
-{
-    lock_curland();
-    int c = curland;
-    unlock_curland();
-    return c;
-}
 
-//Locks global->command for writing. Unlock with GLOBALDATA::unlock_command().
-void GLOBALDATA::wr_lock_command()
-{
-#ifdef THREADS
-    int result = pthread_rwlock_wrlock(command_lock);
-    switch (result)
-    {
-    case 0:
-        //Got the lock.
-        break;
-    case EINVAL:
-        //No lock has been created yet
-        printf("%s:%i: Read-write lock is uninitialized.\n", __FILE__, __LINE__);
-        break;
-    case EDEADLK:
-        //We have the lock already
-        printf("%s:%i: Can't lock for writing because the lock is already locked for either reading or writing.\n", __FILE__, __LINE__);
-        break;
-    default:
-        //What error is this?
-        printf("%s:%i: Unknown error code (%i) returned by pthread_rwlock_wrlock.\n", __FILE__, __LINE__, result);
-        break;
-    }
-#endif
-}
-
-//Unlocks a read or a write lock. Do not try to use this function to unlock a lock acquired by calling get_command().
-void GLOBALDATA::unlock_command()
-{
-#ifdef THREADS
-    int result = pthread_rwlock_unlock(command_lock);
-    switch (result)
-    {
-    case 0:
-        //Released the lock
-        break;
-    case EPERM:
-        //We have released all locks
-        printf("%s:%i: Can't unlock because no read or write lock is currently being held.\n", __FILE__, __LINE__);
-        break;
-    case EINVAL:
-        //Uninitialized read-write lock
-        printf("%s:%i: global->command_lock is uninitialized.\n", __FILE__, __LINE__);
-        break;
-    default:
-        //Something went wrong
-        printf("%s:%i: Unknown error code (%i) returned by pthread_rwlock_unlock.\n", __FILE__, __LINE__, result);
-        break;
-    }
-#endif
-}
-
-//Locks global->command for reading, reads value, then unlocks the variable and returns the value.
-int GLOBALDATA::get_command()
-{
-#ifdef THREADS
-    int result = pthread_rwlock_rdlock(command_lock);
-    switch (result)
-    {
-    case 0:
-        //Got the lock
-        break;
-    case EINVAL:
-        //No lock has been created.
-        printf("%s:%i: *global->command_lock is uninitialized.\n", __FILE__, __LINE__);
-        break;
-    case EAGAIN:
-        //Can't read since already trying to read
-        //Maybe locks are not being unlocked?
-        printf("%s:%i: Too many read locks already held.\n", __FILE__, __LINE__);
-        break;
-    case EDEADLK:
-        //Obtaining read locks while possessing a write lock is forbidden with read-write locks.
-        printf("%s:%i: Already own write lock; can't get read lock.\n", __FILE__, __LINE__);
-        break;
-    default:
-        //What error is this?
-        printf("%s:%i: Unknown error code (%i) returned by pthread_rwlock_rdlock.\n", __FILE__, __LINE__, result);
-        break;
-    }
-#endif
-    int c = command;
-    unlock_command();
-    return c;
-}
-
-/*
-This function saves the global data to a text file. If all goes
-well, TRUE is returned, on error, FALSE is returned.
--- Jesse
-*/
-int GLOBALDATA::saveToFile_Text(FILE *file)
-{
-    if (!file)
-        return FALSE;
-
-    setlocale(LC_NUMERIC, "C");
-
-    screenWidth = (int) temp_screenWidth;
-    screenHeight = (int) temp_screenHeight;
-
-    fprintf(file, "*GLOBAL*\n");
-
-    fprintf(file, "NUMPLAYERS=%d\n", numPlayers);
-    fprintf(file, "ROUNDS=%f\n", rounds);
-    fprintf(file, "DITHER=%f\n", ditherGradients);
-    fprintf(file, "DETAILEDSKY=%f\n", detailedSky);
-    fprintf(file, "DETAILEDLAND=%f\n", detailedLandscape);
-    fprintf(file, "STARTMONEY=%f\n", startmoney);
-    fprintf(file, "TURNTYPE=%f\n", turntype);
-    fprintf(file, "INTEREST=%f\n", interest);
-    fprintf(file, "SCOREROUNDWINBONUS=%f\n", scoreRoundWinBonus);
-    fprintf(file, "SCOREHITUNIT=%f\n", scoreHitUnit);
-    fprintf(file, "SCOREUNITDESTROYBONUS=%f\n", scoreUnitDestroyBonus);
-    fprintf(file, "SCOREUNITSELFDESTROY=%f\n", scoreUnitSelfDestroy);
-    fprintf(file, "ACCELERATEDAI=%f\n", skipComputerPlay);
-    fprintf(file, "SELLPERCENT=%f\n", sellpercent);
-    fprintf(file, "ENABLESOUND=%f\n", sound);
-    fprintf(file, "SCREENWIDTH=%d\n", screenWidth);
-    fprintf(file, "SCREENHEIGHT=%d\n", screenHeight);
-    fprintf(file, "OSMOUSE=%f\n", os_mouse);
-    fprintf(file, "NUMPERMANENTPLAYERS=%d\n", numPermanentPlayers);
-    fprintf(file, "LANGUAGE=%f\n", language);
-    fprintf(file, "COLOURTHEME=%f\n", colour_theme);
-    fprintf(file, "FRAMES=%f\n", frames_per_second);
-    fprintf(file, "VIOLENTDEATH=%f\n", violent_death);
-    fprintf(file, "MAXFIRETIME=%f\n", max_fire_time);
-    fprintf(file, "DIVIDEMONEY=%f\n", divide_money);
-    fprintf(file, "CHECKUPDATES=%f\n", check_for_updates);
-    fprintf(file, "NETWORKING=%f\n", enable_network);
-    fprintf(file, "LISTENPORT=%f\n", listen_port);
-    fprintf(file, "SOUNDDRIVER=%f\n", sound_driver);
-    fprintf(file, "PLAYMUSIC=%f\n", play_music);
-    fprintf(file, "FULLSCREEN=%f\n", full_screen);
-    fprintf(file, "SCOREBOARD=%d\n", show_scoreboard);
-    fprintf(file, "***\n");
-    return TRUE;
-}
-
-/*
-This function loads global settings from a text
-file. The function returns TRUE on success and FALSE if
-any erors are encountered.
--- Jesse
-*/
-int GLOBALDATA::loadFromFile_Text(FILE *file)
-{
-    char line[MAX_CONFIG_LINE];
-    int equal_position, line_length;
-    char field[MAX_CONFIG_LINE], value[MAX_CONFIG_LINE];
-    char *result = NULL;
-    bool done = false;
-    double sound_bookmark = 1.0;
-
-    setlocale(LC_NUMERIC, "C");
-    if (!sound)
-        sound_bookmark = sound;
-
-    // read until we hit line "*ENV*" or "***" or EOF
-    do
-    {
-        result = fgets(line, MAX_CONFIG_LINE, file);
-        if (!result)     // eof
-            return FALSE;
-        if (!strncmp(line, "***", 3))     // end of record
-            return FALSE;
-    }
-    while (strncmp(line, "*GLOBAL*", 5));     // read until we hit new record
-
-    while (result && (!done))
-    {
-        // read a line
-        memset(line, '\0', MAX_CONFIG_LINE);
-        result = fgets(line, MAX_CONFIG_LINE, file);
-        if (result)
-        {
-            // if we hit end of the record, stop
-            if (!strncmp(line, "***", 3))
-                return TRUE;
-            // find equal sign
-            line_length = strlen(line);
-            // strip newline character
-            if (line[line_length - 1] == '\n')
-            {
-                line[line_length - 1] = '\0';
-                line_length--;
-            }
-            equal_position = 1;
-            while (( equal_position < line_length) && (line[equal_position] != '='))
-                equal_position++;
-            // make sure we have valid equal sign
-
-            if (equal_position <= line_length)
-            {
-                // seperate field from value
-                memset(field, '\0', MAX_CONFIG_LINE);
-                memset(value, '\0', MAX_CONFIG_LINE);
-                strncpy(field, line, equal_position);
-                strcpy(value, & (line[equal_position + 1]));
-                if (!strcasecmp(field, "numplayers"))
-                    sscanf(value, "%d", &numPlayers);
-                else if (!strcasecmp(field, "rounds"))
-                    sscanf(value, "%lf", &rounds);
-                else if (!strcasecmp(field, "dither"))
-                    sscanf(value, "%lf", &ditherGradients);
-                else if (!strcasecmp(field, "detailedsky"))
-                    sscanf(value, "%lf", &detailedSky);
-                else if (!strcasecmp(field, "detailedland"))
-                    sscanf(value, "%lf", &detailedLandscape);
-                else if (!strcasecmp(field, "startmoney"))
-                    sscanf(value, "%lf", &startmoney);
-                else if (!strcasecmp(field, "turntype"))
-                    sscanf(value, "%lf", &turntype);
-                else if (!strcasecmp(field, "interest"))
-                    sscanf(value, "%lf", &interest);
-                else if (!strcasecmp(field, "scoreroundwinbonus"))
-                    sscanf(value, "%lf", &scoreRoundWinBonus);
-                else if (!strcasecmp(field, "scorehitunit"))
-                    sscanf(value, "%lf", &scoreHitUnit);
-                else if (!strcasecmp(field, "scoreunitdestroybonus"))
-                    sscanf(value, "%lf", &scoreUnitDestroyBonus);
-                else if (!strcasecmp(field, "scoreunitselfdestroy"))
-                    sscanf(value, "%lf", &scoreUnitSelfDestroy);
-                else if (!strcasecmp(field, "acceleratedai"))
-                    sscanf(value, "%lf", &skipComputerPlay);
-                else if (!strcasecmp(field, "sellpercent"))
-                    sscanf(value, "%lf", &sellpercent);
-                else if (!strcasecmp(field, "enablesound"))
-                    sscanf(value, "%lf", &sound);
-                else if (!strcasecmp(field, "screenwidth"))
-                    sscanf(value, "%d", &screenWidth);
-                else if (!strcasecmp(field, "screenheight"))
-                    sscanf(value, "%d", &screenHeight);
-                else if (!strcasecmp(field, "OSMOUSE"))
-                    sscanf(value, "%lf", &os_mouse);
-                else if (!strcasecmp(field, "numpermanentplayers"))
-                    sscanf(value, "%d", &numPermanentPlayers);
-                else if (!strcasecmp(field, "language"))
-                    sscanf(value, "%lf", &language);
-                else if (!strcasecmp(field, "colourtheme"))
-                    sscanf(value, "%lf", &colour_theme);
-                else if (!strcasecmp(field, "frames"))
-                    sscanf(value, "%lf", &frames_per_second);
-                else if (!strcasecmp(field, "violentdeath"))
-                    sscanf(value, "%lf", &violent_death);
-                else if (!strcasecmp(field, "maxfiretime"))
-                    sscanf(value, "%lf", &max_fire_time);
-                else if (!strcasecmp(field, "dividemoney"))
-                    sscanf(value, "%lf", &divide_money);
-                else if (!strcasecmp(field, "checkupdates"))
-                    sscanf(value, "%lf", &check_for_updates);
-                else if (!strcasecmp(field, "networking"))
-                    sscanf(value, "%lf", &enable_network);
-                else if (!strcasecmp(field, "listenport"))
-                    sscanf(value, "%lf", &listen_port);
-                else if (!strcasecmp(field, "sounddriver"))
-                    sscanf(value, "%lf", &sound_driver);
-                else if (!strcasecmp(field, "playmusic"))
-                    sscanf(value, "%lf", &play_music);
-                else if (!strcasecmp(field, "fullscreen"))
-                    sscanf(value, "%lf", &full_screen);
-                else if (!strcasecmp(field, "scoreboard"))
-                    sscanf(value, "%d", &show_scoreboard);
-            }    // end of found field=value line
-
-        }     // end of read a line properly
-    }     // end of while not done
-    if (!sound_bookmark)
-        sound = sound_bookmark;
-
-    if (width_override)
-        screenWidth = width_override;
-    if (height_override)
-        screenHeight = height_override;
-
-    halfWidth = screenWidth / 2;
-    halfHeight = screenHeight / 2;
-
-    menuBeginY = (screenHeight - 400) / 2;
-    if (menuBeginY < 0) menuBeginY = 0;
-    menuEndY = screenHeight - menuBeginY;
-
-    if (skipComputerPlay > SKIP_HUMANS_DEAD)
-        skipComputerPlay = SKIP_HUMANS_DEAD;
-
-    return TRUE;
-}
-
-void GLOBALDATA::initialise()
-{
-    numTanks = 0;
-}
-
-void GLOBALDATA::addPlayer(PLAYER *player)
-{
-    if (numPlayers < MAXPLAYERS)
-    {
-        players[numPlayers] = player;
-        numPlayers++;
-        if ((int) player->type == HUMAN_PLAYER)
-        {
-            numHumanPlayers++;
-            computerPlayersOnly = FALSE;
-        }
-    }
-}
-
-void GLOBALDATA::removePlayer(PLAYER *player)
-{
-    int fromCount = 0;
-    int toCount = -1;
-
-    if ((int) player->type == HUMAN_PLAYER)
-    {
-        numHumanPlayers--;
-        if (numHumanPlayers == 0)
-            computerPlayersOnly = TRUE;
-    }
-
-    while (fromCount < numPlayers)
-    {
-        if (player != players[fromCount])
-        {
-            if ((toCount >= 0) && (fromCount > toCount))
-            {
-                players[toCount] = players[fromCount];
-                players[fromCount] = NULL;
-                toCount++;
-            }
-        }
-        else
-            // Position found,1G now move the remaining players down!
-            toCount = fromCount;
-        fromCount++;
-    }
-    numPlayers--;
-}
-
-PLAYER *GLOBALDATA::getNextPlayer(int *playerCount)
-{
-    (*playerCount)++;
-    if (*playerCount >= numPlayers)
-        *playerCount = 0;
-    return (players[*playerCount]);
-}
-
-PLAYER *GLOBALDATA::createNewPlayer(ENVIRONMENT *env)
-{
-    PLAYER **reallocatedPlayers;
-    PLAYER *player;
-
-    reallocatedPlayers = (PLAYER**) realloc(allPlayers, sizeof(PLAYER*) * (numPermanentPlayers + 1));
-    if (reallocatedPlayers != NULL)
-        allPlayers = reallocatedPlayers;
-    else
-    {
-        perror("atanks.cpp: Failed allocating memory for reallocatedPlayers in GLOBALDATA::createNewPlayer");
-        // exit (1);
-    }
-    player = new PLAYER (this, env);
-    if (!player)
-    {
-        perror("globaldata.cpp: Failed allocating memory for player in GLOBALDATA::createNewPlayer");
-        // exit (1);
-    }
-    allPlayers[numPermanentPlayers] = player;
-    numPermanentPlayers++;
-
-    return player;
-}
-
-void GLOBALDATA::destroyPlayer(PLAYER *player)
-{
-    int fromCount = 0;
-    int toCount = 0;
-
-    for (; fromCount < numPermanentPlayers; fromCount++)
-    {
-        if (allPlayers[fromCount] != player)
-        {
-            allPlayers[toCount] = allPlayers[fromCount];
-            toCount++;
-        }
-    }
-    numPermanentPlayers--;
-}
-
-// This function returns the path to the
-// config directory used by Atanks
-char *GLOBALDATA::Get_Config_Path()
-{
-    char *my_config_dir;
-    char *homedir;
-
-    // figure out file name
-    homedir = getenv(HOME_DIR);
-    if (!homedir)
-        homedir = ".";
-    my_config_dir = (char *) calloc(strlen(homedir) + 24, sizeof(char));
-    if (!my_config_dir)
-        return NULL;
-
-    sprintf(my_config_dir, "%s/.atanks", homedir);
-    return my_config_dir;
-
-}
 
 // This function checks to see if one full second has passed since the
 // last time the function was called.
 // The function returns true if time has passed. The function
 // returns false if time hasn't passed or it was unable to tell
 // how much time has passed.
-bool GLOBALDATA::Check_Time_Changed()
+bool GLOBALDATA::check_time_changed()
 {
-    static time_t last_second = 0;
-    time_t current_second;
+	volatile
+	static time_t last_second    = 0;
+	static time_t current_second = 0;
 
-    current_second = time(NULL);
-    if (current_second == last_second)
-        return false;
+	time(&current_second);
 
-    // time has changed
-    last_second = current_second;
-    return true;
-}
+	if ( current_second == last_second )
+		return false;
 
-/*
- * This function Loads a music file (if there is one available.
- * A pointer to the music file is returned. If no music can
- * be found, then NULL is returned.
-*/
-SAMPLE *GLOBALDATA::Load_Background_Music()
-{
-    SAMPLE *my_sample = NULL;;
-    struct dirent *folder_entry;
+	// time has changed
+	last_second = current_second;
 
-    // see if we should bother
-    if (!play_music)
-        return NULL;
-
-    // see if we have the music folder open
-    if (!music_dir)
-    {
-        char *buffer = (char *) calloc(strlen(configDir) + 32, sizeof(char));
-        if (!buffer)
-            return NULL;
-
-        sprintf(buffer, "%s/music", configDir);
-        music_dir = opendir(buffer);
-        free(buffer);
-        if (!music_dir)
-            return NULL;
-    }
-
-    // at this point we should have an open music folder
-    // the music folder is closed by global's deconstructor
-    // search for files ending in .wav
-    folder_entry = readdir(music_dir);
-    while (folder_entry && (!my_sample))
-    {
-        // we have something, see if it is a wav file
-        if (strstr(folder_entry->d_name, ".wav"))
-        {
-            char *filename = (char *) calloc(strlen(configDir) + strlen(folder_entry->d_name) + 64, sizeof(char));
-            if (filename)
-            {
-                sprintf(filename, "%s/music/%s", configDir, folder_entry->d_name);
-                my_sample = load_sample(filename);
-                free(filename);
-            }
-        }
-        if (!my_sample)
-            folder_entry = readdir(music_dir);
-    }
-
-    if (!folder_entry)  // hit end of folder
-    {
-        closedir(music_dir);
-        music_dir = NULL;
-    }
-
-    return my_sample;
-}
-
-/*
- * This function sets all variables, which get written to the
- * config file, back to their defaults.
- * -- Jesse
- *  */
-void GLOBALDATA::Reset_Options()
-{
-    ditherGradients = 1;
-    detailedLandscape = 0;
-    detailedSky = 0;
-    interest = 1.25;
-    scoreRoundWinBonus = 10000;
-    scoreHitUnit = 75;
-    scoreUnitDestroyBonus = 5000;
-    scoreUnitSelfDestroy = 0;
-    sellpercent = 0.80;
-    startmoney = 15000;
-    turntype = TURN_RANDOM;
-    skipComputerPlay = SKIP_HUMANS_DEAD;
-    sound = 1.0;
-    screenWidth = DEFAULT_SCREEN_WIDTH;
-    screenHeight = DEFAULT_SCREEN_HEIGHT;
-    os_mouse = 1.0;
-    language = LANGUAGE_ENGLISH;
-    colour_theme = COLOUR_THEME_CRISPY;
-    frames_per_second = FRAMES_PER_SECOND;
-    violent_death = FALSE;
-    max_fire_time = 0.0;
-    divide_money = 0.0;
-    check_for_updates = 1.0;
-    enable_network = 0.0;
-#ifdef NETWORK
-    listen_port = DEFAULT_LISTEN_PORT;
-#endif
-    play_music = 1.0;
-} 
-
-/*
- * This function loads all sounds from the data folder and saves them
- * in an array.
- * The function returns TRUE on success or FALSE if an error happens.
-*/
-int GLOBALDATA::Load_Sounds()
-{
-    int file_count = 0, array_size = 10;
-    char *file_name;
-    FILE *my_file;
-    SAMPLE *temp_sample;
-
-    file_name = (char *) calloc(strlen(dataDir) + 128, sizeof(char));
-    if (!file_name)
-        return FALSE;
-
-    // allocate space for sound samples
-    sounds = (SAMPLE **) calloc(10, sizeof(SAMPLE *));
-    if (!sounds)
-    {
-        free(file_name);
-        printf("Unable to create sound array.\n");
-        return FALSE;
-    }
-
-    // read from directory
-    sprintf(file_name, "%s/sound/%d.wav", dataDir, file_count);
-    my_file = fopen(file_name, "r");
-    while ((my_file) && (sounds))
-    {
-        fclose(my_file);
-        temp_sample = load_sample(file_name);
-        if (!temp_sample)
-            printf("An error occured loading sound file %s\n", file_name);
-        sounds[file_count] = temp_sample;
-        file_count++;
-
-        // make sure we have enough memory for more samples
-        if (file_count >= array_size)
-        {
-            array_size += 10;
-            sounds = (SAMPLE**) realloc(sounds, sizeof(SAMPLE*) * (array_size + 1));
-            if (!sounds)
-                printf("We just ran out of memory loading sound files.\n");
-            else
-            {
-                // zero out new memory pointers
-                int counter;
-                for (counter = file_count; counter <= array_size; counter++)
-                    sounds[counter] = NULL;
-            }
-        }
-        sprintf(file_name, "%s/sound/%d.wav", dataDir, file_count);
-        my_file = fopen(file_name, "r");
-    }
-
-    free(file_name);
-    return TRUE;
-}
-
-/*
- * This function loads all the bitmaps needed by th game.
- * Bitmaps are found in a series of sub-folders under the
- * dataDir. The function returns TRUE on success and FALSE
- * if an error occures.
-*/
-int GLOBALDATA::Load_Bitmaps()
-{
-    int file_group = 0;
-    char *file_name;
-    char sub_folder[64];
-    BITMAP *new_bitmap, **bitmap_array;
-
-    file_name = (char *) calloc(strlen(dataDir) + 128, sizeof(char));
-    if (!file_name)
-        return FALSE;
-
-    while (file_group < 7)
-    {
-        int array_size = 10;
-        int file_count = 0;
-
-        // set the folder we're looking at
-        switch (file_group)
-        {
-        case 0:
-            strcpy(sub_folder, "title");
-            break;
-        case 1:
-            strcpy(sub_folder, "button");
-            break;
-        case 2:
-            strcpy(sub_folder, "misc");
-            break;
-        case 3:
-            strcpy(sub_folder, "missile");
-            break;
-        case 4:
-            strcpy(sub_folder, "stock");
-            break;
-        case 5:
-            strcpy(sub_folder, "tank");
-            break;
-        case 6:
-            strcpy(sub_folder, "tankgun");
-            break;
-        }
-
-        // set up empty array
-        bitmap_array = (BITMAP **) calloc(10, sizeof(BITMAP *));
-        if (!bitmap_array)
-        {
-            printf("Ran out of memory, loading bitmaps.\n");
-            free(file_name);
-            return FALSE;
-        }
-
-        // search for files
-        sprintf(file_name, "%s/%s/%d.bmp", dataDir, sub_folder, file_count);
-        FILE *my_file = fopen(file_name, "r");
-        while ((my_file) && (bitmap_array))
-        {
-            fclose(my_file);
-            new_bitmap = load_bitmap(file_name, NULL);
-            if (!new_bitmap)
-                printf("An error occured loading bitmap %s\n", file_name);
-            bitmap_array[file_count] = new_bitmap;
-            file_count++;
-
-            // make sure array is large enough
-            if (file_count >= array_size)
-            {
-                array_size += 10;
-                bitmap_array = (BITMAP **) realloc(bitmap_array, sizeof(BITMAP *) * (array_size + 1));
-                if (!bitmap_array)
-                    printf("Unable to increase array size while loading bitmaps.\n");
-                else
-                {
-                    // clear memory
-                    int count;
-                    for (count = file_count; count <= array_size; count++)
-                        bitmap_array[count] = NULL;
-                }
-            }
-
-            // get next file
-            sprintf(file_name, "%s/%s/%d.bmp", dataDir, sub_folder, file_count);
-            my_file = fopen(file_name, "r");
-        }
-
-        // save the new array
-        switch (file_group)
-        {
-        case 0:
-            title = bitmap_array;
-            break;
-        case 1:
-            button = bitmap_array;
-            break;
-        case 2:
-            misc = bitmap_array;
-            break;
-        case 3:
-            missile = bitmap_array;
-            break;
-        case 4:
-            stock = bitmap_array;
-            break;
-        case 5:
-            tank = bitmap_array;
-            break;
-        case 6:
-            tankgun = bitmap_array;
-            break;
-        }
-
-        file_group++;
-    }
-
-    free(file_name);
-    return TRUE;
-}
-
-// This file loads in extra fonts the game requires.
-// Fonts should be stored in the datafolder. On
-// success the function returns TRUE. When an
-// error occures, it returns FALSE.
-int GLOBALDATA::Load_Fonts()
-{
-    char *filename;
-
-    filename = (char *) calloc(strlen(dataDir) + 32, sizeof(char));
-    if (!filename)
-        return FALSE;
-
-    sprintf(filename, "%s/unicode.dat", dataDir);
-    unicode = load_font(filename, NULL, NULL);
-    if (!unicode)
-        printf("Unable to load font %s\n", filename);
-    free(filename);
-
-    if (unicode)
-    {
-        Change_Font();
-        return TRUE;
-    }
-    else
-        return FALSE;
+	return true;
 }
 
 
-// This function selects the font to use. This should be called
-// right after a language change.
-void GLOBALDATA::Change_Font()
+/// @brief remove and delete *all* objects stored.
+void GLOBALDATA::clear_objects()
 {
-    // FONT *temp_font = font;
+	int32_t class_ = 0;
 
-    if ((language == LANGUAGE_RUSSIAN) || (language == LANGUAGE_GERMAN))
-        font = unicode;
-    else
-        font = regular_font;
-
-    // if (temp_font != font)     // font has changed
-    // {
-    Load_Weapons_Text(this);
-    Load_Text_Files();
-    // }
+	while (class_ < CLASS_COUNT) {
+		while (tails[class_])
+			delete tails[class_];
+		++class_;
+	}
 }
 
-void GLOBALDATA::Update_Player_Menu()
-{
-    int index;
 
-    for (index = 0; index < numPermanentPlayers; index++)
-    {
-        if (allPlayers[index])
-            allPlayers[index]->initMenuDesc();
-    }
+// Call before calling allegro_exit()!
+void GLOBALDATA::destroy()
+{
+	clear_objects();
+
+	if (debris_pool) {
+		delete debris_pool;
+		debris_pool = nullptr;
+	}
+
+	if (canvas)  destroy_bitmap(canvas);     canvas       = nullptr;
+	if (terrain) destroy_bitmap(terrain);    terrain      = nullptr;
+	if (done)         delete [] done;        done         = nullptr;
+	if (fp)           delete [] fp;          fp           = nullptr;
+	if (surface)      delete [] surface;     surface      = nullptr;
+	if (dropTo)       delete [] dropTo;      dropTo       = nullptr;
+	if (velocity)     delete [] velocity;    velocity     = nullptr;
+	if (dropIncr)     delete [] dropIncr;    dropIncr     = nullptr;
+	if (updates)      delete [] updates;     updates      = nullptr;
+	if (lastUpdates)  delete [] lastUpdates; lastUpdates  = nullptr;
 }
 
-// This function loads all needed text files, based on
-// language, into memory. If a previous text was loaded, it is
-// removed from memory first.
-int GLOBALDATA::Load_Text_Files()
+
+void GLOBALDATA::do_updates ()
 {
-    char *filename;
-    char suffix[32];
+	bool isBgUpdNeeded = lastUpdatesCount > 0;
 
-    filename = (char *) calloc(strlen(dataDir) + 64, sizeof(char));
-    if (!filename)
-        return FALSE;
+	acquire_bitmap(screen);
+	for (int32_t i = 0; i < updateCount; ++i) {
+		blit( canvas, screen,
+				updates[i].x, updates[i].y, updates[i].x, updates[i].y,
+				updates[i].w, updates[i].h);
 
-    if (war_quotes)
-        delete war_quotes;
-    if (instructions)
-        delete instructions;
-    if (gloat)
-        delete gloat;
-    if (revenge)
-        delete revenge;
-    if (retaliation)
-        delete retaliation;
-    if (suicide)
-        delete suicide;
-    if (kamikaze)
-        delete kamikaze;
-    if (ingame)
-        delete ingame;
-
-    if (language == LANGUAGE_RUSSIAN)
-        sprintf(filename, "%s/text/war_quotes_ru.txt", dataDir);
-    else if (language == LANGUAGE_SPANISH)
-        sprintf(filename, "%s/text/war_quotes_ES.txt", dataDir);
-    else
-        sprintf(filename, "%s/text/war_quotes.txt", dataDir);
-    war_quotes = new TEXTBLOCK(filename);
-
-    if (language == LANGUAGE_PORTUGUESE)
-        strcpy(suffix, ".pt_BR.txt");
-    else if (language == LANGUAGE_FRENCH)
-        strcpy(suffix, "_fr.txt");
-    else if (language == LANGUAGE_GERMAN)
-        strcpy(suffix, "_de.txt");
-    else if (language == LANGUAGE_SLOVAK)
-        strcpy(suffix, "_sk.txt");
-    else if (language == LANGUAGE_RUSSIAN)
-        strcpy(suffix, "_ru.txt");
-    else if (language == LANGUAGE_SPANISH)
-        strcpy(suffix, "_ES.txt");
-    else if (language == LANGUAGE_ITALIAN)
-        strcpy(suffix, "_it.txt");
-    else
-        strcpy(suffix, ".txt");       // default to english
-
-    sprintf(filename, "%s/text/instr%s", dataDir, suffix);
-    instructions = new TEXTBLOCK(filename);
-
-    sprintf(filename, "%s/text/gloat%s", dataDir, suffix);
-    gloat = new TEXTBLOCK(filename);
-    sprintf(filename, "%s/text/revenge%s", dataDir, suffix);
-    revenge = new TEXTBLOCK(filename);
-    sprintf(filename, "%s/text/retaliation%s", dataDir, suffix);
-    retaliation = new TEXTBLOCK(filename);
-    sprintf(filename, "%s/text/suicide%s", dataDir, suffix);
-    suicide = new TEXTBLOCK(filename);
-    sprintf(filename, "%s/text/kamikaze%s", dataDir, suffix);
-    kamikaze = new TEXTBLOCK(filename);
-    sprintf(filename, "%s/text/ingame%s", dataDir, suffix);
-    ingame = new TEXTBLOCK(filename);
-
-    free(filename);
-    return TRUE;
+		if (isBgUpdNeeded)
+			make_bgupdate( updates[i].x, updates[i].y,
+							updates[i].w, updates[i].h);
+	}
+	release_bitmap(screen);
+	if (!isBgUpdNeeded) {
+		lastUpdatesCount = updateCount;
+		memcpy (lastUpdates, updates, sizeof (BOX) * updateCount);
+	}
+	updateCount = 0;
 }
 
-#ifdef NETWORK
-// This function sends a message to all connected game clients.
-// Returns TRUE on success or FALSE if the message could not be sent
-int GLOBALDATA::Send_To_Clients(char *message)
-{
-    int index;
-    int message_length;
 
-    if (!message)
-        return FALSE;
-    message_length = strlen(message);
-    for (index = 0; index < numPlayers; index++)
-    {
-        if ((players[index]) && (players[index]->type == NETWORK_CLIENT))
-            write(players[index]->server_socket, message, message_length);
-    }     // done all players
-    return TRUE;
+// Do what has to be done after the game starts
+void GLOBALDATA::first_init()
+{
+	// get memory for updates
+	try {
+		updates = new BOX[env.max_screen_updates];
+	} catch (std::bad_alloc &e) {
+		cerr << "globaldata.cpp:" << __LINE__ << ":first_init() : "
+		     << "Failed to allocate memory for updates ["
+		     << e.what() << "]" << endl;
+		exit(1);
+	}
+
+	// get memory for lastUpdates
+	try {
+		lastUpdates = new BOX[env.max_screen_updates];
+	} catch (std::bad_alloc &e) {
+		cerr << "globaldata.cpp:" << __LINE__ << ":first_init() : "
+		     << "Failed to allocate memory for lastUpdates ["
+		     << e.what() << "]" << endl;
+		exit(1);
+	}
+
+	canvas = create_bitmap (env.screenWidth, env.screenHeight);
+	if (!canvas) {
+		cout << "Failed to create canvas bitmap: " << allegro_error << endl;
+		exit(1);
+	}
+
+	terrain = create_bitmap (env.screenWidth, env.screenHeight);
+	if (!terrain) {
+		cout << "Failed to create terrain bitmap: " << allegro_error << endl;
+		exit(1);
+	}
+
+
+	// get memory for the debris pool
+	try {
+		debris_pool = new sDebrisPool(env.max_screen_updates);
+	} catch (std::bad_alloc &e) {
+		cerr << "globaldata.cpp:" << __LINE__ << ":first_init() : "
+		     << "Failed to allocate memory for debris_pool ["
+		     << e.what() << "]" << endl;
+		exit(1);
+	}
+
+
+	try {
+		done     = new int8_t[env.screenWidth]{0};
+		fp       = new int32_t[env.screenWidth]{0};
+		surface  = new ai32_t[env.screenWidth]{ { 0 } };
+		dropTo   = new int32_t[env.screenWidth]{0};
+		velocity = new double[env.screenWidth]{0};
+		dropIncr = new double[env.screenWidth]{0};
+	} catch (std::bad_alloc &e) {
+		cerr << "globaldata.cpp:" << __LINE__ << ":first_init() : "
+		     << "Failed to allocate memory for base data arrays ["
+		     << e.what() << "]" << endl;
+		exit(1);
+	}
+
+	initialise ();
 }
-#endif
 
-// This function tries to figure out where the dataDir is. It
-// first checks the current working directory, ".". If the
-// proper files are not found, then we try the defined value of
-// DATA_DIR.
-// On success, TRUE is returned. If no usable directory is
-// found, then FALSE is returned.
-int GLOBALDATA::Find_Data_Dir()
+
+/** @brief delegate freeing of a debris item to the debris pool.
+  *
+  * This delegating function, instead of making the debris pool public,
+  * exists as a point where locking, if it becomes necessary, can be
+  * added without having to rewrite a lot of code.
+**/
+void GLOBALDATA::free_debris_item(item_t* item)
 {
-    char *current_dir = NULL;
-    FILE *my_phile;
-
-    current_dir = (char *) calloc(strlen(DATA_DIR) + 32, sizeof(char));
-    if (!current_dir)
-        return FALSE;
-
-    // try current dir
-    strcpy(current_dir, "./unicode.dat");   // local dir
-    my_phile = fopen(current_dir, "r");
-    if (my_phile)
-    {
-        fclose(my_phile);
-        free(current_dir);
-        dataDir = ".";
-        return TRUE;
-    }
-
-    // try system dir
-    sprintf(current_dir, "%s/unicode.dat", DATA_DIR);
-    my_phile = fopen(current_dir, "r");
-    if (my_phile)
-    {
-        fclose(my_phile);
-        free(current_dir);
-        dataDir = DATA_DIR;
-        return TRUE;
-    }
-
-    dataDir = DATA_DIR;    // fall back
-    free(current_dir);
-    return FALSE;
-}
-
-/*
-Find the max velocity of a missile
-*/
-double GLOBALDATA::Calc_Max_Velocity()
-{
-    dMaxVelocity = (double) MAX_POWER * (100.0 / (double) frames_per_second) / 100.0;
-    return dMaxVelocity;
+	debris_pool->free_item(item);
 }
 
 
 
-/* See how many humans and networked players we have */
-int GLOBALDATA::Count_Humans()
+int32_t GLOBALDATA::get_avg_bgcolor(int32_t x1, int32_t y1,
+                                    int32_t x2, int32_t y2,
+                                    double xv, double yv)
 {
-    int count;
-    int humans = 0;
+	// Movement
+	int32_t mvx      = ROUND(10. * xv); // eliminate slow movement
+	int32_t mvy      = ROUND(10. * yv); // eliminate slow movement
+	bool    mv_left  = mvx < 0;
+	bool    mv_right = mvx > 0;
+	bool    mv_up    = mvy < 0;
+	bool    mv_down  = mvy > 0;
 
-    for (count = 0; count < numPlayers; count++)
-    {
-        if (players[count]->type == HUMAN_PLAYER)
-            humans++;
-        else if (players[count]->type == NETWORK_CLIENT)
-            humans++;
-    }
+	// Boundaries
+	int32_t min_x = 1;
+	int32_t max_x = env.screenWidth - 2;
+	int32_t min_y = env.isBoxed ? MENUHEIGHT + 1 : MENUHEIGHT;
+	int32_t max_y = env.screenHeight - 2;
 
-    return humans;
+	// Coordinates
+	int32_t left   = std::max(std::min(x1, x2), min_x);
+	int32_t right  = std::min(std::max(x1, x2), max_x);
+	int32_t centre = (x1 + x2) / 2;
+	int32_t top    = std::max(std::min(y1, y2), min_y);
+	int32_t bottom = std::min(std::max(y1, y2), max_y);
+	int32_t middle = (y1 + y2) / 2;
+
+
+	// Colors:
+	int32_t col_tl, col_tc, col_tr; // top row
+	int32_t col_ml, col_mc, col_mr; // middle row
+	int32_t col_bl, col_bc, col_br; // bottom row
+	int32_t r = 0, g = 0, b = 0;
+
+
+	// Get Sky or Terrain colour, whatever fits:
+	/*---------------------
+	  --- Left side ---
+	  ---------------------*/
+	if ( PINK == (col_tl = getpixel(terrain, left, top)) )
+		col_tl = getpixel(env.sky, left, top);
+	if ( PINK == (col_ml = getpixel(terrain, left, middle)) )
+		col_ml = getpixel(env.sky, left, middle);
+	if ( PINK == (col_bl = getpixel(terrain, left, bottom)) )
+		col_bl = getpixel(env.sky, left, bottom);
+
+	/*---------------------
+	  --- The Center ---
+	---------------------*/
+	if ( PINK == (col_tc = getpixel(terrain, centre, top)) )
+		col_tc = getpixel(env.sky, centre, top);
+	if ( PINK == (col_mc = getpixel(terrain, centre, middle)) )
+		col_mc = getpixel(env.sky, centre, middle);
+	if ( PINK == (col_bc = getpixel(terrain, centre, bottom)) )
+		col_bc = getpixel(env.sky, centre, bottom);
+
+	/*----------------------
+	  --- Right side ---
+	----------------------*/
+	if ( PINK == (col_tr = getpixel(terrain, right, top)) )
+		col_tr = getpixel(env.sky, right, top);
+	if ( PINK == (col_mr = getpixel(terrain, right, middle)) )
+		col_mr = getpixel(env.sky, right, middle);
+	if ( PINK == (col_br = getpixel(terrain, right, bottom)) )
+		col_br = getpixel(env.sky, right, bottom);
+
+
+	// Fetch the rgb parts, according to movement:
+
+	/* --- X-Movement --- */
+	if (mv_left) {
+		// Movement to the left, weight left side colour twice
+		r += (GET_R(col_tl) + GET_R(col_ml) + GET_R(col_bl)) * 2;
+		g += (GET_G(col_tl) + GET_G(col_ml) + GET_G(col_bl)) * 2;
+		b += (GET_B(col_tl) + GET_B(col_ml) + GET_B(col_bl)) * 2;
+		// The others are counted once
+		r += GET_R(col_tc) + GET_R(col_mc) + GET_R(col_bc)
+		   + GET_R(col_tr) + GET_R(col_mr) + GET_R(col_br);
+		g += GET_G(col_tc) + GET_G(col_mc) + GET_G(col_bc)
+		   + GET_G(col_tr) + GET_G(col_mr) + GET_G(col_br);
+		b += GET_B(col_tc) + GET_B(col_mc) + GET_B(col_bc)
+		   + GET_B(col_tr) + GET_B(col_mr) + GET_B(col_br);
+	} else if (mv_right) {
+		// Movement to the right, weight right side colour twice
+		r += (GET_R(col_tr) + GET_R(col_mr) + GET_R(col_br)) * 2;
+		g += (GET_G(col_tr) + GET_G(col_mr) + GET_G(col_br)) * 2;
+		b += (GET_B(col_tr) + GET_B(col_mr) + GET_B(col_br)) * 2;
+		// The others are counted once
+		r += GET_R(col_tc) + GET_R(col_mc) + GET_R(col_bc)
+		   + GET_R(col_tl) + GET_R(col_ml) + GET_R(col_bl);
+		g += GET_G(col_tc) + GET_G(col_mc) + GET_G(col_bc)
+		   + GET_G(col_tl) + GET_G(col_ml) + GET_G(col_bl);
+		b += GET_B(col_tc) + GET_B(col_mc) + GET_B(col_bc)
+		   + GET_B(col_tl) + GET_B(col_ml) + GET_B(col_bl);
+	} else {
+		// No x-movement, weight centre colour twice
+		r += (GET_R(col_tc) + GET_R(col_mc) + GET_R(col_bc)) * 2;
+		g += (GET_G(col_tc) + GET_G(col_mc) + GET_G(col_bc)) * 2;
+		b += (GET_B(col_tc) + GET_B(col_mc) + GET_B(col_bc)) * 2;
+		// The others are counted once
+		r += GET_R(col_tl) + GET_R(col_ml) + GET_R(col_bl)
+		   + GET_R(col_tr) + GET_R(col_mr) + GET_R(col_br);
+		g += GET_G(col_tl) + GET_G(col_ml) + GET_G(col_bl)
+		   + GET_G(col_tr) + GET_G(col_mr) + GET_G(col_br);
+		b += GET_B(col_tl) + GET_B(col_ml) + GET_B(col_bl)
+		   + GET_B(col_tr) + GET_B(col_mr) + GET_B(col_br);
+	}
+
+	/* --- Y-Movement --- */
+	if (mv_up) {
+		// Movement upwards, weight top side colour twice
+		r += (GET_R(col_tl) + GET_R(col_tc) + GET_R(col_tr)) * 2;
+		g += (GET_G(col_tl) + GET_G(col_tc) + GET_G(col_tr)) * 2;
+		b += (GET_B(col_tl) + GET_B(col_tc) + GET_B(col_tr)) * 2;
+		// The others are counted once
+		r += GET_R(col_ml) + GET_R(col_mc) + GET_R(col_mr)
+		   + GET_R(col_bl) + GET_R(col_bc) + GET_R(col_br);
+		g += GET_G(col_ml) + GET_G(col_mc) + GET_G(col_mr)
+		   + GET_G(col_bl) + GET_G(col_bc) + GET_G(col_br);
+		b += GET_B(col_ml) + GET_B(col_mc) + GET_B(col_mr)
+		   + GET_B(col_bl) + GET_B(col_bc) + GET_B(col_br);
+	} else if (mv_down) {
+		// Movement downwards, weight bottom side colour twice
+		r += (GET_R(col_bl) + GET_R(col_bc) + GET_R(col_br)) * 2;
+		g += (GET_G(col_bl) + GET_G(col_bc) + GET_G(col_br)) * 2;
+		b += (GET_B(col_bl) + GET_B(col_bc) + GET_B(col_br)) * 2;
+		// The others are counted once
+		r += GET_R(col_ml) + GET_R(col_mc) + GET_R(col_mr)
+		   + GET_R(col_tl) + GET_R(col_tc) + GET_R(col_tr);
+		g += GET_G(col_ml) + GET_G(col_mc) + GET_G(col_mr)
+		   + GET_G(col_tl) + GET_G(col_tc) + GET_G(col_tr);
+		b += GET_B(col_ml) + GET_B(col_mc) + GET_B(col_mr)
+		   + GET_B(col_tl) + GET_B(col_tc) + GET_B(col_tr);
+	} else {
+		// No y-movement, weight middle colour twice
+		r += (GET_R(col_ml) + GET_R(col_mc) + GET_R(col_mr)) * 2;
+		g += (GET_G(col_ml) + GET_G(col_mc) + GET_G(col_mr)) * 2;
+		b += (GET_B(col_ml) + GET_B(col_mc) + GET_B(col_mr)) * 2;
+		// The others are counted once
+		r += GET_R(col_tl) + GET_R(col_tc) + GET_R(col_tr)
+		   + GET_R(col_bl) + GET_R(col_bc) + GET_R(col_br);
+		g += GET_G(col_tl) + GET_G(col_tc) + GET_G(col_tr)
+		   + GET_G(col_bl) + GET_G(col_bc) + GET_G(col_br);
+		b += GET_B(col_tl) + GET_B(col_tc) + GET_B(col_tr)
+		   + GET_B(col_bl) + GET_B(col_bc) + GET_B(col_br);
+	}
+
+
+	/* I know this looks weird, but what we now have is some kind of summed
+	 * matrix, which is always the same:
+	 * Let's assume that xv and yv are both 0.0, so no movement is happening.
+	 * The result is: (In counted times)
+	 * 2|3|2  ( =  7)
+	 * -+-+-
+	 * 3|4|3  ( = 10)
+	 * -+-+-
+	 * 2|3|2  ( =  7)
+	 *          = 24
+	 * And it is always 24, no matter which movement combination you try
+	 */
+
+	r /= 24;
+	g /= 24;
+	b /= 24;
+
+	return makecol(r > 0xff ? 0xff : r,
+	               g > 0xff ? 0xff : g,
+	               b > 0xff ? 0xff : b);
 }
 
 
-/*
-This function checks to see if there is a single player left standing.
-If there is, that player's index is returned. If there is no winner, then
--1 is returned. If all tanks have been destroyed, then -2 is returned.
-*/
-int GLOBALDATA::Check_For_Winner()
+// Locks global->command for reading, reads value, then unlocks the variable
+// and returns the value.
+int32_t GLOBALDATA::get_command()
 {
-    int index = 0, tank_count = 0;
-    int last_alive = -1;
-    
-    while ((index < numPlayers) && (tank_count < 2))
-    {
-        if (players[index]->tank)
-        {
-            last_alive = index;
-            tank_count++;
-        }
-        index++;
-    }
-
-    if ((last_alive >= 0) && (tank_count == 1))
-        return last_alive;
-    else if (tank_count > 1)
-        return -1;
-    else      // all dead
-        return -2;
+	cmdLock.lock();
+	int32_t c = command;
+ 	cmdLock.unlock();
+	return c;
 }
 
 
-/*
-This function gives credits, score and money to the winner(s).
-*/
-void GLOBALDATA::Credit_Winners(int winner)
+TANK* GLOBALDATA::get_curr_tank()
 {
-    int team_members = 0;
-    int index;
-
-    if (winner < 0)    // no winner
-        return;
-
-    if (winner == JEDI_WIN)
-    {
-        for (index = 0; index < numPlayers; index++)
-        {
-            if (players[index]->team == TEAM_JEDI)
-            {
-                players[index]->score++;
-                players[index]->won++;
-                team_members++;
-            }
-        }
-
-    }
-
-    else if (winner == SITH_WIN)
-    {
-        for (index = 0; index < numPlayers; index++)
-        {
-            if (players[index]->team == TEAM_SITH)
-            {
-                players[index]->score++;
-                players[index]->won++;
-                team_members++;
-            }
-        }
-    }
-    else // credit single winner
-    {
-        players[winner]->score++;
-        players[winner]->won++;
-        players[winner]->money += (int) scoreRoundWinBonus;
-    }
-
-    // team gets their money too
-    if (team_members)
-    {
-        int team_bonus = (int) scoreRoundWinBonus / team_members;
-        for (index = 0; index < numPlayers; index++)
-        {
-            if ( ((winner == JEDI_WIN) && (players[index]->team == TEAM_JEDI))
-                 || ((winner == SITH_WIN) && (players[index]->team == TEAM_SITH)) )
-                players[index]->money += team_bonus;
-        }
-    }
+	return currTank;
 }
+
+
+/** @brief delegate getting a debris item to the debris pool.
+  *
+  * This delegating function, instead of making the debris pool public,
+  * exists as a point where locking, if it becomes necessary, can be
+  * added without having to rewrite a lot of code.
+**/
+sDebrisItem* GLOBALDATA::get_debris_item(int32_t radius)
+{
+	return debris_pool->get_item(radius);
+}
+
+
+TANK* GLOBALDATA::get_next_tank(bool *wrapped_around)
+{
+	bool    found    = false;
+	int32_t index    = tankindex + 1;
+	int32_t oldindex = tankindex;
+	int32_t wrapped  = 0;
+
+	while (!found && (wrapped < 2)) {
+		if (index >= MAXPLAYERS) {
+			index = 0;
+			*wrapped_around = true;
+			wrapped++;
+		}
+
+		if ( order[index]
+		  && (index != oldindex)
+		  && !order[index]->destroy)
+			found = true;
+		else
+			++index;
+	}
+
+	tankindex = index;
+
+	// If this tank is valid, the currently selected weapon must be checked
+	// first and changed if depleted
+	TANK* next_tank = order[index];
+	if (next_tank && next_tank->player)
+		next_tank->check_weapon();
+
+	// Whatever happened, the status bar needs an update:
+	if (oldindex != index)
+		updateMenu = true;
+
+	return next_tank;
+}
+
+
+void GLOBALDATA::initialise ()
+{
+	clear_objects();
+	numTanks = 0;
+	clear_to_color (canvas, WHITE);
+	clear_to_color (terrain, PINK);
+
+	for (int32_t i = 0; i < env.screenWidth; ++i) {
+		done[i]    = 0;
+		dropTo[i]  = env.screenHeight - 1;
+		fp[i]      = 0;
+	}
+}
+
+
+// return true if the dirt reaches into the given box.
+// left/right and top/bottom are determined automatically.
+bool GLOBALDATA::isDirtInBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
+{
+	int32_t top = std::max(std::min(y1, y2),
+	                       env.isBoxed ? MENUHEIGHT + 1 : MENUHEIGHT);
+	// Exit early if the box is below the playing area
+	if (top >= env.screenHeight)
+		return false;
+
+	int32_t bottom = std::min(std::max(y1, y2), env.screenHeight - 2);
+	// Exit early if the box is over the playing area
+	if (bottom <= MENUHEIGHT)
+		return false;
+
+	int32_t left   = std::max(std::min(x1, x2), 1);
+	int32_t right  = std::min(std::max(x1, x2), env.screenWidth - 2);
+
+	// If the box is outside the playing area, this loop won't do anything
+	for (int32_t x = left; x <= right; ++x) {
+		if (surface[x].load(ATOMIC_READ) <= bottom)
+			return true;
+	}
+
+	return false;
+}
+
+
+/// @return true if the close button was pressed
+bool GLOBALDATA::isCloseBtnPressed()
+{
+	cbpLock.lock();
+	bool result = close_button_pressed;
+	cbpLock.unlock();
+
+	return result;
+}
+
+
+/** @brief load global data from a file
+  * This method is still present to provide backwards
+  * compatibility with configurations that were saved
+  * before the values were moved to ENVIRONMENT
+**/
+void GLOBALDATA::load_from_file (FILE* file)
+{
+	char  line[ MAX_CONFIG_LINE + 1] = { 0 };
+	char  field[MAX_CONFIG_LINE + 1] = { 0 };
+	char  value[MAX_CONFIG_LINE + 1] = { 0 };
+	char* result                     = nullptr;
+
+	setlocale(LC_NUMERIC, "C");
+
+	// read until we hit line "*GLOBAL*" or "***" or EOF
+	do {
+		result = fgets(line, MAX_CONFIG_LINE, file);
+		if ( !result
+		  || !strncmp(line, "***", 3) )
+			// eof OR end of record
+			return;
+	} while ( strncmp(line, "*GLOBAL*", 8) );
+
+	bool  done = false;
+
+	while (result && !done) {
+		// read a line
+		memset(line, '\0', MAX_CONFIG_LINE);
+		if ( ( result = fgets(line, MAX_CONFIG_LINE, file) ) ) {
+
+			// if we hit end of the record, stop
+			if (! strncmp(line, "***", 3) )
+				return;
+
+			// strip newline character
+			int32_t line_length = strlen(line);
+			while ( line[line_length - 1] == '\n') {
+				line[line_length - 1] = '\0';
+				line_length--;
+			}
+
+			// find equal sign
+			int32_t equal_position = 1;
+			while ( ( equal_position < line_length )
+				 && ( line[equal_position] != '='  ) )
+				equal_position++;
+
+			// make sure the equal sign position is valid
+			if (line[equal_position] != '=')
+				continue; // Go to next line
+
+			// seperate field from value
+			memset(field, '\0', MAX_CONFIG_LINE);
+			memset(value, '\0', MAX_CONFIG_LINE);
+			strncpy(field, line, equal_position);
+			strncpy(value, &( line[equal_position + 1] ), MAX_CONFIG_LINE);
+
+
+			// Values that were moved to ENVIRONMENT:
+			// They are loaded, for compatibility, but the next
+			// save will put them into the correct section anyway.
+			// So these can eventually be removed.
+			if (!strcasecmp(field, "acceleratedai")) {
+				sscanf(value, "%d", &env.skipComputerPlay);
+				if (env.skipComputerPlay > SKIP_HUMANS_DEAD)
+					env.skipComputerPlay = SKIP_HUMANS_DEAD;
+			} else if (!strcasecmp(field, "checkupdates")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.check_for_updates = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "colourtheme") ) {
+				sscanf(value, "%d", &env.colourTheme);
+				if (env.colourTheme < CT_REGULAR) env.colourTheme = CT_REGULAR;
+				if (env.colourTheme > CT_CRISPY)  env.colourTheme = CT_CRISPY;
+			} else if (!strcasecmp(field, "debrislevel") )
+				sscanf(value, "%d", &env.debris_level);
+			else if (!strcasecmp(field, "detailedland")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.detailedLandscape = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "detailedsky")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.detailedSky = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "dither")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.ditherGradients = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "dividemoney") ) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.divide_money = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "enablesound")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.sound_enabled = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "frames") ) {
+				int32_t new_fps = 0;
+				sscanf(value, "%d", &new_fps);
+				env.set_fps(new_fps);
+			} else if (!strcasecmp(field, "fullscreen"))
+				sscanf(value, "%d", &env.full_screen);
+			else if (!strcasecmp(field, "interest"))
+				sscanf(value, "%lf", &env.interest);
+			else if (!strcasecmp(field, "language") ) {
+				uint32_t stored_lang = 0;
+				sscanf(value, "%u", &stored_lang);
+				env.language = static_cast<eLanguages>(stored_lang);
+			} else if (!strcasecmp(field, "listenport"))
+				sscanf(value, "%d", &env.network_port);
+			else if (!strcasecmp(field, "maxfiretime") )
+				sscanf(value, "%d", &env.maxFireTime);
+			else if (!strcasecmp(field, "networking")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.network_enabled = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "numpermanentplayers"))
+				sscanf(value, "%d", &env.numPermanentPlayers);
+			else if (!strcasecmp(field, "OSMOUSE")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.osMouse = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "playmusic")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				env.play_music = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "rounds") )
+				sscanf(value, "%u", &env.rounds);
+			else if (!strcasecmp(field, "screenwidth")
+				  && !env.temp_screenWidth) {
+				sscanf(value, "%d", &env.screenWidth);
+				env.halfWidth = env.screenWidth / 2;
+				env.temp_screenWidth = env.screenWidth;
+			} else if (!strcasecmp(field, "screenheight")
+				  && !env.temp_screenHeight) {
+				sscanf(value, "%d", &env.screenHeight);
+				env.halfHeight = env.screenHeight / 2;
+				env.temp_screenHeight = env.screenHeight;
+			}
+			else if (!strcasecmp(field, "scorehitunit"))
+				sscanf(value, "%d", &env.scoreHitUnit);
+			else if (!strcasecmp(field, "scoreselfhit"))
+				sscanf(value, "%d", &env.scoreSelfHit);
+			else if (!strcasecmp(field, "scoreroundwinbonus"))
+				sscanf(value, "%d", &env.scoreRoundWinBonus);
+			else if (!strcasecmp(field, "scoreteamhit"))
+				sscanf(value, "%d", &env.scoreTeamHit);
+			else if (!strcasecmp(field, "scoreunitdestroybonus"))
+				sscanf(value, "%d", &env.scoreUnitDestroyBonus);
+			else if (!strcasecmp(field, "scoreunitselfdestroy"))
+				sscanf(value, "%d", &env.scoreUnitSelfDestroy);
+			else if (!strcasecmp(field, "sellpercent"))
+				sscanf(value, "%lf", &env.sellpercent);
+			else if (!strcasecmp(field, "sounddriver"))
+				sscanf(value, "%d", &env.sound_driver);
+			else if (!strcasecmp(field, "startmoney"))
+				sscanf(value, "%d", &env.startmoney);
+			else if (!strcasecmp(field, "turntype"))
+				sscanf(value, "%d", &env.turntype);
+			else if (!strcasecmp(field, "violentdeath") )
+				sscanf(value, "%d", &env.violent_death);
+		}     // end of read a line properly
+	}     // end of while not done
+}
+
+
+void GLOBALDATA::lockLand()
+{
+	landLock.lock();
+}
+
+
+void GLOBALDATA::make_bgupdate (int32_t x, int32_t y, int32_t w, int32_t h)
+{
+	if (lastUpdatesCount >= env.max_screen_updates) {
+		make_fullUpdate();
+		return;
+	}
+
+	assert( (w > 0) && (h > 0) );
+
+	if ( (w > 0) && (h > 0) )
+		addUpdate(x, y, w, h, lastUpdates, lastUpdatesCount);
+}
+
+
+void GLOBALDATA::make_fullUpdate()
+{
+	// Replace Updates with a full screen update:
+	combineUpdates   = false;
+	updateCount      = 0;
+	lastUpdatesCount = 0;
+
+	// They are split into 2 x 2 updates:
+	for (int32_t x = 0; x < 2; ++x) {
+		make_update(  env.halfWidth * x, 0,
+		              env.halfWidth,     env.halfHeight);
+		make_bgupdate(env.halfWidth * x, 0,
+		              env.halfWidth,     env.halfHeight);
+		make_update(  env.halfWidth * x, env.halfHeight,
+		              env.halfWidth,     env.halfHeight);
+		make_bgupdate(env.halfWidth * x, env.halfHeight,
+		              env.halfWidth,     env.halfHeight);
+	}
+
+	combineUpdates   = true;
+}
+
+
+void GLOBALDATA::make_update (int32_t x, int32_t y, int32_t w, int32_t h)
+{
+	if (updateCount >= env.max_screen_updates) {
+		make_fullUpdate();
+		return;
+	}
+
+	// These asserts should catch screwed updates that make no sense
+	assert( (h <= env.screenHeight) && (w <= env.screenWidth) );
+	assert( (w > 0) && (h > 0) );
+
+	if ( (h > 0) && (w > 0) )
+		addUpdate(x, y, w, h, updates, updateCount);
+}
+
+
+void GLOBALDATA::newRound()
+{
+	if ( (currentround > 0) && (currentround-- < env.nextCampaignRound) )
+		env.nextCampaignRound -= env.campaign_rounds;
+
+	tankindex          = 0;
+	naturals_activated = 0;
+	combineUpdates     = true;
+
+	// clean all but texts and tanks
+	int32_t class_ = 0;
+	while (class_ < CLASS_COUNT) {
+		if ( (CLASS_FLOATTEXT != class_) && (CLASS_TANK != class_) ) {
+			while (tails[class_])
+				delete tails[class_];
+		}
+		++class_;
+	}
+
+
+	// Re-init land slide
+	for (int32_t i = 0; i < env.screenWidth; ++i) {
+		done[i]    = 2; // Check at once
+		dropTo[i]  = env.screenHeight - 1;
+		fp[i]      = 0;
+	}
+
+	// Init order array
+	for (int32_t i = 0; i < MAXPLAYERS; ++i)
+		order[i] = nullptr;
+}
+
+
+/// @brief Tell global that the close button was pressed
+void GLOBALDATA::pressCloseButton()
+{
+	cbpLock.lock();
+	close_button_pressed = true;
+	cbpLock.unlock();
+	set_command(GLOBAL_COMMAND_QUIT);
+}
+
+
+void GLOBALDATA::removeObject (vobj_t *object)
+{
+	if (nullptr == object)
+		return;
+
+	eClasses class_ = object->getClass();
+
+	/// --- 1: Is the list empty? ---
+	if (nullptr == heads[class_])
+		return;
+
+	objLocks[class_].lock();
+
+	/// --- 2: If the object is head, set it anew:
+	if (object == heads[class_])
+		heads[class_] = object->next;
+
+	/// --- 4: If the object is tail, set it anew:
+	if (object == tails[class_])
+		tails[class_] = object->prev;
+
+	/// --- 5: Take it out of the list:
+	if (object->prev)
+		object->prev->next = object->next;
+	if (object->next)
+		object->next->prev = object->prev;
+	object->prev = nullptr;
+	object->next = nullptr;
+
+	objLocks[class_].unlock();
+}
+
+
+void GLOBALDATA::removeTank(TANK* tank)
+{
+	if (nullptr == tank)
+		return;
+
+	for (int32_t i = 0 ; i < MAXPLAYERS ; ++i) {
+		if (tank == order[i])
+			order[i] = nullptr;
+	}
+}
+
+
+void GLOBALDATA::replace_canvas ()
+{
+
+	for (int32_t i = 0; i < lastUpdatesCount; ++i) {
+		if ((lastUpdates[i].y + lastUpdates[i].h) > MENUHEIGHT) {
+			blit (env.sky, canvas, lastUpdates[i].x, lastUpdates[i].y - MENUHEIGHT,
+			                       lastUpdates[i].x, lastUpdates[i].y,
+			                       lastUpdates[i].w, lastUpdates[i].h);
+			masked_blit (terrain, canvas, lastUpdates[i].x, lastUpdates[i].y,
+			                              lastUpdates[i].x, lastUpdates[i].y,
+			                              lastUpdates[i].w, lastUpdates[i].h);
+		} // End of having an update below the top bar
+	}
+
+	int32_t l = 0;
+	int32_t r = env.screenWidth - 1;
+	int32_t t = MENUHEIGHT;
+	int32_t b = env.screenHeight - 1;
+
+	vline(canvas, l,     t, b, env.wallColour); // Left edge
+	vline(canvas, l + 1, t, b, env.wallColour); // Left edge
+	vline(canvas, r,     t, b, env.wallColour); // right edge
+	vline(canvas, r - 1, t, b, env.wallColour); // right edge
+	hline(canvas, l,     b, r, env.wallColour); // bottom edge
+	if (env.isBoxed)
+		hline(canvas, l, t, r, env.wallColour); // top edge
+
+	lastUpdatesCount = 0;
+}
+
+
+// Set a new command, lock guarded
+void GLOBALDATA::set_command(int32_t cmd)
+{
+	cmdLock.lock();
+	command = cmd;
+	cmdLock.unlock();
+}
+
+
+void GLOBALDATA::set_curr_tank(TANK* tank_)
+{
+	if (tank_ != currTank) {
+		if (currTank)
+			currTank->deactivate();
+		currTank = tank_;
+		if (currTank)
+			currTank->activate();
+	}
+}
+
+
+/** @brief go through the land and slide what is to be slid and is not locked
+  * Slide land basic control is done using the 'done[]' array.
+  * done[x] == 0 : Nothing to do. All values assumed to be correct.
+  * done[x] == 1 : This column is currently in sliding.
+  * done[x] == 2 : This column is about to be slid, but the base values aren't set.
+  * done[x] == 3 : This column is about to be slid but locked. (Explosion not done)
+**/
+void GLOBALDATA::slideLand()
+{
+	// Opt out soon if no landslide is to be done
+	if ( (SLIDE_NONE      == env.landSlideType)
+	  || (SLIDE_TANK_ONLY == env.landSlideType)
+	  || ( (SLIDE_CARTOON == env.landSlideType)
+		&& (env.time_to_fall > 0) ) )
+		return;
+
+	for (int32_t col = 1; col < (env.screenWidth - 1); ++col) {
+
+		// Skip this column if it is done or locked
+		if (!done[col] || (3 == done[col]))
+			continue;
+
+		// Set base settings if this hasn't happen, yet
+		if (2 == done[col]) {
+			surface[col].store(0, ATOMIC_WRITE);
+			dropTo[col] = env.screenHeight - 1;
+			done[col]   = 1;
+
+			// Calc the top and bottom of the column to slide
+
+			// Find top-most non-PINK pixel
+			int32_t row = 0;
+			for ( ;(row < dropTo[col])
+				&& (PINK == getpixel(terrain, col, row));
+				++row) ;
+			surface[col].store(row, ATOMIC_WRITE); // This is the top pixel with all gaps
+
+			// Find bottom-most PINK pixel
+			int32_t top_row = row;
+			for (row = dropTo[col];
+				   (row > top_row)
+				&& (PINK != getpixel(terrain, col, row));
+				--row) ;
+			dropTo[col] = row;
+
+			// Find bottom-most unsupported pixel
+			for ( ;(row >= top_row)
+				&& (PINK == getpixel(terrain, col, row));
+				--row) ;
+
+			// Check whether there is anything to do or not
+			if ((row >= top_row) && (top_row < dropTo[col])) {
+				fp[col]       = row - top_row + 1;
+				velocity[col] = 0; // Not yet
+				done[col]     = 1; // Can be processed
+			}
+
+			// Otherwise this column is done
+			else {
+				if ( !skippingComputerPlay
+				  && (velocity[col] > .5)
+				  && (fp[col] > 1) )
+					play_natural_sound(DIRT_FRAGMENT, col, 64,
+							1000 - (fp[col] * 800 / env.screenHeight));
+				done[col] = 0; // Nothing to do
+				fp[col]   = 0;
+			}
+		} // End of preparations
+
+		// Do the slide if possible
+		if (1 == done[col]) {
+
+			// Only slide if no neighbours are locked
+			bool can_slide = true;
+			for (int32_t j = col - 1; can_slide && (j > 0) ; --j) {
+				if (3 == done[j])
+					can_slide = false;
+				else if (!done[j])
+					j = 0; // no further look needed.
+			}
+			for (int32_t j = col + 1; can_slide && (j < (env.screenWidth - 1)) ; ++j) {
+				if (3 == done[j])
+					can_slide = false;
+				else if (!done[j])
+					j = env.screenWidth; // no further look needed.
+			}
+
+			if (can_slide) {
+				// Do instant first, because only GRAVITY remains
+				// which is the case if cartoon wait time is over.
+				if ( (SLIDE_INSTANT == env.landSlideType) || skippingComputerPlay) {
+					int32_t surf = surface[col].load(ATOMIC_READ);
+					make_bgupdate (col, surf, 1, dropTo[col] - surf + 1);
+					make_update   (col, surf, 1, dropTo[col] - surf + 1);
+					blit (terrain, terrain, col, surf, col,
+					      dropTo[col] - fp[col] + 1, 1, fp[col]);
+					vline(terrain, col, surf, dropTo[col] - fp[col], PINK);
+					velocity[col] = fp[col]; // Or no sound would be played if done
+					done[col]     = 2; // Recheck
+				} else {
+					velocity[col] += env.gravity;
+					dropIncr[col] += velocity[col];
+
+					int32_t dropAdd = ROUND(dropIncr[col]);
+					int32_t max_top = MENUHEIGHT + (env.isBoxed ? 1 : 0);
+
+					if (dropAdd > 0) {
+
+						int32_t top_row = surface[col].load(ATOMIC_READ);
+
+						assert( (top_row >= 0)
+						     && (top_row < terrain->h)
+						     && "ERROR: top_row out of range!");
+
+						// If the top pixel is not PINK, and the source is not
+						// too high, increase dropAdd:
+						int32_t over_top = top_row - dropAdd;
+						if ( ( over_top <= max_top)
+						  && ( over_top >  0) ) {
+							if (PINK != getpixel(terrain, col, over_top) ) {
+								++dropAdd;
+								--over_top;
+							}
+						}
+
+						if (dropAdd > (dropTo[col] - (top_row + fp[col])) ) {
+							dropAdd       = static_cast<int32_t>(dropTo[col]
+							                               - (top_row + fp[col])
+							                               + 1);
+							dropIncr[col] = dropAdd;
+							done[col]     = 2; // Recheck
+							over_top      = top_row - dropAdd;
+						}
+
+						int32_t slide_height = fp[col] + dropAdd;
+
+						assert( (over_top >= 0)
+						     && (over_top < terrain->h)
+						     && "ERROR: top_row - dropAdd out of range!");
+						assert( (slide_height > 0)
+						     && (slide_height <= terrain->h)
+						     && "ERROR: slide_height out of range!");
+						assert( (  (over_top + slide_height) <= terrain->h)
+						     && "ERROR: over_top + slide_height is out of range!");
+						assert( (  (top_row + slide_height) <= terrain->h)
+						     && "ERROR: over_top + slide_height is out of range!");
+
+						blit (terrain, terrain,
+								col, over_top,
+								col, top_row, 1,
+								slide_height);
+						make_bgupdate(col, over_top, 1,
+						              slide_height + dropAdd + 1);
+						make_update  (col, over_top, 1,
+						              slide_height + dropAdd + 1);
+						// If the top row reaches to the ceiling, there might
+						// not be a PINK pixel to blit. In that case, one has
+						// to be painted "by hand", or the slide will produce
+						// nice long columns. (Happens with dirt balls when
+						// "fixed" under the menubar.
+						if (over_top <= max_top) {
+							putpixel(terrain, col, max_top, PINK);
+						}
+
+						surface[col].fetch_add(dropAdd);
+						dropIncr[col] -= dropAdd;
+					}
+				}
+			}
+		} // End of actual slide
+	} // End of looping columns
+}
+
+
+void GLOBALDATA::unlockLand()
+{
+	landLock.unlock();
+}
+
+
+/// @brief goes through the columns from @a left to @a right and unlocks what is locked.
+void GLOBALDATA::unlockLandSlide(int32_t left, int32_t right)
+{
+	// Opt out soon if no landslide is to be done
+	if ( (SLIDE_NONE      == env.landSlideType)
+	  || (SLIDE_TANK_ONLY == env.landSlideType) )
+		return;
+
+	int32_t minX = std::min(left, right);
+	int32_t maxX = std::max(left, right);
+
+	if (minX < 1)
+		minX = 1;
+	if (maxX > (env.screenWidth - 1) )
+		maxX =  env.screenWidth - 1;
+
+	for (int32_t col = minX; col <= maxX; ++col) {
+		if ((done[col] > 2) || !done[col])
+			done[col] = 2;
+	}
+}
+
+#ifndef USE_MUTEX_INSTEAD_OF_SPINLOCK
+
+/// === Spin Lock Implementations ===
+
+/// @brief Default ctor
+CSpinLock::CSpinLock() :
+	is_destroyed(ATOMIC_VAR_INIT(false))
+{
+	lock_flag.clear(); // Done this way, because VC++ can't do it normally.
+	owner_id = std::thread::id();
+}
+
+
+/// @brief destructor - mark as destroyed, lock and go
+CSpinLock::~CSpinLock()
+{
+	std::thread::id this_id = std::this_thread::get_id();
+	bool need_lock = (owner_id != this_id);
+
+	if (need_lock)
+		lock();
+	is_destroyed.store(true);
+	if (need_lock)
+		unlock();
+}
+
+
+/// @brief return true if this thread has an active lock
+bool CSpinLock::hasLock()
+{
+	// This works, because unlock() sets the owner_id to -1.
+	return (std::this_thread::get_id() == owner_id);
+}
+
+
+/** @brief Get a lock
+  * Warning: No recursive locking possible! Only lock once!
+**/
+void CSpinLock::lock()
+{
+	std::thread::id this_id = std::this_thread::get_id();
+	assert( (owner_id != this_id) && "ERROR: Lock already owned!");
+
+	if (false == is_destroyed.load(ATOMIC_READ)) {
+		while (lock_flag.test_and_set()) {
+			std::this_thread::yield();
+		}
+		owner_id = this_id;
+	}
+}
+
+/// @brief unlock if this thread owns the lock. Otherwise do nothing.
+void CSpinLock::unlock()
+{
+	std::thread::id this_id = std::this_thread::get_id();
+	assert( (owner_id == this_id) && "ERROR: Lock *NOT* owned!");
+
+	if (owner_id == this_id) {
+		owner_id = std::thread::id();
+		lock_flag.clear(std::memory_order_release);
+	}
+}
+
+#endif // USE_MUTEX_INSTEAD_OF_SPINLOCK
+

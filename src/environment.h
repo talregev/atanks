@@ -1,5 +1,5 @@
-#ifndef ENVIRONMENT_DEFINE
-#define ENVIRONMENT_DEFINE
+#ifndef	ENVIRONMENT_DEFINE
+#define	ENVIRONMENT_DEFINE
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -22,167 +22,262 @@
 
 
 #include "main.h"
+#include "network.h"
+#include "gfxData.h"
+#include "text.h"
 
-enum landscapeTypes
-{
-    LANDTYPE_RANDOM,
-    LANDTYPE_CANYONS,
-    LANDTYPE_MOUNTAINS,
-    LANDTYPE_VALLEYS,
-    LANDTYPE_HILLS,
-    LANDTYPE_FOOTHILLS,
-    LANDTYPE_PLAIN,
-    LANDTYPE_NONE
-};
 
-enum landSlideTypes
-{
-    LANDSLIDE_NONE,       // gravity does not exist
-    LANDSLIDE_TANK_ONLY,  // dirt falls, tank does not
-    LANDSLIDE_INSTANT,    // dirt falls without you seeing it
-    LANDSLIDE_GRAVITY,    // normal
-    LANDSLIDE_CARTOON     // gravity is delayed
-};
+// As everything depends on environment.h, PLAYER, TANK and VIRTUAL_OBJECT
+// Must be forwarded here, and included before the ENVIRONMENT definition
+class VIRTUAL_OBJECT;
+class TANK;
+class PLAYER;
+
+
+#ifndef HAS_DIRENT
+#  if defined(ATANKS_IS_MSVC)
+#    include "extern/dirent.h"
+#  else
+#    include <dirent.h>
+#  endif // Linux
+#  define HAS_DIRENT 1
+#endif //HAS_DIRENT
+
 
 #ifndef MAX_GRAVITY_DELAY
-#define GRAVITY_DELAY 200
-#define MAX_GRAVITY_DELAY 3
+#  define GRAVITY_DELAY 200
+#  define MAX_GRAVITY_DELAY 3
 #endif
 
-enum wallTypes
-{
-    WALL_RUBBER,
-    WALL_STEEL,
-    WALL_SPRING,
-    WALL_WRAP,
-    WALL_RANDOM
-};
-
-// stages
-#define STAGE_AIM 0
-#define STAGE_FIRE 1
-#define STAGE_ENDGAME 3
-
-
 #define SPRING_CHANGE 1.25
+#define BOUNCE_CHANGE 0.90
 
-// size of satellite laser
-#define LASER_NONE 0.0
-#define LASER_WEAK 1.0
-#define LASER_STRONG 2.0
-#define LASER_SUPER 3.0
+#define GET_R(x) ((x & 0xff0000) >> 16)
+#define GET_G(x) ((x & 0x00ff00) >> 8)
+#define GET_B(x) ( x & 0x0000ff)
 
-#define _GET_R(x) ((x & 0xff0000) >> 16)
-#define _GET_G(x) ((x & 0x00ff00) >> 8)
-#define _GET_B(x) (x & 0x0000ff)
 
-// max volume factor: means that the interval 0% -> 100% is splitted in 5
-#define MAX_VOLUME_FACTOR 5
+// Something from externs.h can not be used via include
+// due to circular dependencies.
+extern int32_t GREY;
+extern int32_t GREEN;
 
-#include "tank.h"
-//class TANK;
-//class MISSILE;
-//class FLOATTEXT;
-//class GLOBALDATA;
-//class VIRTUAL_OBJECT;
+// Defined in sound.cpp:
+extern int32_t MAX_VOLUME_FACTOR;
+
+
+/** @class ENVIRONMENT
+  * @brief Fixed values of the current environment the game takes place in.
+  *
+  * This class holds all values and the corresponding methods that define
+  * the gaming environment.
+  *
+  * This means that all values in here must be set on game round start and
+  * must not change until the game round ends.
+  *
+  * So basically this class consolidates everything set up with the options
+  * menu and by the game round initialization.
+  *
+  * Everything that can change between the game round start and the game round
+  * end has to be managed by GLOBALDATA.
+**/
 class ENVIRONMENT
 {
 public:
-    GLOBALDATA *_global;
-    TANK *order[MAXPLAYERS * 3];
-    PLAYER *playerOrder[MAXPLAYERS * 3];
-    VIRTUAL_OBJECT *objects[MAX_OBJECTS];
-    int availableItems[THINGS];
-    int numAvailable;
-    int realm, am;
-    double wind, lastwind;
-    double windstrength, windvariation;
-    double viscosity;
-    double gravity;
-    double weapontechLevel, itemtechLevel;
-    double meteors;
-    double lightning;
-    double falling_dirt_balls;
-    double fog;
-    // int oldFogX, oldFogY;
-    double landType;
-    double landSlideType;
-    double landSlideDelay;
-    char *done;
-    int *fp;
-    int *h;
-    int *surface;
-    int *dropTo;
-    double *velocity;
-    double *dropIncr;
-    double *height;
-    BITMAP *db, *terrain, *sky;
-    BITMAP *waiting_sky, *waiting_terrain;     // sky saved in background
-#ifdef THREADS
-    pthread_mutex_t* waiting_terrain_lock;
-    pthread_mutex_t* waiting_sky_lock;
-    void destroy_lock(pthread_mutex_t* lock);
-    pthread_mutex_t* init_lock(pthread_mutex_t* lock);
-    void lock(pthread_mutex_t* lock);
-    void unlock(pthread_mutex_t* lock);
-#endif
-    BITMAP* get_waiting_sky();
-    BITMAP* get_waiting_terrain();
-    const gradient **my_sky_gradients, **my_land_gradients;
-    int pclock, mouseclock;
-    int stage;
-    int combineUpdates;
-    double wallType;
-    double dBoxedMode; // Can be 0.0 = off, 1.0 = on, 2.0 = random
-    double dFadingText; // 0.0 = off, 1.0 = on
-    double dShadowedText; // 0.0 = off, 1.0 = on
-    int current_wallType, wallColour;
-    int time_to_fall;    // amount of time dirt will hover
-    double satellite;
-    int naturals_since_last_shot;
-    double custom_background;
-    char **bitmap_filenames;
-    int number_of_bitmaps;
-    int current_drawing_mode;
-    int global_tank_index;
-    int volume_factor;  // from 0 (no volume) to MAX_VOLUME_FACTOR
 
-    ENVIRONMENT(GLOBALDATA *global);
-    ~ENVIRONMENT();
-    void initialise();
-    void setGlobaldata(GLOBALDATA *global)
-    {
-        _global = global;
-    }
-    GLOBALDATA *Get_Globaldata()
-    {
-        return _global;
-    }
-    void generateAvailableItemsList();
-    int isItemAvailable(int itemNum);
-    int addObject(VIRTUAL_OBJECT *object);
-    int removeObject(VIRTUAL_OBJECT *object);
-    VIRTUAL_OBJECT *getNextOfClass(int classNum, int *index);
-    void newRound();
-    int ingamemenu();
-    void make_fullUpdate();
-    int getAvgBgColor(int, int, int, int, double, double);
-    void do_updates();
-    void replaceCanvas();
-    void make_update(int x, int y, int w, int h);
-    void make_bgupdate(int x, int y, int w, int h);
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
+	explicit ENVIRONMENT ();
+	~ENVIRONMENT ();
 
-    int saveToFile_Text(FILE *file);
-    int loadFromFile_Text(FILE *file);
-    int loadFromFile(std::ifstream &ifsFile);
 
-    void Reset_Options();
-    void Set_Wall_Colour();
-    bool Get_Boxed_Mode(GLOBALDATA *global);
-    TANK *Get_Next_Tank(int *wrapped_around);
-    void increaseVolume();
-    void decreaseVolume();
-    int scaleVolume(int vol) const;
+	/* ----------------------
+	 * --- Public methods ---
+	 * ----------------------
+	 */
+	void     addGamePlayer      (PLAYER* player_);
+	PLAYER*  createNewPlayer    (const char* player_name);
+	void     creditWinners      (int32_t winner);
+	void     decreaseVolume     ();
+	void     deletePermPlayer   (PLAYER* player_);
+	void     destroy            (); // Must be called before allegro shutdown
+	void     find_config_dir    ();
+	bool     find_data_dir      ();
+	void     first_init         (); // Used for the first init after creation
+	void     genItemsList       ();
+	int32_t  getPlayerByName    (const char* player_name);
+	void     increaseVolume     ();
+	int32_t  ingamemenu         ();
+	void     initialise         (); // Does a regular initialization
+	bool     isItemAvailable    (int32_t itemNum);
+	bool     loadBackgroundMusic();
+	bool     loadBitmaps        ();
+	bool     loadFonts          ();
+	bool     loadGameFiles      ();
+	void     load_from_file     (FILE *file);
+	bool     loadSounds         ();
+	void     load_text_files    ();
+	void     newRound           ();
+	void     removeGamePlayer   (PLAYER* player_);
+	void     Reset_Options      ();
+	bool     save_to_file       (FILE *file);
+	bool     sendToClients      (const char* message); // send a short message to all network clients
+	void     set_fps            (int32_t new_FPS);
+	void     window_update      (int32_t x, int32_t y, int32_t w, int32_t h);
+
+
+	/* ----------------------
+	 * --- Public members ---
+	 * ----------------------
+	 */
+
+	PLAYER**     allPlayers             = nullptr;
+	int32_t      availableItems[THINGS];
+	SAMPLE*      background_music       = nullptr;
+	char**       bitmap_filenames       = nullptr;
+	int32_t      boxedMode              = BM_OFF;
+	BITMAP**     button                 = nullptr;
+	bool         campaign_mode          = false;
+	double       campaign_rounds        = 0.;   // 20% of the total round number
+	bool         check_for_updates      = true;
+	int32_t      colourDepth            = 0;
+	int32_t      colourTheme            = CT_CRISPY;  // land and sky gradiant theme
+	char         configDir[PATH_MAX + 1];
+	int32_t      current_wallType       = 0;
+	int32_t      custom_background      = 0;
+	char         dataDir[PATH_MAX + 1];
+	int32_t      debris_level           = 1;
+	bool         detailedLandscape      = false;
+	bool         detailedSky            = false;
+	bool         ditherGradients        = true;
+	bool         divide_money           = false;
+	bool         do_box_wrap            = false;
+	bool         drawBackground         = true;
+	bool         dynamicMenuBg          = true;
+	bool         fadingText             = false;
+	int32_t      falling_dirt_balls     = 0;
+	int32_t      fog                    = 0;
+	int32_t      fontHeight             = 0;  // Fixed in ctor, no calls to text_height(font) needed.
+	double       FPS_mod                = 0.; // Pre-calculated, used in many places.
+	int32_t      frames_per_second      = 0;
+	int32_t      full_screen            = FULL_SCREEN_FALSE;
+	char         game_name[GAMENAMELEN + 1];
+	sGfxData     gfxData;
+	double       gravity                = 0.15;
+	int32_t      halfHeight             = DEFAULT_SCREEN_HEIGHT / 2;
+	int32_t      halfWidth              = DEFAULT_SCREEN_WIDTH / 2;
+	double       interest               = 1.25;
+	int32_t      itemtechLevel          = 5;
+	bool         isBoxed                = false;
+	bool         isGameLoaded           = true;
+	int32_t      landSlideDelay         = MAX_GRAVITY_DELAY;
+	int32_t      landSlideType          = SLIDE_GRAVITY;
+	int32_t      landType               = LAND_RANDOM;
+	eLanguages   language               = EL_ENGLISH;
+	int32_t      lightning              = 0;
+	bool         loadGame               = false;
+	FONT*        main_font              = nullptr;
+	int32_t      maxFireTime            = 0;
+	int32_t      maxNumTanks            = 0;
+	double       maxVelocity            = 0.;
+	int32_t      max_screen_updates     = 64;
+	int32_t      menuBeginY             = 0;
+	int32_t      menuEndY               = 0;
+	int32_t      meteors                = 0;
+	BITMAP**     misc                   = nullptr;
+	BITMAP**     missile                = nullptr;
+	int32_t      mouseclock             = 0;
+	bool         nameAboveTank          = true;
+	bool         network_enabled        = false;
+	int32_t      network_port           = DEFAULT_NETWORK_PORT;
+	double       nextCampaignRound      = 0; // When AI players will be raised next
+	int32_t      numAvailable           = 0;
+	int32_t      numGamePlayers         = 0;
+	int32_t      numHumanPlayers        = 0;
+	int32_t      numPermanentPlayers    = 0;
+	int32_t      number_of_bitmaps      = 0;
+	bool         osMouse                = true; // whether we should use the OS or custom mouse
+	bool         play_music             = true;
+	PLAYER**     players                = nullptr;
+	PLAYER*      playerOrder[MAXPLAYERS];
+	uint32_t     rounds                 = 5;
+	int32_t      satellite              = 0;
+	uint32_t     saved_gameindex        = 0;
+	const char** saved_game_list        = nullptr;
+	uint32_t     saved_game_list_size   = 0;
+	int32_t      scoreHitUnit           = 75;
+	int32_t      scoreRoundWinBonus     = 10000;
+	int32_t      scoreSelfHit           = 25;
+	int32_t      scoreTeamHit           = 10;
+	int32_t      scoreUnitDestroyBonus  = 5000;
+	int32_t      scoreUnitSelfDestroy   = 2500;
+	int32_t      screenHeight           = DEFAULT_SCREEN_HEIGHT;
+	int32_t      screenWidth            = DEFAULT_SCREEN_WIDTH;
+	double       sellpercent            = 0.80;
+	char         server_name[129];
+	char         server_port[129];
+	bool         shadowedText           = true;
+	bool         showAIFeedback         = true;
+	bool         showFPS                = false;
+	int32_t      skipComputerPlay       = SKIP_HUMANS_DEAD;
+	BITMAP*      sky                    = nullptr;
+	double       slope[360][2];
+	int32_t      sound_driver           = SD_AUTODETECT;
+	bool         sound_enabled          = true;
+	SAMPLE**     sounds                 = nullptr;
+	int32_t      startmoney             = 15000;
+	BITMAP**     stock                  = nullptr;
+	bool         swayingText            = true;
+	BITMAP**     tank                   = nullptr;
+	BITMAP**     tankgun                = nullptr;
+	int32_t      temp_screenHeight      = 0; // 0 to detect command line arguments
+	int32_t      temp_screenWidth       = 0; // versus loaded configuration.
+	int32_t      time_to_fall           = 0; // amount of time dirt will hover
+	BITMAP**     title                  = nullptr;
+	int32_t      turntype               = TURN_RANDOM;
+	double       viscosity              = 0.5;
+	int32_t      violent_death          = 0;
+	int32_t      voices                 = 0;
+	int32_t      volley_delay           = 10; // Delay factor for volley shots, 5-50
+	int32_t      volume_factor          = MAX_VOLUME_FACTOR;
+	int32_t      wallColour             = GREEN;
+	int32_t      wallType               = WALL_RUBBER;
+	int32_t      weapontechLevel        = 5;
+	BOX          window;
+	int32_t      windstrength           = 8;
+	int32_t      windvariation          = 1;
+
+	// Text structures holding (translated) lines of in game text
+	TEXTBLOCK* gloat        = nullptr;
+	TEXTBLOCK* ingame       = nullptr;
+	TEXTBLOCK* instructions = nullptr;
+	TEXTBLOCK* kamikaze     = nullptr;
+	TEXTBLOCK* retaliation  = nullptr;
+	TEXTBLOCK* revenge      = nullptr;
+	TEXTBLOCK* suicide      = nullptr;
+	TEXTBLOCK* war_quotes   = nullptr;
+
+
+private:
+
+	/* -----------------------
+	 * --- Private methods ---
+	 * -----------------------
+	 */
+
+
+	/* -----------------------
+	 * --- Private members ---
+	 * -----------------------
+	 */
+
+	DIR* music_dir = nullptr;
 };
 
+
+#define HAS_ENVIRONMENT 1
+
 #endif
+

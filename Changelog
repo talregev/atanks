@@ -1,29 +1,58 @@
 NOTE: From now on, new changes appear at the top of this file.
 
+============ Atanks-6.3 released ===================
+
+	Sven has done a hug eamount of code changes for this release. The
+	key highlights are as follows:
+	- Improved AI.
+	- Smoother/faster buying screen navigation.
+	- Huge re-work of the Options screen and other menus to
+	  avoid crashes and random symbols appearing.
+	- Improved demo mode.
+	- The AI does a better job of buying items/weapons.
+	- Updated Makefiles to reduce the number of separate Makefiles required.
+	- Atanks should now build natively in Visual Studio on Windows.
+	- Improved Unicode support.
+	- Various code clean-up.
+	- Added dirt debris.
+	- Improved revgence mode for AI.
+	- Menus should now respond faster.
+	- Network code clean-up.
+	- Added more in-code documentation.
+
+============ Atanks-6.2 released ===================
+
 	- Large code clean-up by Bruno Victal
 	- More style/code clean-up by Bruno Victal
-            Indentation
-            Removing unnecessary braces
-            Removing unnecessary parentheses
-            Removing unnecessary spaces
-            Removing many blank lines (line wasting)
-            Expanding some ifs and switch cases
-        - Bruno Victal provided further code clean-up
-            Renamed old referenced files in the perror calls (from .cc to .cpp)
-            Removed some useless casts in printf calls [ printf((char *)"String here"); ]
-            Deleted the macros about DOS support (they were already commented out)
-     	    Fixed abs() related math functions so they do not throw compiler warnings.
+	    Indentation
+	    Removing unnecessary braces
+	    Removing unnecessary parentheses
+	    Removing unnecessary spaces
+	    Removing many blank lines (line wasting)
+	    Expanding some ifs and switch cases
+
+	- Bruno Victal provided further code clean-up
+	    Renamed old referenced files in the perror calls (from .cc to .cpp)
+	    Removed some useless casts in printf calls [ printf((char *)"String here"); ]
+	    Deleted the macros about DOS support (they were already commented out)
+	    Fixed abs() related math functions so they do not throw compiler warnings.
 
 	- Removed extra call to Get_Team_Name() that was not required.
 
-	Daniel sent in a patch which does the following:
+	Daniel sent in a patch which addresses the following:
 	- fixes a bug where the address of (stack allocated) temporal arrays
-	was stored in the menu structure causing
-	  wrong behavior, e.g. printing garbage in the Network configuration
-	menu title.
+	    was stored in the menu structure causing
+	    wrong behavior, e.g. printing garbage in the Network configuration
+	    menu title.
 	- fixes const-correctness for all the menu structure
 	- moves stack-allocated read-only arrays to .rodata so no large stack
-	memory is used.
+	    memory is used.
+	- adds Daniel to the list of people (feel free to remove me if this
+
+	Bruno Victal provided two more fixes.
+	- Fix isnan() ambiguity when compiled with C++11 standards
+	- Removed OLD_GAMELOOP code and references. Stick with
+	    modern game loop.
 
 
 =========== Atanks-6.1 released ==============
@@ -141,7 +170,7 @@ Feb 23, 2012
 ============ Atanks-5.0 released ===============
 
 June 4, 2011
-    - Window's close button now works on buying screen 
+    - Window's close button now works on buying screen
       and during rounds.
 
 
@@ -149,7 +178,7 @@ June 4, 2011
 
 
 March 23, 2011
-    - Added Italian language support. 
+    - Added Italian language support.
       (provided by Roby Alice.)
 
 
@@ -490,7 +519,7 @@ September 19, 2009
     - Removed old lineseq.h file and references.
     - Cleaned up renderTextLines function to display cyrillic
       text properly.
-      
+
 
 September 14, 2009
     - Added unicode fonts to support cyrillic.
@@ -736,7 +765,7 @@ June 19, 2009
 
 June 15, 2009
     - Fixed abs() calls in player.cpp and tank.cpp
-    - Replaced old Teleport animation with Yama's. 
+    - Replaced old Teleport animation with Yama's.
 
 June 4, 2009
     - Added war quotes to display at the end of games. (files.cpp, files.h,
@@ -805,179 +834,179 @@ March 19, 2009
 
 February 21, 2009
     -- Finally "-Wno-write-strings" is no longer needed to compile the sources
-    -- Rewrote the environment method to calculate average background colors. It is 
-    now inline and somewhat optimized, making shadowed + fading text more 
+    -- Rewrote the environment method to calculate average background colors. It is
+    now inline and somewhat optimized, making shadowed + fading text more
     performant.
-    -- Rewrote File handling, apart from three tiny points atanks is now fully ISO 
+    -- Rewrote File handling, apart from three tiny points atanks is now fully ISO
     C++ compliant.
     -- Made rollers a bit faster dropping
-    -- No more roller-breaking of shields by hammering them above the enemy onto 
+    -- No more roller-breaking of shields by hammering them above the enemy onto
     the steel/wrap ceiling! They explode now.
-    -- Two tiny patches make bots targetting a bit faster and destroy (hopefully) 
+    -- Two tiny patches make bots targetting a bit faster and destroy (hopefully)
     any possibility for the system to go infinite
     -- prepared all neccessary files to be translated. But please note:
     -- English: Is always there
-    -- Portuguese: Is borked. But maybe it's only my utf-8 system showing the 
-    wrong characters. I looked into the atanks-2.9 files and it is broken there as 
+    -- Portuguese: Is borked. But maybe it's only my utf-8 system showing the
+    wrong characters. I looked into the atanks-2.9 files and it is broken there as
     well. If its just my system, don't mind. ;)
-    -- French: Has some tiny things that has to be translated. Retaliation is 
-    still english, and I am not sure how to translate "Shadowed Text" and "Fading 
+    -- French: Has some tiny things that has to be translated. Retaliation is
+    still english, and I am not sure how to translate "Shadowed Text" and "Fading
     Text", so some french natural speaker might do this?
     -- German: Only weapons_de.txt needs to be translated, I'll do it next year.
-    -- Slovak: Only the gloating texts *are* translated so the rest is missing 
-    completely, but I have prepared the files and menucontent.h for a slovak 
+    -- Slovak: Only the gloating texts *are* translated so the rest is missing
+    completely, but I have prepared the files and menucontent.h for a slovak
     natural speaker to be translated.
-    -- Added weapons_*language*.txt files so we can (finally) translate the weapon 
+    -- Added weapons_*language*.txt files so we can (finally) translate the weapon
     texts as well.
     -- Fixed a bug that could cause roller tracking to go infinite.
     -- Balanced fading texts some more
     -- Corrected some text messages
     -- added new roller code. Rollers now really roll!
-    -- fixed a bug that made tracking report wrong hit points when tracking 
+    -- fixed a bug that made tracking report wrong hit points when tracking
     rollers and burrowers
-    -- Added average background color calculation and fixed fading text offset. It 
+    -- Added average background color calculation and fixed fading text offset. It
     should look far better now.
     -- Balanced shadowed text color calculation
-    -- added a new retaliation text. When bots aim at opponents they have a grudge 
+    -- added a new retaliation text. When bots aim at opponents they have a grudge
     against, they might tell you now.
-    For this to work you'll have to copy retaliation*.txt into 
-    /usr/share/games/atanks/ (or wherever you have your atanks data files) 
+    For this to work you'll have to copy retaliation*.txt into
+    /usr/share/games/atanks/ (or wherever you have your atanks data files)
     directory.
-    -- removed waiting for explosions to finish when tanks blow up after being hit 
+    -- removed waiting for explosions to finish when tanks blow up after being hit
     by violent death missiles.
-    I was longing to change that for ages, because I grew rather sick of tanks 
-    being suspended in mid-air for ages while all those violent death missile fly 
-    around. Now, they blow up immediately. However, when a normal missile is shot 
+    I was longing to change that for ages, because I grew rather sick of tanks
+    being suspended in mid-air for ages while all those violent death missile fly
+    around. Now, they blow up immediately. However, when a normal missile is shot
     and destroys a tank, it still waits for the missile's explosion to finish.
-    -- changed tank falling behavior: They now can fall a short distance (2-5 
+    -- changed tank falling behavior: They now can fall a short distance (2-5
     pixels) without getting damage and without the parachutes to open.
-    I was longing for that one, too. The reason is, that it is madness to waste 
-    30+ parachutes and/or getting alot of damage while moving (!!) a tank down a 
+    I was longing for that one, too. The reason is, that it is madness to waste
+    30+ parachutes and/or getting alot of damage while moving (!!) a tank down a
     flat slope.
-    -- Fixed a bug with the tracing of spreads which resulted in bots hitting self 
+    -- Fixed a bug with the tracing of spreads which resulted in bots hitting self
     but not the opponent.
-    -- added a security check when calculating offsets to napalm. Bots should not 
+    -- added a security check when calculating offsets to napalm. Bots should not
     drop napalm onto themselves any more when trying to hit a neighbor.
-    -- added shadows to the text to increase readability. (Has to be turned on in 
+    -- added shadows to the text to increase readability. (Has to be turned on in
     the graphics menu, for compatibilities sake this option defaults to "off")
-    -- added fading to the text, to ... well... to have a bit of eye candy. ;) 
-    (Has to be turned on in the graphics menu, for compatibilities sake this 
+    -- added fading to the text, to ... well... to have a bit of eye candy. ;)
+    (Has to be turned on in the graphics menu, for compatibilities sake this
     option defaults to "off")
     -- cleaned up aiming calculation
     -- cleaned up debugging messages for "DEBUG_AIM" and added some more info.
-    -- Fixed a bug that could cause riot shots and blasts to start 10-20 pixels 
+    -- Fixed a bug that could cause riot shots and blasts to start 10-20 pixels
     away from the tank cannon.
-    -- Fixed a bug that caused the the aiming system to fail in a very special 
-    (and rare, but still existing) situation, resulting in bots shooting into the 
+    -- Fixed a bug that caused the the aiming system to fail in a very special
+    (and rare, but still existing) situation, resulting in bots shooting into the
     ceiling.
     -- Added a cleanup for all objects. No more debris on the screen!
-    -- As the new aiming system doesn't need it any more, the wall type and boxed 
-    mode aren't changed any more once the last human player dies and skipping is 
+    -- As the new aiming system doesn't need it any more, the wall type and boxed
+    mode aren't changed any more once the last human player dies and skipping is
     turned on.
     -- added boxed mode (Finally!)
-    -- riot blasts fixed, they no longer shoot downwards when too less power is 
+    -- riot blasts fixed, they no longer shoot downwards when too less power is
     chosen
     -- chain missiles now blast through dirt. (vertical spreads, too)
-    -- Walltypes on non-human rounds with skip-AI on will now all change to 
-    Wrapped Walls & non-Boxed mode, but not before the current destructions 
+    -- Walltypes on non-human rounds with skip-AI on will now all change to
+    Wrapped Walls & non-Boxed mode, but not before the current destructions
     (violent deaths, falling tanks) are finished. (happy, sylikc? ;))
-    -- a completely new aiming system has been written to make the boxed mode 
+    -- a completely new aiming system has been written to make the boxed mode
     possible
     -- added tweaks to reduce "debris" left on screen
     -- added tweaks to reduce "choking" of the display when too much is going on
-    -- removed HLR_DEBUG, because in over 1000 rounds the speed-up-system never 
+    -- removed HLR_DEBUG, because in over 1000 rounds the speed-up-system never
     failed
     -- There are now three different defines for debugging:
         -- DEBUG
-        Will show everything concerning inventories, shopping system, item 
+        Will show everything concerning inventories, shopping system, item
         selection and target selection of the bots on the console.
         -- DEBUG_AIM
         Will show all relevant numbers of the new aiming system on the console
         -- DEBUG_AIM_SHOW
-        Will draw dots and circles on the screen to make the "thinking" of the 
+        Will draw dots and circles on the screen to make the "thinking" of the
         aiming process visible.
         (Warning: The game is no longer playable in this mode)
-    -- balanced computer player values, according to the new aiming system. 
-    Generally speaking, the "useless" bot won't hit a barn with a pumpgun, while 
+    -- balanced computer player values, according to the new aiming system.
+    Generally speaking, the "useless" bot won't hit a barn with a pumpgun, while
     the "deadly" bot is very precise.
-    -- If no target can be reached by normal means, bots now might teleport (or 
-    swap) out of their corner, or try to get rid of the obstacle by using riot 
+    -- If no target can be reached by normal means, bots now might teleport (or
+    swap) out of their corner, or try to get rid of the obstacle by using riot
     blasts
-    -- While aiming bots now try to avoid hitting themselves or team mebers (when 
-    non-neutral) and are somewhat carefull not to hit themselves or team members 
-    with the blast damage their weapon produces. If a target can't be hit 
+    -- While aiming bots now try to avoid hitting themselves or team mebers (when
+    non-neutral) and are somewhat carefull not to hit themselves or team members
+    with the blast damage their weapon produces. If a target can't be hit
     otherwise, there have sacrefices to be made, though...
-    -- target selection now uses the new aiming system to value targets lower 
+    -- target selection now uses the new aiming system to value targets lower
     which are hard (or impossible) to hit
-    -- item selection now uses the new aiming system to value weapons lower with 
+    -- item selection now uses the new aiming system to value weapons lower with
     which the chosen target can't be hit properly
-    -- The target system now calculates burrowers and rollers. (Which leads to 
+    -- The target system now calculates burrowers and rollers. (Which leads to
     some highly entertaining results! :))
-    -- The more intelligent a bot is, the more "bounces" of walls or "wraps" it 
+    -- The more intelligent a bot is, the more "bounces" of walls or "wraps" it
     can calculate.
-    -- The more intelligent a bot is, the more spread it can calculate. So don't 
-    wonder if a useless or guesser bot fires a super spread, happily hitting 
+    -- The more intelligent a bot is, the more spread it can calculate. So don't
+    wonder if a useless or guesser bot fires a super spread, happily hitting
     itself. It simply couldn't see that coming.
     -- Velocity check rewritten. It now a) works and b) fixes the "Repulsor-
     Shield-Bug" :D Yes, I am very happy about that!
     It is handled in three different ways:
-        -- No Spring Wall: The limit is set by maximum power, influenced by 
+        -- No Spring Wall: The limit is set by maximum power, influenced by
         the mass of the weapon.
-        -- Spring Wall and Not Boxed: The Limit is doubled, or shooting at the 
+        -- Spring Wall and Not Boxed: The Limit is doubled, or shooting at the
         wall would destroy your missile.
-        -- Spring Wall in a box: The limit is four times the normal limit, or 
+        -- Spring Wall in a box: The limit is four times the normal limit, or
         it won't be any fun!
         I had very entertaining results with that! :)
-    -- hit 2500! This means I have now tested over 2500 rounds with the new 
+    -- hit 2500! This means I have now tested over 2500 rounds with the new
     shopping- and target-selection systems since the last changes and/or bugfixes!
     -- The Boost Value calculation is changed to be more dynamic to future changes
     -- added a private member to count how many boost items are bought
-    -- changed boost buying: inserted a per-round-limit aka iBoostItemsBought with 
+    -- changed boost buying: inserted a per-round-limit aka iBoostItemsBought with
     the help of the above count
     -- language menu fixed
     -- changed interest to be dynamically gained
-    -- Added a new define, HLR_DEBUG which, when set, causes the round to end 
-    after each bot having one last shot if no human players are left. (Default, 
+    -- Added a new define, HLR_DEBUG which, when set, causes the round to end
+    after each bot having one last shot if no human players are left. (Default,
     currently, is 16)
-    -- Fixed a bug that caused aTanks to freeze for seconds everytime too much is 
-    going on. (Explo, Text, Smoke, etc.) On some occasions there still can be a 
-    "hang" for a split second or so. But that could have been my computer, the 
+    -- Fixed a bug that caused aTanks to freeze for seconds everytime too much is
+    going on. (Explo, Text, Smoke, etc.) On some occasions there still can be a
+    "hang" for a split second or so. But that could have been my computer, the
     issue needs to be tested and watched.
-    -- Started to add boxed mode (not implemented yet! But the menu item is there 
+    -- Started to add boxed mode (not implemented yet! But the menu item is there
     and the Wall-Display is changed)
     -- Fixed a bug causing accelerated AI to crash
     -- Included sylikc's Anti-Crash-Fix
-    -- When bots have enough money, they do not spend everything. Jedi keep 50%, 
+    -- When bots have enough money, they do not spend everything. Jedi keep 50%,
     Neutrals 25% and sith 5% (the squanderers! ;) *hrhr*) for "bad times"
     -- Repulsor Shield handling changed:
-        changed ydist to be always negative, so missiles are *always* handled 
-        like they came from above! It remains to be tested whether this 
-        balances the repulsor shields, or renders them unbeatable (which could 
+        changed ydist to be always negative, so missiles are *always* handled
+        like they came from above! It remains to be tested whether this
+        balances the repulsor shields, or renders them unbeatable (which could
         happen...)
-        Note: In over 500 rounds they perform better, but are still far away 
+        Note: In over 500 rounds they perform better, but are still far away
         from being "unbeatable"
-    -- When determining pre-Buy items bots enforce buying of boost-Items if they 
+    -- When determining pre-Buy items bots enforce buying of boost-Items if they
     are too far away from the peak.
     -- Limit for items raised up to 999 (like humans)
-    -- limited AI-Only Rounds. If the last human players dies the remaining bots 
-    get 10 tries each to find a winner. If they do not succeed, the round is ended 
+    -- limited AI-Only Rounds. If the last human players dies the remaining bots
+    get 10 tries each to find a winner. If they do not succeed, the round is ended
     and the most healthy tank wins. (Or the round draws if two or more are equal)
-    I added this, because there is a tiny chance (it never happened in the last 
-    weeks, but thrice only yesterday!) that the games gos infinite in AI-only 
-    turns. Situation: bots left have only small missiles and regenerate more each 
+    I added this, because there is a tiny chance (it never happened in the last
+    weeks, but thrice only yesterday!) that the games gos infinite in AI-only
+    turns. Situation: bots left have only small missiles and regenerate more each
     round than the small missile delivers.
     With this limit it won't happen any more.
-    -- When the last human dies and the wall type is changed, it is redrawn at 
+    -- When the last human dies and the wall type is changed, it is redrawn at
     once now.
     -- limited interest && team money
-    It is too easy to become super-marvel-universium-mega-hero by just waiting a 
-    couple of rounds until the bank has pumped up your account to some millions. 
-    Currently the bank refuses to pay more interest than 100k, but that hard limit 
+    It is too easy to become super-marvel-universium-mega-hero by just waiting a
+    couple of rounds until the bank has pumped up your account to some millions.
+    Currently the bank refuses to pay more interest than 100k, but that hard limit
     will be changed to a dynamic one. (see todo list)
-    As for team money, bots now refuse to spend more than 500k into the pot. 
+    As for team money, bots now refuse to spend more than 500k into the pot.
     Humans, too, of course.
     -- team win->WinRoundBonus divided instead of applied full.
-    It is just extremely unfair that the teams get much more money for winning a 
+    It is just extremely unfair that the teams get much more money for winning a
     round when it is easier for them to do so.
     -- 75% was too much, thus jedi now only pay 50% into the team account.
     -- Bots try to save up money to get better equipment
@@ -988,69 +1017,69 @@ February 21, 2009
         -- "Tools" to free themselves like Riot Blasts
         -- Shields, if enough money is there
         -- if all is set, look for dimpled/slick projectiles!
-    Armor/Amps (aka "Boost-Items"), however, are limited, so they will only buy 
-    them, if someone has a higher value in boost-items. As these items can be 
-    bought randomly as well, they won't neccessarily wait for the human player(s) 
+    Armor/Amps (aka "Boost-Items"), however, are limited, so they will only buy
+    them, if someone has a higher value in boost-items. As these items can be
+    bought randomly as well, they won't neccessarily wait for the human player(s)
     to go ahead!
-    -- Buying is no longer purely random but takes the bots weapon preferences 
+    -- Buying is no longer purely random but takes the bots weapon preferences
     into account.
     -- The amount of money a bot wants to save up is used for the target-finding-
     system as well:
-    If a bot has less money, it is more likely to target weak opponents to fetch 
-    the kill-bonus. If it has enough money, it will more likely chose the biggest 
+    If a bot has less money, it is more likely to target weak opponents to fetch
+    the kill-bonus. If it has enough money, it will more likely chose the biggest
     threat.
-    -- Money-saving is now limited, so that no bot tries to sum up millions. Right 
-    now the highest maximum, depending on type and weapon preferences, is 1M. 
+    -- Money-saving is now limited, so that no bot tries to sum up millions. Right
+    now the highest maximum, depending on type and weapon preferences, is 1M.
     (Deadly(=5) * 2 * Armageddon cost)
     -- Teams are now handled differently in alot of places:
-        -- Prior the shopping tour, every jedi adds 75%, and every sith 25% of 
-        their money to the "team-account". The team-money is reduced by a 
-        "transaction fee" (jedi: 5%, sith: 10%) and then divided onto all 
+        -- Prior the shopping tour, every jedi adds 75%, and every sith 25% of
+        their money to the "team-account". The team-money is reduced by a
+        "transaction fee" (jedi: 5%, sith: 10%) and then divided onto all
         team-members to help each other out.
-        -- While searching for a target jedi try not to hit their team mates, 
+        -- While searching for a target jedi try not to hit their team mates,
         while sith do not care so much.
-        -- While searching for a target jedi give alot less than neutrals 
-        about revenge, while sith can become furious (even against team 
+        -- While searching for a target jedi give alot less than neutrals
+        about revenge, while sith can become furious (even against team
         members!)
-        -- jedi *can* become "super-defensive" (defensive > 1.0) while sith 
-        *can* become "super-offensive (defensive < -1.0). By this jedi can be 
-        extremely cautious every now and then, while sith like to throw 
+        -- jedi *can* become "super-defensive" (defensive > 1.0) while sith
+        *can* become "super-offensive (defensive < -1.0). By this jedi can be
+        extremely cautious every now and then, while sith like to throw
         caution out of the window. :)
     -- Riot blasts/bombs are no longer chosen to be shot onto enemies!
-    -- fixed a bug with the rating of buried targets while searching for a 
+    -- fixed a bug with the rating of buried targets while searching for a
     target/chosing an apropriate weapon
     -- target selection and weapon selection now work together:
-    A bot choses a weapon and tries to find the best target for it. Then the bot 
-    decides whether another weapon would be better for that target and switches to 
+    A bot choses a weapon and tries to find the best target for it. Then the bot
+    decides whether another weapon would be better for that target and switches to
     that. But they value weapons higher they like more, now.
     -- corrected the _targetX modification for shaped charges and napalm:
-    Bots trie to aim shaped charges so that they do not directly hit, for aiming 
+    Bots trie to aim shaped charges so that they do not directly hit, for aiming
     napalm they try to take wind into account.
-    -- added blast check, to avoid using weapons which blast hit self, depending 
+    -- added blast check, to avoid using weapons which blast hit self, depending
     on intelligence and defensiveness
-    -- added laser check to see whether a laser can be fired or would hit solid 
+    -- added laser check to see whether a laser can be fired or would hit solid
     rock only
-    -- added check for buried targets and appropriate weapons (burrower, 
+    -- added check for buried targets and appropriate weapons (burrower,
     penetrator, tremor-tectonic)
-    -- added a check to get more intelligent bots to do collateral damage when 
+    -- added a check to get more intelligent bots to do collateral damage when
     possible
-    -- Added a custom Kamikaze text for the situation when bots decide to blow 
+    -- Added a custom Kamikaze text for the situation when bots decide to blow
     them selves up.
-    -- Money interest was added right before entering the shop, resulting in 
-    interest added everytime a game was reloaded (and reloaded, and reloaded...). 
-    I changed that so that interest is added after leaving the shop, fixing the 
-    "Add-money-by-reload"-Bug. Further there is no more interest for money that is 
+    -- Money interest was added right before entering the shop, resulting in
+    interest added everytime a game was reloaded (and reloaded, and reloaded...).
+    I changed that so that interest is added after leaving the shop, fixing the
+    "Add-money-by-reload"-Bug. Further there is no more interest for money that is
     just earned in the last round.
-    -- added offset if no human players left, raising the class of the bots to 
-    speed up the game without changing the difference in intelligence between bots 
+    -- added offset if no human players left, raising the class of the bots to
+    speed up the game without changing the difference in intelligence between bots
     too much.
-    -- bots perform best on rubber and wrap walls. If no human players are left, 
-    the wall type is changed if steel/spring is chosen to speed up the accelerated 
+    -- bots perform best on rubber and wrap walls. If no human players are left,
+    the wall type is changed if steel/spring is chosen to speed up the accelerated
     game.
     -- calculation of the shaped charge type weapons was improved (and corrected).
     -- Added preference generation for bots that are set to "per play" when a game
-    is loaded. The loading of the preferences is (unfortunately) disabled and I do 
-    not know why. As long as they *are* disabled, PerPlay-Config bots have to get 
+    is loaded. The loading of the preferences is (unfortunately) disabled and I do
+    not know why. As long as they *are* disabled, PerPlay-Config bots have to get
     a new config on game load, or they use the global config, rendering PerPlay-
     Config useless.
     -- For PhysObjects: reduced "virtual" height to 25 times screen height and
@@ -1083,7 +1112,7 @@ September 2, 2008
     -- Credits and Help screens now ignore extra DOS return
     characters in the text file.
     (Submitted by sylikc)
-    -- Added German language support. 
+    -- Added German language support.
     (Provided by Yama.)
     -- Changed formula for dealing damage with shaped charges.
     (Provided by Yama.)
@@ -1215,7 +1244,7 @@ March 18, 2008
     -- Removed old satellite system
     -- Created new satellite object.
     -- Satellite now fires lasers.
-    -- AI controlled tanks no longer adjust power for items. 
+    -- AI controlled tanks no longer adjust power for items.
        Saves time.
 
 
@@ -1302,7 +1331,7 @@ January 7, 2008
     -- AI players randomly select weapons rather than
        using an item until they run out.
 
-    
+
 December 28, 2007
     Jesse (jessefrgsmith@yahoo.ca)
     -- Firing a chian missile no longer fires another
@@ -1346,7 +1375,7 @@ December 9, 2007
 November 29, 2007
     Jesse (jessefrgsmith@yahoo.ca)
     -- Fixed bug where, if a tank shoots itself and falls
-    and the money penalty for self-damage drops the player's money 
+    and the money penalty for self-damage drops the player's money
     below $0, then the money is "corrected" to $1,000,000,000.
     Thanks to Andy for pointing this out.
     -- If both teams have the same number of wins, then
@@ -1374,7 +1403,7 @@ November 18, 2007
     -- Wind Strength is now saved in the settings file.
     -- Increased buffer size for options to avoid over-flow.
 
-    
+
 November 15, 2007
     Jesse (jessefrgsmith@yahoo.ca)
     -- Corrected timing bug that causes freeze on
@@ -1661,8 +1690,8 @@ March 21, 2007
     Jesse (jessefrgsmith@yahoo.ca)
     -- The player can now select to use either the custom
     Atomic Tanks mouse cursor or the default OS cursor.
-    Note: The OS cursor is probably faster. 
-    The option is located under the Graphics menu and 
+    Note: The OS cursor is probably faster.
+    The option is located under the Graphics menu and
     may require the game be restarted to take effect.
     -- The ENTER key on the number pad can now be used
     to indicate you are done entering text on Options
@@ -1694,7 +1723,7 @@ March 15, 2007
     causes all tanks to fire their weapons.
     See tank::activateSelection()
 
-    
+
 March 12, 2007
     Jesse (jessefrgsmith@yahoo.ca)
     -- The spelling of "lazer" has been changed to "laser".
@@ -1703,7 +1732,7 @@ March 12, 2007
     the other items.
     -- The Page Up and Page Down keys now cause the player's
     power to go up or down dramatically (100 points instead of 5).
-    -- Players can now choose to make their tanks 
+    -- Players can now choose to make their tanks
     appear differently. The options are Normal or Classic.
     This is changed in the Players menu.
     -- Tank style preferences are now saved in the config file.
@@ -1749,7 +1778,7 @@ Feb 24, 2007
     -- Added a device called Swapper, which will cause the
     player's tank to switch places with another tank. The
     other tank is picked at random.
-    -- Added a new wall type, Spring. The spring wall type 
+    -- Added a new wall type, Spring. The spring wall type
     causes missiles to bounce off the walls and floor
     with more speed (x1.25) than they had before.
     -- When one player kills another, the attacker gloats.
@@ -1762,7 +1791,7 @@ Feb 21, 2007
     -- Disabled window closing in Windows to prevent hangs.
     -- Added item: repair kit. A device which will slowly
     repair the player's tank each turn.
-    -- The number of rounds of play remaining 
+    -- The number of rounds of play remaining
     can be adjusted on the buying screen.
     This is performed using the "-" and "+" signs on the keyboard.
     Note, the "=" will also act like a "+" to add rounds.
@@ -1813,7 +1842,7 @@ Feb 9, 2007
     -- Changed config file to save the sound option.
     -- Made sure the command line option "--nosound"
     over-rides the sound setting in the config file.
-    -- The width and height of the Atanks window can now be 
+    -- The width and height of the Atanks window can now be
     changed from the Options menu, under Graphics. Changes
     take effect after the game is exited and re-started.
     -- Added screen width and height to the config file.
@@ -1849,7 +1878,7 @@ Jan 31, 2007
 
 Jan 27, 2007
     Jesse (jessefrgsmith@yahoo.ca)
-    -- Allow player names to be more than 10 characters. Names 
+    -- Allow player names to be more than 10 characters. Names
     should now be able to expand to 23. Changed some output
     code to allow for longer names without over-writing other
     text on the screen. Changed file format to allow longer names
@@ -1866,7 +1895,7 @@ Jan 21, 2007
     Jesse (jessefrgsmith@yahoo.ca)
     -- Floating text no longer carries over to the next round.
        Added newRound() function to FLOATTEXT object.
-    -- When the window's "X" or close button is clicked, the game 
+    -- When the window's "X" or close button is clicked, the game
        will exit immediately.
 
 =============== Atanks-2.0 Released ===========================
@@ -1928,7 +1957,7 @@ Nov 27, 2006
     -- Made player money unsigned to avoid negative funds.
     -- When player runs out of a type of ammo, game automatically
        switches to a new ammo type.
-    
+
 
 ================= Atanks-1.1.0 released ===================================
 
@@ -1961,7 +1990,7 @@ Nov 27, 2006
     -- speed up redrawing algorith
     -- new title screen
     -- new top-bar in game
-    
+
 15. 9. 2002
 
     -- fixed bug with game engine (this bug came with
@@ -1980,7 +2009,7 @@ Nov 27, 2006
     -- icons of weapons
     -- upgrade graphics
     -- release of 0.5
-    
+
 5. 01. 2003 - Tom Hudson (tom@singular.org.uk):
     -- Modified code to allow resizing of screen (currently only
     at compile time, positions now scale)

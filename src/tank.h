@@ -1,5 +1,5 @@
-#ifndef TANK_DEFINE
-#define TANK_DEFINE
+#ifndef	TANK_DEFINE
+#define	TANK_DEFINE
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -22,79 +22,128 @@
 
 
 #include "physobj.h"
-
-#define TELETIME 120
+#include "floattext.h"
 
 #define DIR_RIGHT 1
-#define DIR_LEFT 2
+#define DIR_LEFT -1
 
 #define VIOLENT_CHANCE 6
 
 
 class PLAYER;
 class EXPLOSION;
-class FLOATTEXT;
 class TANK: public PHYSICAL_OBJECT
 {
-protected:
-    int _targetX,_targetY;
-    int _prevTargetX,_prevTargetY;
-    TANK *_target;
 
 public:
-    int bestPower, bestAngle;
-    int smallestOvershoot;
-    int t, a, p, cw, l, sh, sht, fs, ds, para, pen;
-    int maxLife;    // amount awarded at beginning of round
-    double damage;
-    int repair_rate;
-    int repulsion;
-    int shieldColor, shieldThickness;
-    int flashdamage, hit;
-    int timer;
-    int teleTimer;
-    int teleXDest, teleYDest;
-    double shPhase, delta_phase;
-    PLAYER *creditTo;
-    FLOATTEXT *healthText, *shieldText; //, *damageText;
-    FLOATTEXT *nameText;
-    int use_tank_bitmap, use_turret_bitmap;
-    double turret_x, turret_y;
-    int delay_fall;    // time the tank will hover
-    int fire_another_shot;
-    int shots_fired;
 
-    ~TANK();
-    TANK(GLOBALDATA *global, ENVIRONMENT *env);
-    void initialise();
-    void Destroy();
-    int get_heaviest_shield();
-    void boost_up_shield();
-    void reactivate_shield();
-    void drawTank(BITMAP *dest, int healthOffset);
-    void printHealth(int offset);
-    void update();
-    void requireUpdate();
-    void explode();
-    void simActivateCurrentSelection();
-    void activateCurrentSelection();
-    int isSubClass(int classNum);
-    inline virtual int getClass()
-    {
-        return TANK_CLASS;
-    }
-    virtual void setEnvironment(ENVIRONMENT *env);
-    void applyDamage();
-    int applyPhysics();
-    void repulse(double xpos, double ypos, double *xaccel, double *yaccel, int aWeaponType);
-    int howBuried();
-    int shootClearance(int targetAngle, int minimumClearance = MAX_OVERSHOOT);
-    void newRound();
-    void framelyAccounting();
-    int tank_on_tank(GLOBALDATA *gd);    //is this tank on top of another?
-    int Get_Repair_Rate();    // how many units a tank will repair itself per round
-    int Move_Tank(int direction);
-    void Give_Credit(GLOBALDATA *global);    // give credit to killer
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
+
+	explicit TANK ();
+	~TANK ();
+
+
+	/* ----------------------
+	 * --- Public methods ---
+	 * ----------------------
+	 */
+
+	void    activate();
+	void    activateCurrentSelection ();
+	void    addDamage(PLAYER* damageFrom, double damage_);
+	void    applyDamage();
+	void    applyPhysics();
+	void    check_weapon();
+	void    deactivate();
+	void    draw ();
+	void    explode(bool allow_vengeance);
+	int32_t getBottom();
+	double  getDiameter();
+	void    getGuntop(int32_t angle_, double &top_x, double &top_y);
+	int32_t getMaxLife();
+	bool    hasRepulsorActivated();
+	int32_t howBuried(int32_t* left, int32_t* right);
+	bool    isFlying();
+	bool    isInBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+	bool    isInEllipse(double ex, double ey, double rx, double ry,
+	                    double &in_rate_x, double &in_rate_y);
+	bool    moveTank(int32_t direction);
+	void    newRound (int32_t pos_x, int32_t pos_y);
+	void    reactivate_shield ();
+	bool    repulse (double xpos, double ypos, double* xa, double* ya,
+	                 ePhysType phys_type);
+	void    resetFlashDamage();
+	bool    shootClearance (int32_t targetAngle, int32_t minimumClearance,
+	                        bool &crashed);
+	void    simActivateCurrentSelection();
+
+	eClasses getClass() { return CLASS_TANK; }
+
+
+	/* ----------------------
+	 * --- Public members ---
+	 * ----------------------
+	 */
+
+	int32_t   a                 = 90;      // [a]ngle
+	int32_t   cw                = SML_MIS; // [c]urrent [w]eapon
+	int32_t   fire_another_shot = 0;
+	FLOATTEXT healthText;
+	int32_t   l                 = 100;     // [l]ive
+	FLOATTEXT nameText;
+	int32_t   p                 = MAX_POWER / 2; // [p]ower
+	int32_t   sh                = 0;       // [sh]ield
+	FLOATTEXT shieldText;
+	int32_t   sht               = 0;       // [sh]ield [t]ype
+
+private:
+
+	/* -----------------------
+	 * --- Private methods ---
+	 * -----------------------
+	 */
+
+	void    setBitmap();
+	void    setTextPositions(bool renew_colour);
+	bool    tank_on_tank(); // is this tank on top of another?
+
+
+	/* -----------------------
+	 * --- Private members ---
+	 * -----------------------
+	 */
+
+	PLAYER*       creditTo         = nullptr;
+	double        damage           = 0.;
+	CSpinLock     damage_lock;
+	int32_t       delay_fall       = env.landSlideDelay * 100; // time the tank will hover
+	int32_t       flashdamage      = 0;
+	bool          isTeleported     = false; // Set to true if a teleport occurs to award falling damage.
+	int32_t       maxLife          = 100; // amount awarded at beginning of round
+	bool          newDamager       = false;
+	int32_t       para             = 0;
+	int32_t       repair_rate      = 0;
+	int32_t       repulsion        = 0;
+	int32_t shld_col_inner   = BLACK;
+	int32_t shld_col_outer   = BLACK;
+	double        shld_delta       = 360.; // divided by FPS in ctor
+	double        shld_phase       = 0.; // Neutral
+	int32_t       shld_rad_x       = 0; // Determined by the used bitmap
+	int32_t       shld_rad_y       = 0; // Determined by the used bitmap
+	int32_t       shld_thickness   = 0;
+	double        tank_dia         = 1.; // Tank diameter, determined by the used bitmap
+	int32_t       tank_off_x       = 0; // Determined by the used bitmap
+	int32_t       tank_off_y       = 0; // Determined by the used bitmap
+	int32_t       tank_sag         = 0; // Determined by the used bitmap
+	int32_t       turr_off_x       = 0; // Determined by the used bitmap
+	int32_t       turr_off_y       = 0; // Determined by the used bitmap
+	int32_t       use_tankbitmap   = -1;
+	int32_t       use_turretbitmap = -1;
 };
+
+#define HAS_TANK 1
 
 #endif

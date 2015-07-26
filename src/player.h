@@ -18,48 +18,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * */
+ *
+ */
 
 
-#include "main.h"
-#include "menu.h"
+#include "player_types.h"
+#include "globaltypes.h"
 
-
-enum playerType
-{
-    HUMAN_PLAYER,
-    USELESS_PLAYER,
-    GUESSER_PLAYER,
-    RANGEFINDER_PLAYER,
-    TARGETTER_PLAYER,
-    DEADLY_PLAYER,
-    LAST_PLAYER_TYPE,
-    PART_TIME_BOT,         // normally a human, but acting as a deadly computer
-    VERY_PART_TIME_BOT,    // just fires one shot
-    NETWORK_CLIENT
-};
-//player weapon preference type
-//ALWAYS_PREF - only choose weapon preferences once on player creation
-//PERPLAY_PREF - choose weapon preferences once per game
-enum playerPrefType
-{
-    PERPLAY_PREF,
-    ALWAYS_PREF
-};
-enum turnStages
-{
-    SELECT_WEAPON,
-    SELECT_TARGET,
-    CALCULATE_ATTACK,
-    AIM_WEAPON,
-    FIRE_WEAPON
-};
-
-#define TANK_TYPES 9
-
-#define NUM_ROULETTE_SLOTS (THINGS * 100)
-#define MAX_WEAP_PROBABILITY 10000
-#define BURIED_LEVEL 135
+#define	MAX_WEAP_PROBABILITY 10000
+#define BURIED_LEVEL         135
+#define BURIED_LEVEL_HALF     68
 
 #define NET_COMMAND_SIZE 64
 // if we do not get a command after this amount of seconds,
@@ -67,139 +35,222 @@ enum turnStages
 #define NET_DELAY 1000
 #define NET_DELAY_SHORT 500
 
-// values the control functions return ot the main game loop
-#define CONTROL_PRESSED 2   // some key pressed, but not to shoot
-#define CONTROL_FIRE 1
-#define CONTROL_QUIT -1
-#define CONTROL_SKIP -2
-
-
 class TANK;
-class PLAYER
+class PLAYER;
+class AICore;
+
+/// @brief minimal struct to allow AI players to keep track of friend and foe.
+struct sOpponent
 {
-
-    char _name[NAME_LENGTH];
-    int _currTank;
-    GLOBALDATA *_global;
-    ENVIRONMENT *_env;
-    char _turnStage;
-    TANK *_target;
-    TANK *_oldTarget;
-    int _targetAngle;
-    int _targetPower;
-    int _overshoot;
-    int _weaponPreference[THINGS];
-    int _rouletteWheel[NUM_ROULETTE_SLOTS];
-    int _targetX;
-    int _targetY;
-    int iBoostItemsBought;
-    int iTargettingRound;
-    int computerSelectPreBuyItem(int aMaxBoostValue = 0);
-    TANK * computerSelectTarget(int aPreferredWeapon, bool aRotationMode = false);
-    char * selectKamikazePhrase();
-    char * selectRetaliationPhrase();
-    int getBlastValue(TANK * aTarget, int aDamage, int aWeapon, double aDamageMod = 1.0);
-    int getUnburyingTool();
-    int adjustOvershoot(int &aOvershoot, double aReachedX, double aReachedY);
-    int getAdjustedTargetX(TANK * aTarget = NULL);
-    int calculateAttack(TANK *aTarget = NULL);
-    void calculateAttackValues(int &aDistanceX, int aDistanceY, int &aRawAngle, int &aAdjAngle, int &aPower, bool aAllowFlip);
-    int traceShellTrajectory(double aTargetX, double aTargetY, double aVelocityX, double aVelocityY, double &aReachedX, double &aReachedY);
-    int rangeFind(int &aAngle, int &aPower);
-
-public:
-    double type, type_saved, previous_type;
-    double preftype;
-    char* preftypeText[ALWAYS_PREF + 1];
-    char *tank_type[8];
-    char *teamText[3];
-
-    PLAYER *revenge;
-    int vengeful;    // 0-100 chance of retaliation
-    double vengeanceThreshold;    // Damage required to warrant revenge
-    //   (% of max armour)
-    double defensive;    // -1.0 - 1.0, offense - defense
-    double annoyanceFactor;
-    double selfPreservation;    // Lengths gone to to avoid self-harm
-    double painSensitivity;    // How sensitive to damage
-    int rangeFindAttempts;
-    int retargetAttempts;
-    double focusRate;
-    double errorMultiplier;
-    int score;
-    double played, won;
-    int kills, killed;
-    double selected;
-    int money;
-    double damageMultiplier;
-    TANK *tank;
-    int color;
-    void *pColor;
-    int color2;
-    int nm[WEAPONS], ni[ITEMS];
-    MENUENTRY *menuopts;
-    MENUDESC *menudesc;
-    char *typeText[LAST_PLAYER_TYPE];
-    bool changed_weapon;
-    bool gloating;
-    double tank_bitmap;    // which type of tank do we have
-    double team;
-    int time_left_to_fire;
-    bool skip_me;
-    int last_shield_used;
-#ifdef NETWORK
-    int server_socket;
-    char net_command[NET_COMMAND_SIZE];
-#endif
-
-    PLAYER(GLOBALDATA *global, ENVIRONMENT *env);
-    // PLAYER(GLOBALDATA *global, ENVIRONMENT *env, ifstream &ifsFile, bool file);
-    ~PLAYER();
-    void setName(char *name);
-    char *getName()
-    {
-        return _name;
-    }
-    int calculateDirectAngle(int dx, int dy);
-    void exitShop();
-    void newRound();
-    void initialise();
-    TANK *nextTank();
-    TANK *currTank();
-    int controlTank();
-    int humanControls();
-    int computerControls();
-    double calcDefenseValue(TANK *ctank, TANK *ltank);
-    double selectTarget();    // select x to aim for
-    double selectTarget(int *targetXCoord, int *targetYCoord);    // select x to aim for
-    double Select_Target(int *target_X, int *target_Y);    // select x to aim for
-    int computerSelectItem();    // Choose weapon to fire
-    int chooseItemToBuy(int aMaxBoostValue = 0);
-    void generatePreferences();
-    void setComputerValues(int aOffset = 0);
-    int getMoneyToSave();
-    int getBoostValue();
-    int selectRandomItem ();
-    char *selectRevengePhrase();
-    char *selectGloatPhrase();
-    char *selectSuicidePhrase();
-    int saveToFile_Text(FILE *file);
-    int saveToFile(std::ofstream &ofsFile);
-    int loadFromFile_Text (FILE *file);
-    int loadFromFile(std::ifstream &ifsFile);
-    void initMenuDesc();
-    char *Get_Team_Name();
-    int Select_Random_Weapon();
-    int Select_Random_Item();
-    int Reduce_Time_Clock();
-    int Buy_Something(int item_index);     // purchases the selected item
-    int Reclaim_Shield();    // restore unused shield
-
-#ifdef NETWORK
-    void Trim_Newline(char *line);   // sanitize input
-    int Get_Network_Command();
-    int Execute_Network_Command(int my_turn);
-#endif
+	int32_t damage_from = 0;  //!< How much damage the opponent did to the player.
+	int32_t damage_last = 0;  //!< How much damage the opponent did in this turn.
+	int32_t damage_to   = 0;  //!< How much damage the player did to the opponent.
+	double  fear        = 0.; //!< How likely evasive manoeuvres are started.
+	double  fear_shock  = 0.; //!< The highest shock value determines the shocker.
+	int32_t index       = -1; //!< Needed for saving/loading to work.
+	int32_t killed_me   = 0;  //!< How many times this opponent has killed this player.
+	int32_t killed_them = 0;  //!< How many times this opponent was killed by this player.
+	PLAYER* opponent    = nullptr; //!< The PLAYER memorized here.
+	int32_t revenge_dmg = 0;  //!< Summed up damage to determine when it is time for revenge.
 };
 
+
+/** @class PLAYER
+  * @brief All data concerning human and A players
+**/
+class PLAYER
+{
+public:
+
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
+
+	explicit PLAYER ();
+	~PLAYER	();
+
+	// no copying, no assignments
+	PLAYER(const PLAYER&) =delete;
+	PLAYER &operator=(const PLAYER&) =delete;
+
+
+	/* ----------------------
+	 * --- Public methods ---
+	 * ----------------------
+	 */
+
+	void        checkOppMem         ();
+	int32_t     chooseItemToBuy     (int32_t max_boost, int32_t max_score,
+	                                 bool first_look, int32_t &last_idx);
+	eControl    controlTank         (AICore* aicore, bool allow_fire);
+	void        drawIndicator       (int32_t x, int32_t y, int32_t h);
+#ifdef NETWORK
+	eControl    executeNetCmd       (bool my_turn, AICore* aicore);
+#endif // NETWORK
+	void	    exitShop            ();
+	void        generatePreferences ();
+	int32_t     getBoostValue       ();
+	int32_t     getItemPref         (int32_t idx);
+	int32_t     getMoneyToSave      (bool first_look);
+	const char* getName             () const;
+	bool        getNetCmd           ();
+	sOpponent*  getOppMem           (int32_t idx);
+	const char* getTeamName         () const;
+	int32_t     getWeapPref         (int32_t idx);
+	void	    initialise          (bool loaded_game);
+	bool        load_from_file      (FILE* file);
+	void        load_game_data      (FILE* file);
+	void        newGame             ();
+	void	    newRound            ();
+	void        noteDamageFrom      (PLAYER* opponent, int32_t damage, bool destroyed);
+	void        noteDamageTo        (PLAYER* opponent, int32_t damage, bool destroyed);
+	void        reclaimShield       ();    // restore unused shield
+	bool        reduceClock         ();
+	void        save_game_data      (FILE* file);
+	void        save_to_file        (FILE* file);
+	const char* selectGloatPhrase   ();
+	const char* selectKamikazePhrase();
+	const char* selectRetaliationPhrase();
+	const char* selectRevengePhrase ();
+	const char* selectSuicidePhrase ();
+	void        setLastOpponent     (sOpponent* last_opp);
+	void	    setName             (const char* name_);
+
+
+	/* ----------------------
+	 * --- Public members ---
+	 * ----------------------
+	 */
+
+	int32_t        color              = BLACK;
+	double         damageMultiplier   = 1.;
+	double         defensive          = 0.; // [-1.0;1.0], offensive - defensive
+	double         errorMultiplier    = 0.;
+	bool           changed_weapon     = false;
+	double         focusRate          = 0.;
+	bool           gloating           = false;
+	int32_t        index              = -1; // To note where in allPlayers this player is saved
+	int32_t        killed             = 0;
+	int32_t        kills              = 0;
+	int32_t        last_shield_used   = 0;
+	double         painSensitivity    = .5; // How sensitive to damage
+	uint32_t       played             = 0;
+	playerPrefType preftype           = PERPLAY_PREF;
+	playerType     previous_type      = HUMAN_PLAYER;
+	int32_t        money              = 15000;
+	int32_t        ni[ITEMS];
+	int32_t        nm[WEAPONS];
+	PLAYER*        revenge            = nullptr;
+	int32_t        score              = 0;
+	bool           sdi_has_fired      = false; // Only one shot per frame
+	int32_t        sdiShots           = 0;
+	bool           selected           = false;
+	double         selfPreservation   = .5; // Lengths gone to to avoid self-harm
+	bool           skip_me            = false;
+	TANK*          tank               = nullptr;
+	int32_t        tankbitmap         = TT_NORMAL;
+	eTeamTypes     team               = TEAM_NEUTRAL;
+	int32_t        time_left_to_fire  = 0;
+	playerType     type               = HUMAN_PLAYER;
+	playerType     type_saved         = HUMAN_PLAYER;
+	double         vengeanceThreshold = .5; // Damage required to warrant revenge
+	int32_t        vengeful           = 50; // 0-100 chance of retaliation
+	uint32_t       won                = 0;
+#ifdef NETWORK
+	int32_t        server_socket      = 0;
+	char           net_command[NET_COMMAND_SIZE] = { 0 };
+#endif // NETWORK
+
+
+private:
+
+	typedef ePlayerStages plStage_t;
+	typedef sOpponent     opp_t;
+
+
+	/* -----------------------
+	 * --- Private methods ---
+	 * -----------------------
+	 */
+
+	void        boostPrefences           (bool boostArmour, bool boostAmps,
+	                                      bool boostWeapons);
+	bool        buy_item                 (int32_t itemindex, int32_t max_boost);
+	eControl    computerControls         (AICore *aicore, bool allow_fire);
+	int32_t     computerSelectPreBuyItem (int32_t max_boost);
+	int32_t     generateDesiredList      ();
+	int32_t     getAmpValue              ();
+	int32_t     getArmourValue           ();
+	eControl    humanControls            (AICore* aicore);
+	void        updatePreferences        (int32_t max_boost, int32_t max_score);
+
+
+	/* -----------------------
+	 * --- Private members ---
+	 * -----------------------
+	 */
+
+	int32_t   boostBought      = -1;
+	int32_t   currPref[THINGS]; // current preferences, calculated for each round
+	int32_t   desired[THINGS]; // Shopping wish list
+	opp_t*    last_opponent    = nullptr;
+	char      name[NAME_LEN + 1];
+	bool      needAmp          = false;
+	bool      needArmour       = false;
+	bool      needDamage       = false;
+	int32_t   oppCount         = 0;
+	opp_t*    opponents        = nullptr;
+	plStage_t plStage          = PS_SELECT_WEAPON;
+	int32_t   shieldBought     = -1;
+	int32_t   weapPref[THINGS]; // Static preferences, generated once
+};
+
+
+// For headers including player.h to know that the class is there:
+#define HAS_PLAYER 1
+// Note: Due to circular dependencies, some headers might need to forward
+//       the player class.
+
+
+/** @struct PLAYER_mini
+  * @brief Minimum dataset of editable values.
+  *
+  * This minimal struct is used for the player editing menu.
+  *   - When adding a new player it allows to cancel the addition without
+  * atanks to first call new and then delete. Further it keeps the last
+  * settings so adding many new players with the same settings but different
+  * names becomes very easy.
+ **/
+struct PLAYER_mini
+{
+	int32_t        color          = GREEN;
+	int32_t        index          = -1;
+	char	       name[NAME_LEN];
+	uint32_t       played         = 0;
+	PLAYER*        player         = nullptr;
+	playerPrefType preftype       = ALWAYS_PREF;
+	int32_t        tankbitmap     = TT_NORMAL;
+	eTeamTypes     team           = TEAM_NEUTRAL;
+	playerType     type           = HUMAN_PLAYER;
+	uint32_t       won            = 0;
+
+	// a ctor, needed by VisualC++ for the name.
+	explicit PLAYER_mini();
+
+	// "Backup a player"
+	void copy_from(PLAYER* source);
+
+	// Write back the values
+	void write_back(PLAYER* target = nullptr);
+};
+
+#define HAS_PLAYER_MINI 1
+
+// Helper functions to be used as action function with ET_BUTTON entries
+int32_t edit_player(PLAYER** target, int32_t);
+int32_t new_player (PLAYER** target, int32_t);
+
+
 #endif
+

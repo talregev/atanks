@@ -1,5 +1,5 @@
-#ifndef FLOATTEXT_DEFINE
-#define FLOATTEXT_DEFINE
+#ifndef	FLOATTEXT_DEFINE
+#define	FLOATTEXT_DEFINE
 
 /*
  * atanks - obliterate each other with oversize weapons
@@ -21,75 +21,82 @@
  * */
 
 
-#include "virtobj.h"
 #include "main.h"
 #include "environment.h"
+#include "virtobj.h"
 
-#define newmakecol(r,g,b) makecol((int)(r),(int)(g),(int)(b))
 
-#define NO_SWAY 0
-#define NORMAL_SWAY 42
+/// @enum eTextSway
+/// @brief Type of text swaying
+enum eTextSway
+{
+	TS_NO_SWAY    =  0, //!< Static text that is moving normally
+	TS_VERTICAL   = 15, //!< Vertical "bouncing" text like tank health.
+	TS_HORIZONTAL = 22  //!< Horizontal swaying text, if turned on, used for damage and money.
+};
 
-#define SPEED_RANGE 6
 
-#ifndef TRUE
-#define TRUE 1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
 
 class FLOATTEXT: public VIRTUAL_OBJECT
 {
-private:
-    // empty ctor, copy-ctor and assign operator are private, so the compiler won't create implicit ones!
-    // inline const FLOATTEXT& operator= (const FLOATTEXT &sourceText) { return(sourceText); }
-
-    char *_text;
-    int _color;
-    int _halfColor; // for shadowd text!
-    int original_x;
-    int delta_x;
-
 public:
-    int sway;
 
-    /* --- constructor --- */
-    FLOATTEXT(GLOBALDATA *global, ENVIRONMENT *env, char *text, int xpos, int ypos, int color, alignType alignment);
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
 
-    /* --- destructor --- */
-    ~FLOATTEXT();
-    void setEnvironment(ENVIRONMENT *env);
+	explicit FLOATTEXT (const char* text_, int32_t xpos, int32_t ypos,
+						double xv_, double yv_, int32_t color_,
+						alignType alignment, eTextSway sway_type,
+						int32_t max_age);
+	~FLOATTEXT ();
 
-    inline virtual void initialise()
-    {
-        VIRTUAL_OBJECT::initialise();
-    }
 
-    int applyPhysics();
-    void draw(BITMAP *dest);
-    int set_text(char * text);
-    void set_pos(int x, int y);
-    void set_color(int color);
-    void set_speed(double x_speed, double y_speed);
-    
+	/* ----------------------
+	 * --- Public methods ---
+	 * ----------------------
+	 */
 
-    inline virtual int isSubClass(int classNum)
-    {
-        if (classNum != FLOATTEXT_CLASS)
-            return FALSE;
-        //return (VIRTUAL_OBJECT::isSubClass (classNum));
-        else
-            return TRUE;
-    }
+	void     applyPhysics ();
+	void     draw         ();
+	void     newRound     ();
+	void     set_color    (int32_t color_);
+	void     set_pos      (int32_t xpos, int32_t ypos);
+	void     set_sway_type(eTextSway sway_type);
+	void     set_text     (const char* text_);
 
-    inline virtual int getClass()
-    {
-        return FLOATTEXT_CLASS;
-    }
+	eClasses getClass() { return CLASS_FLOATTEXT; }
 
-    void newRound();
 
+private:
+
+	/* -----------------------
+	 * --- Private methods ---
+	 * -----------------------
+	 */
+
+	void     reset_sway   ();
+	void     set_speed    (double xv_, double yv_);
+
+
+	/* -----------------------
+	 * --- Private members ---
+	 * -----------------------
+	 */
+
+	int32_t   color     = SILVER; //!< Foreground colour
+	int32_t   halfColor = GREY;   //!< Shadow colour
+	double    pos_x     = 0.;
+	double    pos_y     = 0.;
+	eTextSway sway      = TS_NO_SWAY;
+	char*     text      = nullptr;
 };
+
+
+// This function returns a shade colour, which
+// is either brighter or darker depending on
+// the given colour and options.
+int32_t GetShadeColor(int32_t colour, bool do_lighten, int32_t bg_colour);
 
 #endif

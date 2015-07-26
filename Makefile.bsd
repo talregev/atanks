@@ -1,0 +1,298 @@
+.PHONY: all clean veryclean
+
+HERE             := ${.CURDIR}
+MAKEOBJDIRPREFIX := obj
+MODULES := network.o aicore.o debris_pool.o sky.o \
+           teleport.o gfxData.o land.o atanks.o text.o \
+           floattext.o files.o virtobj.o player_types.o \
+           shop.o perlin.o player.o beam.o \
+           optionitemplayer.o satellite.o physobj.o \
+           globaldata.o optionitemcolour.o clock.o menu.o \
+           client.o optiontypes.o tank.o environment.o \
+           decor.o debug.o globaltypes.o missile.o \
+           optionitemmenu.o gameloop.o main.o sound.o \
+           optionitembase.o optionscreens.o button.o \
+           explosion.o update.o
+
+VERSION    := 6.3
+PREFIX     := .
+INSTALLDIR := ${PREFIX}/
+
+CXX ?= clang++
+LD  ?= $(CXX)
+LIB := ar
+
+ALLEGLD  != allegro-config --libs
+CXXFLAGS += -g -std=c++0x -Wall -Wextra -pedantic -Wno-c99-extensions -I../src -I/usr/local/include -pthread
+CPPFLAGS += -DNETWORK -DDATA_DIR=\"${INSTALLDIR}\" -DVERSION=\"${VERSION}\"
+LDFLAGS  :=  $(ALLEGLD) -lm -lpthread
+
+OUTPUT := $(HERE)/atanks
+
+all: $(OUTPUT)
+
+clean:
+	rm -f $(MODULES)
+
+veryclean: clean
+	rm $(OUTPUT)
+
+network.o: ../src/network.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o network.o -c ../src/network.cpp
+aicore.o: ../src/aicore.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o aicore.o -c ../src/aicore.cpp
+debris_pool.o: ../src/debris_pool.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o debris_pool.o -c ../src/debris_pool.cpp
+sky.o: ../src/sky.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o sky.o -c ../src/sky.cpp
+teleport.o: ../src/teleport.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o teleport.o -c ../src/teleport.cpp
+gfxData.o: ../src/gfxData.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o gfxData.o -c ../src/gfxData.cpp
+land.o: ../src/land.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o land.o -c ../src/land.cpp
+atanks.o: ../src/atanks.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o atanks.o -c ../src/atanks.cpp
+text.o: ../src/text.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o text.o -c ../src/text.cpp
+floattext.o: ../src/floattext.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o floattext.o -c ../src/floattext.cpp
+files.o: ../src/files.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o files.o -c ../src/files.cpp
+virtobj.o: ../src/virtobj.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o virtobj.o -c ../src/virtobj.cpp
+player_types.o: ../src/player_types.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o player_types.o -c ../src/player_types.cpp
+shop.o: ../src/shop.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o shop.o -c ../src/shop.cpp
+perlin.o: ../src/perlin.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o perlin.o -c ../src/perlin.cpp
+player.o: ../src/player.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o player.o -c ../src/player.cpp
+beam.o: ../src/beam.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o beam.o -c ../src/beam.cpp
+optionitemplayer.o: ../src/optionitemplayer.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o optionitemplayer.o -c ../src/optionitemplayer.cpp
+satellite.o: ../src/satellite.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o satellite.o -c ../src/satellite.cpp
+physobj.o: ../src/physobj.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o physobj.o -c ../src/physobj.cpp
+globaldata.o: ../src/globaldata.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o globaldata.o -c ../src/globaldata.cpp
+optionitemcolour.o: ../src/optionitemcolour.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o optionitemcolour.o -c ../src/optionitemcolour.cpp
+clock.o: ../src/clock.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o clock.o -c ../src/clock.cpp
+menu.o: ../src/menu.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o menu.o -c ../src/menu.cpp
+client.o: ../src/client.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o client.o -c ../src/client.cpp
+optiontypes.o: ../src/optiontypes.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o optiontypes.o -c ../src/optiontypes.cpp
+tank.o: ../src/tank.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o tank.o -c ../src/tank.cpp
+environment.o: ../src/environment.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o environment.o -c ../src/environment.cpp
+decor.o: ../src/decor.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o decor.o -c ../src/decor.cpp
+debug.o: ../src/debug.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o debug.o -c ../src/debug.cpp
+globaltypes.o: ../src/globaltypes.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o globaltypes.o -c ../src/globaltypes.cpp
+missile.o: ../src/missile.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o missile.o -c ../src/missile.cpp
+optionitemmenu.o: ../src/optionitemmenu.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o optionitemmenu.o -c ../src/optionitemmenu.cpp
+gameloop.o: ../src/gameloop.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o gameloop.o -c ../src/gameloop.cpp
+main.o: ../src/main.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o main.o -c ../src/main.cpp
+sound.o: ../src/sound.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o sound.o -c ../src/sound.cpp
+optionitembase.o: ../src/optionitembase.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o optionitembase.o -c ../src/optionitembase.cpp
+optionscreens.o: ../src/optionscreens.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o optionscreens.o -c ../src/optionscreens.cpp
+button.o: ../src/button.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o button.o -c ../src/button.cpp
+explosion.o: ../src/explosion.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o explosion.o -c ../src/explosion.cpp
+update.o: ../src/update.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o update.o -c ../src/update.cpp
+
+$(OUTPUT): $(MODULES)
+	$(CXX) $(MODULES) -o $(OUTPUT) $(CPPFLAGS) $(LDFLAGS) $(CXXFLAGS)
+
+
+# Dependencies:
+aicore.o : ../src/aicore.cpp ../src/aicore.h ../src/player_types.h ../src/main.h \
+ ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/environment.h ../src/network.h \
+ ../src/gfxData.h ../src/floattext.h ../src/virtobj.h ../src/player.h ../src/tank.h \
+ ../src/physobj.h ../src/missile.h ../src/beam.h ../src/explosion.h
+atanks.o : ../src/atanks.cpp ../src/debug.h ../src/globals.h ../src/globaldata.h \
+ ../src/main.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h ../src/text.h \
+ ../src/optionscreens.h ../src/menu.h ../src/optionitem.h ../src/optionitembase.h \
+ ../src/optiontypes.h ../src/optionitemmenu.h ../src/optionitemplayer.h \
+ ../src/button.h ../src/player.h ../src/player_types.h ../src/files.h ../src/update.h \
+ ../src/tank.h ../src/physobj.h ../src/virtobj.h ../src/floattext.h ../src/beam.h \
+ ../src/missile.h ../src/gameloop.h ../src/clock.h ../src/client.h
+beam.o : ../src/beam.cpp ../src/environment.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/network.h ../src/gfxData.h ../src/physobj.h ../src/virtobj.h \
+ ../src/player.h ../src/player_types.h ../src/decor.h ../src/debris_pool.h ../src/tank.h \
+ ../src/floattext.h ../src/beam.h ../src/explosion.h ../src/sound.h
+button.o : ../src/button.cpp ../src/button.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/environment.h ../src/network.h ../src/gfxData.h ../src/sound.h
+client.o : ../src/client.cpp ../src/button.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/environment.h ../src/network.h ../src/gfxData.h ../src/files.h \
+ ../src/satellite.h ../src/update.h ../src/client.h ../src/beam.h ../src/physobj.h \
+ ../src/virtobj.h ../src/explosion.h ../src/missile.h ../src/teleport.h \
+ ../src/floattext.h ../src/player.h ../src/player_types.h ../src/tank.h ../src/sky.h
+clock.o : ../src/clock.cpp ../src/clock.h ../src/debug.h
+debris_pool.o : ../src/debris_pool.cpp ../src/debris_pool.h ../src/main.h \
+ ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/environment.h ../src/network.h \
+ ../src/gfxData.h
+debug.o : ../src/debug.cpp ../src/debug.h
+decor.o : ../src/decor.cpp ../src/decor.h ../src/physobj.h ../src/globaltypes.h \
+ ../src/virtobj.h ../src/main.h ../src/debug.h ../src/imagedefs.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/environment.h ../src/network.h \
+ ../src/gfxData.h ../src/debris_pool.h ../src/sound.h ../src/tank.h ../src/floattext.h
+environment.o : ../src/environment.cpp ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h ../src/missile.h \
+ ../src/physobj.h ../src/virtobj.h ../src/tank.h ../src/floattext.h ../src/files.h \
+ ../src/sound.h ../src/player.h ../src/player_types.h
+explosion.o : ../src/explosion.cpp ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h ../src/explosion.h \
+ ../src/physobj.h ../src/virtobj.h ../src/missile.h ../src/decor.h ../src/debris_pool.h \
+ ../src/tank.h ../src/floattext.h ../src/player.h ../src/player_types.h
+files.o : ../src/files.cpp ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h ../src/player.h \
+ ../src/player_types.h ../src/files.h
+floattext.o : ../src/floattext.cpp ../src/floattext.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/environment.h ../src/network.h ../src/gfxData.h ../src/virtobj.h
+gameloop.o : ../src/gameloop.cpp ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h ../src/files.h \
+ ../src/satellite.h ../src/update.h ../src/land.h ../src/clock.h ../src/floattext.h \
+ ../src/virtobj.h ../src/tank.h ../src/physobj.h ../src/explosion.h ../src/beam.h \
+ ../src/missile.h ../src/decor.h ../src/debris_pool.h ../src/teleport.h ../src/sky.h \
+ ../src/sound.h ../src/gameloop.h ../src/player.h ../src/player_types.h ../src/aicore.h \
+ ../src/shop.h
+gfxData.o : ../src/gfxData.cpp ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h
+globaldata.o : ../src/globaldata.cpp ../src/player.h ../src/player_types.h \
+ ../src/main.h ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/environment.h ../src/network.h \
+ ../src/gfxData.h ../src/files.h ../src/tank.h ../src/physobj.h ../src/virtobj.h \
+ ../src/floattext.h ../src/sound.h ../src/debris_pool.h
+globaltypes.o : ../src/globaltypes.cpp ../src/globaltypes.h
+land.o : ../src/land.cpp ../src/land.h ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h ../src/files.h ../src/gameloop.h \
+ ../src/player.h ../src/player_types.h
+main.o : ../src/main.cpp ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h
+menu.o : ../src/menu.cpp ../src/optioncontent.h ../src/optiontypes.h \
+ ../src/globaltypes.h ../src/optionitemcolour.h ../src/optionitembase.h \
+ ../src/environment.h ../src/main.h ../src/debug.h ../src/imagedefs.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/network.h ../src/gfxData.h ../src/button.h \
+ ../src/menu.h ../src/optionitem.h ../src/optionitemmenu.h ../src/optionitemplayer.h \
+ ../src/player.h ../src/player_types.h ../src/clock.h
+missile.o : ../src/missile.cpp ../src/explosion.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/environment.h ../src/network.h ../src/gfxData.h ../src/physobj.h \
+ ../src/virtobj.h ../src/missile.h ../src/decor.h ../src/debris_pool.h ../src/tank.h \
+ ../src/floattext.h ../src/player.h ../src/player_types.h ../src/beam.h ../src/sound.h \
+ ../src/aicore.h
+network.o : ../src/network.cpp ../src/network.h ../src/player.h ../src/player_types.h \
+ ../src/main.h ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/environment.h ../src/gfxData.h
+optionitembase.o : ../src/optionitembase.cpp ../src/button.h ../src/main.h \
+ ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/environment.h ../src/network.h \
+ ../src/gfxData.h ../src/menu.h ../src/optionitem.h ../src/optionitembase.h \
+ ../src/optiontypes.h ../src/optionitemmenu.h ../src/optionitemplayer.h \
+ ../src/floattext.h ../src/virtobj.h
+optionitemcolour.o : ../src/optionitemcolour.cpp ../src/optionitemcolour.h \
+ ../src/optionitembase.h ../src/environment.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/network.h ../src/gfxData.h ../src/optiontypes.h
+optionitemmenu.o : ../src/optionitemmenu.cpp ../src/optionitemmenu.h \
+ ../src/optionitembase.h ../src/environment.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/network.h ../src/gfxData.h ../src/optiontypes.h ../src/menu.h \
+ ../src/optionitem.h ../src/optionitemplayer.h ../src/button.h ../src/clock.h
+optionitemplayer.o : ../src/optionitemplayer.cpp ../src/optionitemplayer.h \
+ ../src/optionitembase.h ../src/environment.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/network.h ../src/gfxData.h ../src/optiontypes.h ../src/player.h \
+ ../src/player_types.h ../src/floattext.h ../src/virtobj.h
+optionscreens.o : ../src/optionscreens.cpp ../src/optionscreens.h ../src/menu.h \
+ ../src/optionitem.h ../src/optionitembase.h ../src/environment.h ../src/main.h \
+ ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/network.h ../src/gfxData.h \
+ ../src/optiontypes.h ../src/optionitemmenu.h ../src/optionitemplayer.h \
+ ../src/button.h ../src/player.h ../src/player_types.h ../src/files.h ../src/sound.h
+optiontypes.o : ../src/optiontypes.cpp ../src/optiontypes.h
+perlin.o : ../src/perlin.cpp ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h
+physobj.o : ../src/physobj.cpp ../src/physobj.h ../src/globaltypes.h ../src/virtobj.h \
+ ../src/main.h ../src/debug.h ../src/imagedefs.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/environment.h ../src/network.h ../src/gfxData.h
+player.o : ../src/player.cpp ../src/environment.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/network.h ../src/gfxData.h ../src/player.h ../src/player_types.h \
+ ../src/tank.h ../src/physobj.h ../src/virtobj.h ../src/floattext.h ../src/menu.h \
+ ../src/optionitem.h ../src/optionitembase.h ../src/optiontypes.h \
+ ../src/optionitemmenu.h ../src/optionitemplayer.h ../src/button.h ../src/files.h \
+ ../src/missile.h ../src/aicore.h
+player_types.o : ../src/player_types.cpp ../src/player_types.h ../src/main.h \
+ ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/environment.h ../src/network.h \
+ ../src/gfxData.h
+satellite.o : ../src/satellite.cpp ../src/environment.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/network.h ../src/gfxData.h ../src/satellite.h ../src/beam.h \
+ ../src/physobj.h ../src/virtobj.h
+shop.o : ../src/shop.cpp ../src/shop.h ../src/player.h ../src/player_types.h \
+ ../src/main.h ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h \
+ ../src/globaldata.h ../src/text.h ../src/environment.h ../src/network.h \
+ ../src/gfxData.h ../src/files.h ../src/gameloop.h
+sky.o : ../src/sky.cpp ../src/externs.h ../src/globaldata.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/text.h ../src/environment.h \
+ ../src/network.h ../src/gfxData.h ../src/sky.h ../src/files.h ../src/gameloop.h \
+ ../src/player.h ../src/player_types.h
+sound.o : ../src/sound.cpp ../src/sound.h ../src/externs.h ../src/globaldata.h \
+ ../src/main.h ../src/debug.h ../src/imagedefs.h ../src/globaltypes.h ../src/text.h \
+ ../src/environment.h ../src/network.h ../src/gfxData.h
+tank.o : ../src/tank.cpp ../src/floattext.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/environment.h ../src/network.h ../src/gfxData.h ../src/virtobj.h \
+ ../src/explosion.h ../src/physobj.h ../src/teleport.h ../src/missile.h ../src/player.h \
+ ../src/player_types.h ../src/beam.h ../src/tank.h ../src/sound.h
+teleport.o : ../src/teleport.cpp ../src/environment.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/network.h ../src/gfxData.h ../src/teleport.h ../src/virtobj.h \
+ ../src/tank.h ../src/physobj.h ../src/floattext.h ../src/sound.h ../src/player.h \
+ ../src/player_types.h
+text.o : ../src/text.cpp ../src/text.h ../src/main.h ../src/debug.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/externs.h ../src/globaldata.h ../src/environment.h \
+ ../src/network.h ../src/gfxData.h
+update.o : ../src/update.cpp ../src/debug.h ../src/update.h ../src/network.h \
+ ../src/externs.h ../src/globaldata.h ../src/main.h ../src/imagedefs.h \
+ ../src/globaltypes.h ../src/text.h ../src/environment.h ../src/gfxData.h
+virtobj.o : ../src/virtobj.cpp ../src/virtobj.h ../src/main.h ../src/debug.h \
+ ../src/imagedefs.h ../src/globaltypes.h ../src/externs.h ../src/globaldata.h \
+ ../src/text.h ../src/environment.h ../src/network.h ../src/gfxData.h

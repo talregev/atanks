@@ -21,442 +21,576 @@
  * */
 
 #ifndef VERSION
-#define VERSION "6.2"
+#  error "VERSION information is missing. Fix Makefile."
 #endif
 
 #ifdef GENTOO
-#ifndef DATA_DIR
-#define DATA_DIR "/usr/share/games/atanks"
-#endif
-#endif
+#  ifndef DATA_DIR
+#    define DATA_DIR "/usr/share/games/atanks"
+#  endif // DATA_DIR
+#endif // GENTOO
 
 #ifndef BUFFER_SIZE
-#define BUFFER_SIZE 256
+# define BUFFER_SIZE 256
 #endif
 
-#ifndef _UNUSED
-#define _UNUSED __attribute__((unused))
-#endif // _UNUSED
-#ifndef _WARNUNUSED
-#define _WARNUNUSED __attribute__((warn_unused_result))
-#endif // _WARNUNUSED
 
-#include <allegro.h>
-#ifdef WIN32
-#include <winalleg.h>
+/// Important: debug.h not only detects which OS/compiler this is,
+/// it puts an important fix with allegro on windows in place.
+/// Therefore it *must* stay before the block including winalleg.h!
+#include "debug.h"
+
+
+// The windows port does some crazy stuff with int*_t types.
+#if defined(ATANKS_IS_WINDOWS)
+#  include <cstdint>
+#  ifndef ALLEGRO_HAVE_STDINT_H
+#    define ALLEGRO_HAVE_STDINT_H 1
+#  endif // ALLEGRO_HAVE_STDINT_H
+#  if !defined(ATANKS_SRC_ATANKS_CPP)
+#    define ALLEGRO_NO_MAGIC_MAIN
+#  endif // Not called from atanks.cpp
+#endif // Windows build system
+
+#  include <allegro.h>
+
+#if defined(ATANKS_IS_WINDOWS)
+#  include <winalleg.h>
+#endif // windows
+
+
+// For visual studio some "workarounds" must be put in place
+#if defined(ATANKS_IS_MSVC)
+#  define PATH_MAX MAX_PATH
+   // Needed for M_PIl to show up
+#  if !defined(_USE_MATH_DEFINES)
+#    define _USE_MATH_DEFINES 1
+#  endif
+#  include <cmath>
+#else
+#  include <unistd.h>
+#  include <cmath>
+#endif // Windows versus Linux
+
+
+// Be sure M_PI and M_PIl are set:
+#if !defined(M_PI)
+#  define M_PI 3.14159265358979323846f
+#endif
+#if !defined(M_PIl)
+#  define M_PIl 3.14159265358979323846L
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <string.h>
-#include <time.h>
-#include "imagedefs.h"
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cmath>
+#include <chrono>
+#include <thread>
+#include <algorithm>
 
-#ifdef LINUX
-#include <unistd.h>
-#endif /* LINUX */
 
-#define GAME_SPEED 14000
+#include "globaltypes.h"
 
-#ifdef LINUX
-#define LINUX_SLEEP usleep(10000)
-#define LINUX_REST usleep(40000)
-#define LINUX_DREAMLAND sleep(5)
+
+#define	DONE_IMAGE             11
+#define	FAST_UP_ARROW_IMAGE    12
+#define	UP_ARROW_IMAGE         13
+#define	DOWN_ARROW_IMAGE       14
+#define	FAST_DOWN_ARROW_IMAGE  15
+
+
+#ifndef HAS_DIRENT
+#  if defined(ATANKS_IS_MSVC)
+#    include "extern/dirent.h"
+#  else
+#    include <dirent.h>
+#  endif // Linux
+#  define HAS_DIRENT 1
+#endif // HAS_DIRENT
+
+
+// Some more workarounds to compile using visual studio:
+#if defined(ATANKS_IS_MSVC)
+#  define snprintf         atanks_snprintf
+#  define strncpy(d, s, c) strncpy_s(d, c+1, s, c)
+#  define strncat(d, s, c) strncat_s(d, c+1, s, c)
+#  define sscanf           sscanf_s
+#  define access           _access
+#  define F_OK             02
+#  define R_OK             04
+#  define W_OK             02
+#  define strcasecmp       _stricmp
+#  define strdup           _strdup
+#  define unlink           _unlink
+#  define mkdir            _mkdir
 #endif
 
-#ifdef MACOSX
-#define LINUX_SLEEP usleep(10000)
-#define LINUX_REST usleep(40000)
-#define LINUX_DREAMLAND sleep(5)
-#endif
+// Note: See winclock.h why this is necessary
+/// REMOVE_VS12_WORKAROUND
+#if defined(ATANKS_IS_MSVC) && !defined(ATANKS_IS_AT_LEAST_MSVC13)
+#define USLEEP(microseconds_) Sleep(microseconds_ / 1000);
+#define MSLEEP(milliseconds_) Sleep(milliseconds_);
+#else
+#define USLEEP(microseconds_) std::this_thread::sleep_for(std::chrono::microseconds(microseconds_));
+#define MSLEEP(milliseconds_) std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds_));
+#endif // VS12 workaround
+#define LINUX_SLEEP     MSLEEP(10)
+#define LINUX_REST      MSLEEP(40)
 
-#ifdef WIN32
-#include <windows.h>
-#include <winbase.h>
-#define LINUX_SLEEP Sleep(10)
-#define LINUX_REST Sleep(40)
-#define LINUX_DREAMLAND Sleep(500)
-#endif
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
+
 
 // place to save config and save games
-#ifdef WIN32
-#define HOME_DIR "AppData"
-#endif
-#ifdef LINUX
-#define HOME_DIR "HOME"
-#endif
-#ifdef MACOSX
-#define HOME_DIR "HOME"
+#if defined(ATANKS_IS_WINDOWS)
+#  define HOME_DIR "AppData"
+#elif defined(ATANKS_IS_LINUX)
+#  define HOME_DIR "HOME"
+#endif // Windows versus Linux
+
+#ifndef	DATA_DIR
+#  define DATA_DIR "."
 #endif
 
-#ifndef DATA_DIR
-#define DATA_DIR "."
-#endif
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
-#define HALF_WIDTH (SCREEN_WIDTH/2)
-#define HALF_HEIGHT (SCREEN_HEIGHT/2)
-#define STUFF_BAR_WIDTH 400
-#define STUFF_BAR_HEIGHT 35
-
-#define GFILE_KEY 0x14233241
-
-#define FRAMES_PER_SECOND 60
-#ifndef PI
-#define PI 3.1415926535897932384626433832795029L
-#endif // PI
-// #define PI 3.14
-#define MAXUPDATES 256 // This one needs to be watched! If the display goes bye bye, reduce the value!
 #define MAX_OVERSHOOT 10000
-#define ABSDISTANCE(x1,y1,x2,y2) abs((int)sqrt((long double)pow(((long double)x2) - ((long double)x1), 2) + (long double)pow(((long double)y2) - ((long double)y1), 2)))
-#define FABSDISTANCE(x1,y1,x2,y2) fabs(sqrt((long double)pow(((long double)x2) - ((long double)x1), 2) + (long double)pow(((long double)y2) - ((long double)y1), 2)))
-#define MAXPLAYERS 10
-#define MAX_POWER  2000
-#define MAX_OBJECTS 400
-#define MAX_ROUNDS 1000
-#define TANKHEIGHT 20
-#define TANKWIDTH 15
-#define GUNLENGTH 16
-#define MENUHEIGHT 30
-#define SKIES 8
-#define LANDS 8
-#define ALL_SKIES 16
-#define ALL_LANDS 16
-#define BALLISTICS 52
-#define BEAMWEAPONS 3
+
+
+// The nex few are some math helpers that shorten things dramatically.
+#define SIGN(x_arg)   ((x_arg) < 0  ? -1  : 1 )
+#define SIGNd(x_arg)  ((x_arg) < 0. ? -1. : 1.)
+#define ROUND(x_arg)  static_cast<int32_t>( (x_arg) + (SIGNd(x_arg) * .5))
+#define ROUNDu(x_arg) static_cast<uint32_t>((x_arg) + .5)
+
+#define FABSDISTANCE2(x1,y1,x2,y2) \
+	std::sqrt(std::pow(static_cast<double>(x2) - static_cast<double>(x1), 2.) \
+	        + std::pow(static_cast<double>(y2) - static_cast<double>(y1), 2.) )
+#define FABSDISTANCE3(x1, y1, z1, x2, y2, z2) \
+	std::sqrt(std::pow(static_cast<double>(x2) - static_cast<double>(x1), 2.) \
+	        + std::pow(static_cast<double>(y2) - static_cast<double>(y1), 2.) \
+	        + std::pow(static_cast<double>(z2) - static_cast<double>(z1), 2.) )
+
+#define ABSDISTANCE2(x1,y1,x2,y2)       ROUNDu(FABSDISTANCE2(x1,y1,x2,y2))
+#define ABSDISTANCE3(x1,y1,z1,x2,y2,z2) ROUNDu(FABSDISTANCE3(x1,y1,z1,x2,y2,z2))
+
+#define DEG2RAD(degree_) (static_cast<double>(degree_) * M_PIl / 180. )
+#define RAD2DEG(radian_) (static_cast<double>(radian_) * 180.  / M_PIl)
+
+
+/** @brief show or hide the custom mouse cursor
+  *
+  * This macro can either hide the custom mouse cursor when @a where is set
+  * to nullptr, or draw it on @a where, which then must be a pointer to a
+  * BITMAP.
+  *
+  * This macro should be used to hide the custom mouse cursor before doing any
+  * drawing and to place the mouse cursor on @a where once all other drawing is
+  * done.
+  *
+  * If the OS mouse cursor is used, this macro does nothing.
+  *
+  * @param[in] where BITMAP pointer to draw the custom cursor on or nullptr to
+  * hide the custom mouse cursor.
+**/
+#define SHOW_MOUSE(where) { \
+	if (!env.osMouse) { \
+		if (where != nullptr) unscare_mouse(); \
+		else scare_mouse(); \
+		show_mouse(where); \
+		/* Make the neccessary updates */ \
+		if (where != nullptr) { \
+			global.make_update (mouse_x, mouse_y, env.misc[0]->w, env.misc[0]->h); \
+			global.make_update (lx, ly, env.misc[0]->w, env.misc[0]->h); \
+			lx = mouse_x; \
+			ly = mouse_y; \
+		} \
+	} \
+}
+
+#define MAXPLAYERS    10
+#define MAX_POWER   2000
+#define MIN_POWER    100
+#define MAX_ROUNDS 10000
+
+#define MENUHEIGHT 40
+#define BOXED_TOP 41 // This is the highest non-border pixel in boxed mode
+#define	BALLISTICS 52
+#define	BEAMWEAPONS 3
 #define WEAPONS (BALLISTICS + BEAMWEAPONS)
 #define ITEMS 24
 #define THINGS (WEAPONS + ITEMS)
-#define NATURALS 6
+#define	NATURALS 6
+#define DIRT_FRAGMENT -1
 #define RADII 6
 #define MAXRADIUS 200
 #define BUTTONFRAMES 2
-#define EXPLODEFRAMES 18
-#define DISPERSEFRAMES 10
-#define EXPLOSIONFRAMES (EXPLODEFRAMES + DISPERSEFRAMES)
-#define TANKSAG 10
+
 #define MENUBUTTONS 7
-#define MISSILEFRAMES 1
-#define ACHANGE 256/360
 #define INGAMEBUTTONS 4
-#define MAX_MISSILES 10
 #define SPREAD 10
-#define SHIELDS 6
-#define WEAPONSOUNDS 4
-#define NAME_LENGTH 24
+#define NAME_LEN 24
 #define ADDRESS_LENGTH 16
 
-//Score coeficients
+#define WAIT_AT_END_OF_ROUND 1 // second (enough with the new live score board)
 
-#define SCORE_DESTROY_UNIT_BONUS 5000
-#define SCORE_UNIT_SELF_DESTROY 0
-#define SCORE_HIT_UNIT 50
-#define SCORE_SELF_HIT 0
+#define MAX_ITEM_NAME_LEN 127
+#define MAX_ITEM_DESC_LEN 511
+#define MAX_ITEMS_IN_STOCK 999999
+#define MAX_MONEY_IN_WALLET 1000000000
 
-//Wind
-#define WIND_COEF 0.3
-#define MAX_WIND 3
+// Use these instead of the (most strict) defaults,
+// But only where timing by memory fences do not matter.
+#define ATOMIC_READ  std::memory_order_acquire
+#define ATOMIC_WRITE std::memory_order_release
 
-// bitmaps for tanks
-#define NORMAL_TANK 0
-#define CLASSIC_TANK 1     // really 8 in the .dat file
-#define BIGGREY_TANK 2
-#define T34_TANK 3
-#define HEAVY_TANK 4
-#define FUTURE_TANK 5
-#define UFO_TANK 6
-#define SPIDER_TANK 7
-#define BIGFOOT_TANK 8
-#define MINI_TANK 9
-
-// background images
-#define BACKGROUND_CIRCLE 0
-#define BACKGROUND_LINE 1
-#define BACKGROUND_BLANK 2
-
-#define WAIT_AT_END_OF_ROUND 300
-
-// time between volly shots
-#define VOLLY_DELAY 50
-
-// teams
-enum teams
-{
-    TEAM_SITH,
-    TEAM_NEUTRAL,
-    TEAM_JEDI
-};
 
 //turns
 enum turnTypes
 {
-    TURN_HIGH, TURN_LOW, TURN_RANDOM, TURN_SIMUL
+	TURN_HIGH = 0,
+	TURN_LOW,
+	TURN_RANDOM,
+	TURN_SIMUL
 };
 
-class BOX
+
+struct POINT_t
 {
-public:
-    int x, y, w, h;
+	int32_t x = 0;
+	int32_t y = 0;
+
+	explicit
+	POINT_t() { }
+	POINT_t(int32_t x_, int32_t y_);
+	POINT_t &operator=( const POINT_t &src );
 };
 
-typedef struct gradient_struct
+
+struct BOX
 {
-    RGB color;
-    float point;
-} gradient;
+	int32_t x = 0;
+	int32_t y = 0;
+	int32_t w = 0;
+	int32_t h = 0;
+
+	explicit
+	BOX () { }
+	BOX (int32_t x_, int32_t y_, int32_t w_, int32_t h_);
+	BOX &operator=(const BOX  &src);
+	BOX &operator=(const BOX &&src);
+
+	void set(int32_t x_, int32_t y_, int32_t w_, int32_t h_);
+};
+
+// Make the BOX usage easier:
+bool operator==(const BOX &lhs, const BOX &rhs);
+bool operator!=(const BOX &lhs, const BOX &rhs);
+
+
+struct gradient
+{
+	RGB color;
+	float point;
+};
+
 
 class WEAPON
 {
 public:
-    char name[128]; //name of weapon
-    char description[512];
-    int cost; //$ :))
-    int amt; //number of weapons in one buying package
-    double mass;
-    double drag;
-    int radius; // of the explosion
-    int sound;
-    int etime;
-    int damage; //damage power
-    int eframes;
-    int picpoint; // which picture do we show in flight?
-    int spread; // number of weapons in the shot
-    int delay; // volleys etc.
-    int noimpact;
-    int techLevel;
-    int warhead; // Is it a warhead?
-    int numSubmunitions; // Number of submunitions
-    int submunition; // The next stage
-    double impartVelocity; // Impart velocity 0.0-1.0 to subs
-    int divergence; // Total angle for submunition spread
-    double spreadVariation; // Uniform or random distribution
-    //   0-1.0 (0=uniform, 1.0=random)
-    //   divergence at centre of range
-    double launchSpeed; // Speed given to submunitions
-    double speedVariation; // Uniform or random speed
-    //   0-1.0 (0=uniform, 1.0=random)
-    //   launchSpeed at centre of range
-    int countdown; // Set the countdown to this
-    double countVariation; // Uniform or random countdown
-    //   0-1.0 (0=uniform, 1.0=random)
-    //   countdown at centre of range
+
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
+
+	explicit WEAPON();
+
+
+	/* -----------------------------------
+	 * --- Public methods              ---
+	 * -----------------------------------
+	 */
+
+	int32_t     getDelayDiv() const;
+	const char* getDesc()     const;
+	const char* getName()     const;
+
+	void setDesc(const char* desc_);
+	void setName(const char* name_);
+
+
+	/* -----------------------------------
+	 * --- Public members              ---
+	 * -----------------------------------
+	 */
+	int32_t cost            = 0;  //!< $ :))
+	int32_t amt             = 0;  //!< number of weapons in one buying package
+	double  mass            = 0.;
+	double  drag            = 0.;
+	int32_t radius          = 0;  //!< of the explosion
+	int32_t sound           = 0;
+	int32_t etime           = 0;
+	int32_t damage          = 0;  //!< damage power
+	int32_t picpoint        = 0;  //!< which picture do we show in flight?
+	int32_t spread          = 0;  //!< number of weapons in the shot
+	int32_t delay           = 0;  //!< volleys etc.
+	int32_t noimpact        = 0;
+	int32_t techLevel       = 0;
+	int32_t warhead         = 0;  //!< Is it a warhead?
+	int32_t numSubmunitions = 0;  //!< Number of submunitions
+	int32_t submunition     = 0;  //!< The next stage
+	double  impartVelocity  = 0.; //!< Impart velocity 0.0-1.0 to subs
+	int32_t divergence      = 0;  //!< Total angle for submunition spread
+	double  spreadVariation = 0.; //!< Uniform or random distribution
+	                              //!< 0-1.0 (0=uniform, 1.0=random)
+	                              //!< divergence at centre of range
+	double  launchSpeed     = 0.; //!< Speed given to submunitions
+	double  speedVariation  = 0.; //!< Uniform or random speed
+	                              //!< 0-1.0 (0=uniform, 1.0=random)
+	                              //!< launchSpeed at centre of range
+	int32_t countdown       = 0;  //!< Set the countdown to this
+	double  countVariation  = 0.; //!< Uniform or random countdown
+	                              //!< 0-1.0 (0=uniform, 1.0=random)
+	                              //!< countdown at centre of range
+
+
+private:
+
+
+	/* -----------------------------------
+	 * --- Private members             ---
+	 * -----------------------------------
+	 */
+
+	char desc[MAX_ITEM_DESC_LEN + 1];
+	char name[MAX_ITEM_NAME_LEN + 1];
 };
 
-#define MAX_ITEMVALS 10
+#define	MAX_ITEMVALS	10
 class ITEM
 {
 public:
-    char name[128];
-    char description[256];
-    int cost;
-    int amt;
-    int selectable;
-    int techLevel;
-    int sound;
-    double vals[MAX_ITEMVALS];
+
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
+
+	explicit ITEM();
+
+
+	/* -----------------------------------
+	 * --- Public methods              ---
+	 * -----------------------------------
+	 */
+
+	const char* getDesc() const;
+	const char* getName() const;
+
+	void setDesc(const char* desc_);
+	void setName(const char* name_);
+
+
+	/* -----------------------------------
+	 * --- Public members              ---
+	 * -----------------------------------
+	 */
+
+	int32_t cost       = 0;
+	int32_t amt        = 0;
+	int32_t selectable = 0;
+	int32_t techLevel  = 0;
+	int32_t sound      = 0;
+	double  vals[MAX_ITEMVALS];
+
+
+private:
+
+
+	/* -----------------------------------
+	 * --- Private members             ---
+	 * -----------------------------------
+	 */
+
+	char desc[MAX_ITEM_DESC_LEN + 1];
+	char name[MAX_ITEM_NAME_LEN + 1];
 };
+
 
 enum shieldVals
 {
-    SHIELD_ENERGY,
-    SHIELD_REPULSION,
-    SHIELD_RED,
-    SHIELD_GREEN,
-    SHIELD_BLUE,
-    SHIELD_THICKNESS
+	SHIELD_ENERGY,
+	SHIELD_REPULSION,
+	SHIELD_RED,
+	SHIELD_GREEN,
+	SHIELD_BLUE,
+	SHIELD_THICKNESS
 };
+
 
 enum selfDestructVals
 {
-    SELFD_TYPE,
-    SELFD_NUMBER
+	SELFD_TYPE = 0,
+	SELFD_NUMBER
 };
+
 
 enum weaponType
 {
-    SML_MIS, MED_MIS, LRG_MIS, SML_NUKE, NUKE, DTH_HEAD,
-    SML_SPREAD, MED_SPREAD, LRG_SPREAD, SUP_SPREAD, DTH_SPREAD, ARMAGEDDON,
-    CHAIN_MISSILE, CHAIN_GUN, JACK_HAMMER,
-    SHAPED_CHARGE, WIDE_BOY, CUTTER,
-    SML_ROLLER, LRG_ROLLER, DTH_ROLLER,
-    SMALL_MIRV,
-    ARMOUR_PIERCING,
-    CLUSTER, SUP_CLUSTER,
-    FUNKY_BOMB, FUNKY_DEATH,
-    FUNKY_BOMBLET, FUNKY_DEATHLET,
-    BOMBLET, SUP_BOMBLET,
-    BURROWER, PENETRATOR,
-    SML_NAPALM, MED_NAPALM, LRG_NAPALM,
-    NAPALM_JELLY,
-    DRILLER,
-    TREMOR, SHOCKWAVE, TECTONIC,
-    RIOT_BOMB, HVY_RIOT_BOMB,
-    RIOT_CHARGE, RIOT_BLAST,
-    DIRT_BALL, LRG_DIRT_BALL, SUP_DIRT_BALL,
-    SMALL_DIRT_SPREAD,
-    CLUSTER_MIRV,
-    PERCENT_BOMB,
-    REDUCER,
-    SML_LAZER, MED_LAZER, LRG_LAZER,
-    SML_METEOR, MED_METEOR, LRG_METEOR,
-    SML_LIGHTNING, MED_LIGHTNING, LRG_LIGHTNING
+	SML_MIS            =  0,
+	MED_MIS            =  1,
+	LRG_MIS            =  2,
+	SML_NUKE           =  3,
+	NUKE               =  4,
+	DTH_HEAD           =  5,
+	SML_SPREAD         =  6,
+	MED_SPREAD         =  7,
+	LRG_SPREAD         =  8,
+	SUP_SPREAD         =  9,
+	DTH_SPREAD         = 10,
+	ARMAGEDDON         = 11,
+	CHAIN_MISSILE      = 12,
+	CHAIN_GUN          = 13,
+	JACK_HAMMER        = 14,
+	SHAPED_CHARGE      = 15,
+	WIDE_BOY           = 16,
+	CUTTER             = 17,
+	SML_ROLLER         = 18,
+	LRG_ROLLER         = 19,
+	DTH_ROLLER         = 20,
+	SMALL_MIRV         = 21,
+	ARMOUR_PIERCING    = 22,
+	CLUSTER            = 23,
+	SUP_CLUSTER        = 24,
+	FUNKY_BOMB         = 25,
+	FUNKY_DEATH        = 26,
+	FUNKY_BOMBLET      = 27,
+	FUNKY_DEATHLET     = 28,
+	BOMBLET            = 29,
+	SUP_BOMBLET        = 30,
+	BURROWER           = 31,
+	PENETRATOR         = 32,
+	SML_NAPALM         = 33,
+	MED_NAPALM         = 34,
+	LRG_NAPALM         = 35,
+	NAPALM_JELLY       = 36,
+	DRILLER            = 37,
+	TREMOR             = 38,
+	SHOCKWAVE          = 39,
+	TECTONIC           = 40,
+	RIOT_BOMB          = 41,
+	HVY_RIOT_BOMB      = 42,
+	RIOT_CHARGE        = 43,
+	RIOT_BLAST         = 44,
+	DIRT_BALL          = 45,
+	LRG_DIRT_BALL      = 46,
+	SUP_DIRT_BALL      = 47,
+	SMALL_DIRT_SPREAD  = 48,
+	CLUSTER_MIRV       = 49,
+	PERCENT_BOMB       = 50,
+	REDUCER            = 51, // Last ballistic
+	SML_LAZER          = 52,
+	MED_LAZER          = 53,
+	LRG_LAZER          = 54, // Last weapon
+	SML_METEOR         = 55,
+	MED_METEOR         = 56,
+	LRG_METEOR         = 57,
+	SML_LIGHTNING      = 58,
+	MED_LIGHTNING      = 59,
+	LRG_LIGHTNING      = 60 // Last natural
 };
 
-// #define LAST_EXPLOSIVE NAPALM_JELLY
+
 #define LAST_EXPLOSIVE DRILLER
 
-#define ITEM_NO_SHIELD -1
+#define ITEM_NO_SHIELD   -1
 enum itemType
 {
-    ITEM_TELEPORT,
-    ITEM_SWAPPER,
-    ITEM_MASS_TELEPORT,
-    ITEM_FAN,
-    ITEM_VENGEANCE,
-    ITEM_DYING_WRATH,
-    ITEM_FATAL_FURY,
-    ITEM_LGT_SHIELD,
-    ITEM_MED_SHIELD,
-    ITEM_HVY_SHIELD,
-    ITEM_LGT_REPULSOR_SHIELD,
-    ITEM_MED_REPULSOR_SHIELD,
-    ITEM_HVY_REPULSOR_SHIELD,
-    ITEM_ARMOUR,
-    ITEM_PLASTEEL,
-    ITEM_INTENSITY_AMP,
-    ITEM_VIOLENT_FORCE,
-    ITEM_SLICKP,
-    ITEM_DIMPLEP,
-    ITEM_PARACHUTE,
-    ITEM_REPAIRKIT,
-    ITEM_FUEL,
-    ITEM_ROCKET,
-    ITEM_SDI
+	ITEM_TELEPORT             =  0,
+	ITEM_SWAPPER              =  1,
+	ITEM_MASS_TELEPORT        =  2,
+	ITEM_FAN                  =  3,
+	ITEM_VENGEANCE            =  4,
+	ITEM_DYING_WRATH          =  5,
+	ITEM_FATAL_FURY           =  6,
+	ITEM_LGT_SHIELD           =  7,
+	ITEM_MED_SHIELD           =  8,
+	ITEM_HVY_SHIELD           =  9,
+	ITEM_LGT_REPULSOR_SHIELD  = 10,
+	ITEM_MED_REPULSOR_SHIELD  = 11,
+	ITEM_HVY_REPULSOR_SHIELD  = 12,
+	ITEM_ARMOUR               = 13,
+	ITEM_PLASTEEL             = 14,
+	ITEM_INTENSITY_AMP        = 15,
+	ITEM_VIOLENT_FORCE        = 16,
+	ITEM_SLICKP               = 17,
+	ITEM_DIMPLEP              = 18,
+	ITEM_PARACHUTE            = 19,
+	ITEM_REPAIRKIT            = 20,
+	ITEM_FUEL                 = 21,
+	ITEM_ROCKET               = 22,
+	ITEM_SDI                  = 23 // Last item
 };
 
-#define SHIELD_COUNT 6
+#define SHIELD_COUNT		6
 
 //signals
-#define SIG_QUIT_GAME -1
-#define SIG_OK 0
-#define GLOBAL_COMMAND_QUIT -1
-#define GLOBAL_COMMAND_MENU 0
+#define	SIG_QUIT_GAME         -1
+#define SIG_OK                 0
+#define GLOBAL_COMMAND_QUIT   -1
+#define GLOBAL_COMMAND_MENU    0
 #define GLOBAL_COMMAND_OPTIONS 1
 #define GLOBAL_COMMAND_PLAYERS 2
 #define GLOBAL_COMMAND_CREDITS 3
-#define GLOBAL_COMMAND_HELP 4
-#define GLOBAL_COMMAND_PLAY 5
-#define GLOBAL_COMMAND_DEMO 6
+#define	GLOBAL_COMMAND_HELP    4
+#define GLOBAL_COMMAND_PLAY    5
+#define GLOBAL_COMMAND_DEMO    6
 #define GLOBAL_COMMAND_NETWORK 7
 
-// Classes
-#define ANY_CLASS -1
-#define VIRTUAL_OBJECT_CLASS 0
-#define FLOATTEXT_CLASS 1
-#define PHYSICAL_OBJECT_CLASS 2
-#define MISSILE_CLASS 3
-#define TANK_CLASS 4
-#define EXPLOSION_CLASS 5
-#define TELEPORT_CLASS 6
-#define BEAM_CLASS 7
-#define DECOR_CLASS 8
 
-typedef struct
+/** @enum eClasses
+  * @brief class definitions of everything from virtual objects up
+  *
+  * The ordering here determines the order of the drawing.
+**/
+enum eClasses
 {
-    // DATAFILE *M, *T, *TITLE, *S, *E, *B, *L,
-    // *TG, *MI, *STOCK_IMAGE;
+	CLASS_MISSILE = 0,
+	CLASS_BEAM,
+	CLASS_TANK,
+	CLASS_TELEPORT,
+	CLASS_DECOR_DIRT,
+	CLASS_DECOR_SMOKE,
+	CLASS_EXPLOSION,
+	CLASS_FLOATTEXT,
+	CLASS_COUNT
+};
 
-    BITMAP *sky_gradient_strips[ALL_SKIES];
-    BITMAP *land_gradient_strips[ALL_LANDS];
-    // BITMAP *circle_gradient_strip;
-    BITMAP *stuff_bar_gradient_strip;
-    BITMAP *topbar_gradient_strip;
-    BITMAP *explosion_gradient_strip;
-    BITMAP *stuff_bar[2];
-    BITMAP *stuff_icon_base;
-    // BITMAP *circlesBG;
-    BITMAP *topbar;
-    BITMAP *explosions[EXPLOSIONFRAMES];
-    BITMAP *flameFront[EXPLOSIONFRAMES];
-} gfxDataStruct;
 
-class GLOBALDATA;
-class ENVIRONMENT;
-int drawFracture(GLOBALDATA *global, ENVIRONMENT *env, BITMAP *dest, BOX *updateArea, int x, int y, int angle, int width, int segmentLength, int maxRecurse, int recurseDepth);
-int setSlideColumnDimensions(GLOBALDATA *global, ENVIRONMENT *env, int x, bool reset);
-double Noise(int x);
-double Noise2D(int x, int y);
-double interpolate(double x1, double x2, double i);
-double perlin1DPoint(double amplitude, double scale, double xo, double lambda, int octaves);
-double perlin2DPoint(double amplitude, double scale, double xo, double yo, double lambda, int octaves);
+#ifndef HAS_TANK
+class TANK; // forwarding if not known
+#endif // HAS_TANK
 
-void quickChange(GLOBALDATA *global, BITMAP *target) ;
-void change(GLOBALDATA *global, BITMAP *target);
-
-int checkPixelsBetweenTwoPoints(GLOBALDATA *global, ENVIRONMENT *env, double *startX, double *startY, double endX, double endY);
-long int calcTotalPotentialDamage(int weapNum);
-long int calcTotalEffectiveDamage(int weapNum);
-
-void close_button_handler(void);
-
-void doLaunch(GLOBALDATA *gd, ENVIRONMENT *env);
-
-#define GENSKY_DETAILED 1
-#define GENSKY_DITHERGRAD 2
-void generate_sky(GLOBALDATA *global, BITMAP* bmp, const gradient* grad, int flags);
-
-// load all game settings
-bool Load_Game_Settings(GLOBALDATA *global, ENVIRONMENT *env, char *text_file) _WARNUNUSED;
-bool loadPlayers(GLOBALDATA *global, ENVIRONMENT *env, std::ifstream &ifsFile) _WARNUNUSED;
-// save all game settings
-bool Save_Game_Settings(GLOBALDATA *global, ENVIRONMENT *env, char *text_file, bool bIsSaveGame = false) _WARNUNUSED;
-bool savePlayers(GLOBALDATA *global, std::ofstream &ofsFile) _WARNUNUSED;
-int Save_Game_Settings_Text(GLOBALDATA *global, ENVIRONMENT *env, char *path_to_file);
-
-// These defines are needed to identify parts of the binary save files.
-#define FILEPART_ENVIRON "[Environment]"
-#define FILEPART_GLOBALS "[Global]"
-#define FILEPART_PLAYERS "[Players]"
-#define FILEPART_ENDSECT "[EndSection]"
-#define FILEPART_ENDPLYR "[EndPlayer]"
-#define FILEPART_ENDFILE "[EndFile]"
-
-// methods to handle loading and saving of data
-
-/*  --- take data out of filestream -- */
-bool popColo(int &aData, std::ifstream &ifsFile) _WARNUNUSED;
-bool popData(int &aData, std::ifstream &ifsFile) _WARNUNUSED;
-bool popData(double &aData, std::ifstream &ifsFile) _WARNUNUSED;
-bool popData(char * aArea, bool &aIsData, std::ifstream &ifsFile) _WARNUNUSED;
-//bool popData(const char  * aArea, int    &aData, ifstream &ifsFile) _WARNUNUSED;
-//bool popData(const char  * aArea, double &aData, ifstream &ifsFile) _WARNUNUSED;
-//bool popData(char * aArea, double &aData, ifstream &ifsFile) _WARNUNUSED;
-
-/*  --- put data into filestream -- */
-//bool pushData(const int aData, ofstream &ofsFile) _WARNUNUSED;
-//bool pushData(const double aData, ofstream &ofsFile) _WARNUNUSED;
-bool pushColo(const char * aArea, const int aData, std::ofstream &ofsFile) _WARNUNUSED;
-bool pushData(const char * aData, std::ofstream &ofsFile) _WARNUNUSED;
-bool pushData(const char * aArea, const int aData, std::ofstream &ofsFile) _WARNUNUSED;
-//bool pushName(const char  * aData, ofstream &ofsFile) _WARNUNUSED; // Special function for name saving
-bool pushData(const char * aArea, const double aData, std::ofstream &ofsFile) _WARNUNUSED;
-
-/*  --- seek specific data within filestream -- */
-//bool seekData(const int aData, ifstream &ifsFile) _WARNUNUSED;
-//bool seekData(const char * aData, ifstream &ifsFile) _WARNUNUSED;
-
-// handle changes to global settings
-int Change_Settings(double old_mouse, double old_sound, double new_mouse, double new_sound, void *mouse_image);
-
-int *Sort_Scores(GLOBALDATA *global);
-int Game_Client(GLOBALDATA *global, ENVIRONMENT *env, int socket_number);
+/// === Global functions used in several compilation units ====
+void   drawMenuBackground(eBackgroundTypes backType, int32_t tOffset,
+                          int32_t numItems);
+double interpolate       (double x1, double x2, double i);
+double Noise             (int x);
+double Noise2D           (int x, int y);
+double perlin1DPoint     (double amplitude, double scale, double xo,
+                          double lambda, int octaves);
+double perlin2DPoint     (double amplitude, double scale, double xo, double yo,
+                          double lambda, int octaves);
+void   quickChange       (bool clearerror);
 
 #include "externs.h"
 
 #endif
+

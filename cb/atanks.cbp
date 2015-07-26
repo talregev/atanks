@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="atanks" />
+		<Option makefile_is_custom="1" />
+		<Option execution_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="veryclean">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+				<MakeCommands>
+					<Build command="$make -f $makefile $target" />
+					<CompileFile command="$make -f $makefile $file" />
+					<Clean command="$make -f $makefile clean" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="user">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile $target" />
+					<CompileFile command="$make -f $makefile $file" />
+					<Clean command="$make -f $makefile veryclean" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -j17 -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="user LTO">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user USE_LTO=YES" />
+					<CompileFile command="$make -f $makefile $file USE_LTO=YES" />
+					<Clean command="$make -f $makefile veryclean USE_LTO=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile user USE_LTO=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user USE_LTO=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="user ggdb3">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='CXXFLAGS=&quot;-march=native -ggdb3 -O2&quot; $make -j17 -f $makefile user' />
+					<CompileFile command='CXXFLAGS=&quot;-march=native -ggdb3 -O2&quot; $make -f $makefile $file' />
+					<Clean command='CXXFLAGS=&quot;-march=native -ggdb3 -O2&quot; $make -f $makefile veryclean' />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command='CXXFLAGS=&quot;-march=native -ggdb3 -O2&quot; $make -q -f $makefile user' />
+					<SilentBuild command='CXXFLAGS=&quot;-march=native -ggdb3 -O2&quot; $make -j17 -f $makefile user &gt; $(CMD_NULL)' />
+				</MakeCommands>
+			</Target>
+			<Target title="user debug">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile user DEBUG=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="AICORE">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_AICORE=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_AICORE=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_AICORE=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="AICORE FIN">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="AIM">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AIMING=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_AIMING=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_AIMING=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_AIMING=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AIMING=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="EMO">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_EMOTION=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_EMOTION=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_EMOTION=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_EMOTION=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_EMOTION=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="FIN">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_FINANCE=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_FINANCE=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_FINANCE=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_FINANCE=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_FINANCE=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="OBJ">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -f $makefile user DEBUG=YES DEBUG_OBJECTS=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_OBJECTS=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_OBJECTS=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_OBJECTS=YES" />
+					<SilentBuild command="$make -f $makefile user DEBUG=YES DEBUG_OBJECTS=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="PHY">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_PHYSICS=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_PHYSICS=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_PHYSICS=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_PHYSICS=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_PHYSICS=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="FIN PHY">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_FINANCE=YES DEBUG_PHYSICS=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_FINANCE=YES DEBUG_PHYSICS=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_FINANCE=YES DEBUG_PHYSICS=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_FINANCE=YES DEBUG_PHYSICS=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_FINANCE=YES DEBUG_PHYSICS=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="SAN address">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES SANITIZE_ADDRESS=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES SANITIZE_ADDRESS=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES SANITIZE_ADDRESS=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES SANITIZE_ADDRESS=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES SANITIZE_ADDRESS=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="SAN leak">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES SANITIZE_LEAK=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES SANITIZE_LEAK=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES SANITIZE_LEAK=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES SANITIZE_LEAK=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES SANITIZE_LEAK=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="SAN thread">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES SANITIZE_THREAD=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES SANITIZE_THREAD=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES SANITIZE_THREAD=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES SANITIZE_THREAD=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES SANITIZE_THREAD=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../Makefile" />
+		<Unit filename="../Makefile.bsd" />
+		<Unit filename="../TODO_akut" />
+		<Unit filename="../src/aicore.cpp" />
+		<Unit filename="../src/aicore.h" />
+		<Unit filename="../src/atanks.cpp" />
+		<Unit filename="../src/beam.cpp" />
+		<Unit filename="../src/beam.h" />
+		<Unit filename="../src/button.cpp" />
+		<Unit filename="../src/button.h" />
+		<Unit filename="../src/client.cpp" />
+		<Unit filename="../src/client.h" />
+		<Unit filename="../src/clock.cpp" />
+		<Unit filename="../src/clock.h" />
+		<Unit filename="../src/debris_pool.cpp" />
+		<Unit filename="../src/debris_pool.h" />
+		<Unit filename="../src/debug.cpp" />
+		<Unit filename="../src/debug.h" />
+		<Unit filename="../src/decor.cpp" />
+		<Unit filename="../src/decor.h" />
+		<Unit filename="../src/environment.cpp" />
+		<Unit filename="../src/environment.h" />
+		<Unit filename="../src/explosion.cpp" />
+		<Unit filename="../src/explosion.h" />
+		<Unit filename="../src/externs.h" />
+		<Unit filename="../src/files.cpp" />
+		<Unit filename="../src/files.h" />
+		<Unit filename="../src/floattext.cpp" />
+		<Unit filename="../src/floattext.h" />
+		<Unit filename="../src/gameloop.cpp" />
+		<Unit filename="../src/gameloop.h" />
+		<Unit filename="../src/gfxData.cpp" />
+		<Unit filename="../src/gfxData.h" />
+		<Unit filename="../src/globaldata.cpp" />
+		<Unit filename="../src/globaldata.h" />
+		<Unit filename="../src/globals.h" />
+		<Unit filename="../src/globaltypes.cpp" />
+		<Unit filename="../src/globaltypes.h" />
+		<Unit filename="../src/imagedefs.h" />
+		<Unit filename="../src/land.cpp" />
+		<Unit filename="../src/land.h" />
+		<Unit filename="../src/main.cpp" />
+		<Unit filename="../src/main.h" />
+		<Unit filename="../src/menu.cpp" />
+		<Unit filename="../src/menu.h" />
+		<Unit filename="../src/missile.cpp" />
+		<Unit filename="../src/missile.h" />
+		<Unit filename="../src/network.cpp" />
+		<Unit filename="../src/network.h" />
+		<Unit filename="../src/optioncontent.h" />
+		<Unit filename="../src/optionitem.h" />
+		<Unit filename="../src/optionitembase.cpp" />
+		<Unit filename="../src/optionitembase.h" />
+		<Unit filename="../src/optionitemcolour.cpp" />
+		<Unit filename="../src/optionitemcolour.h" />
+		<Unit filename="../src/optionitemmenu.cpp" />
+		<Unit filename="../src/optionitemmenu.h" />
+		<Unit filename="../src/optionitemplayer.cpp" />
+		<Unit filename="../src/optionitemplayer.h" />
+		<Unit filename="../src/optionscreens.cpp" />
+		<Unit filename="../src/optionscreens.h" />
+		<Unit filename="../src/optiontypes.cpp" />
+		<Unit filename="../src/optiontypes.h" />
+		<Unit filename="../src/perlin.cpp" />
+		<Unit filename="../src/physobj.cpp" />
+		<Unit filename="../src/physobj.h" />
+		<Unit filename="../src/player.cpp" />
+		<Unit filename="../src/player.h" />
+		<Unit filename="../src/player_types.cpp" />
+		<Unit filename="../src/player_types.h" />
+		<Unit filename="../src/satellite.cpp" />
+		<Unit filename="../src/satellite.h" />
+		<Unit filename="../src/shop.cpp" />
+		<Unit filename="../src/shop.h" />
+		<Unit filename="../src/sky.cpp" />
+		<Unit filename="../src/sky.h" />
+		<Unit filename="../src/sound.cpp" />
+		<Unit filename="../src/sound.h" />
+		<Unit filename="../src/tank.cpp" />
+		<Unit filename="../src/tank.h" />
+		<Unit filename="../src/teleport.cpp" />
+		<Unit filename="../src/teleport.h" />
+		<Unit filename="../src/text.cpp" />
+		<Unit filename="../src/text.h" />
+		<Unit filename="../src/update.cpp" />
+		<Unit filename="../src/update.h" />
+		<Unit filename="../src/virtobj.cpp" />
+		<Unit filename="../src/virtobj.h" />
+		<Unit filename="../src/winclock.h" />
+		<Unit filename="../text/weapons.txt" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

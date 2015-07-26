@@ -1,0 +1,238 @@
+{
+   Ignore_glibc_conditional_jump
+   Memcheck:Cond
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:dl_*
+   fun:_dl_*
+   fun:_dl_*
+   obj:/lib64/ld-*.so
+}
+
+{
+   Ignore_install_sound_mempool_called
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   obj:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+   fun:main
+}
+
+{
+   Ignore_install_mempool_called_short
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   obj:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+   fun:main
+}
+
+{
+   Ignore_install_mempool_called_short_def
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   obj:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+   fun:main
+}
+
+{
+   Ignore_install_mempool_called_short_noobj_def
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+   fun:main
+}
+
+{
+   Ignore_install_mempool_called_mid
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   obj:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+   fun:main
+}
+
+{
+   Ignore_install_mempool_inside
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_pcm_open
+   obj:*
+   fun:install_*
+}
+
+{
+   Ignore_install_sound_pcm_open_config_load
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_pcm_open
+}
+
+{
+   Ignore_install_sound_pcm_open_config_parse
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_*
+}
+
+{
+   Ignore_snd_open_on_unknown_obj
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_pcm_open
+   obj:*
+}
+
+{
+   Ignore_install_from_main_with_obj_def
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:*
+   fun:*
+   obj:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+   fun:main
+}
+
+{
+   Ignore_install_from_main_with_obj
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   obj:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+   fun:main
+}
+
+{
+   Ignore_install_from_init_game_setting_with_obj
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   obj:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+}
+
+{
+   Ignore_allegro_back_pool
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_al_malloc
+   obj:*
+   fun:install_*
+   fun:_Z18init_game_settingsP10GLOBALDATA
+   fun:main
+}
+
+{
+   Ignore_X_init_realloc
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   fun:add_codeset.isra.10
+   fun:load_generic
+   fun:initialize
+   fun:_XlcCreateLC
+   fun:_XlcDefaultLoader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   fun:NewDatabase
+   fun:XrmGetStringDatabase
+   fun:InitDefaults
+   fun:XGetDefault
+}

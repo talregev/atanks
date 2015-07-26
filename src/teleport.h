@@ -20,40 +20,56 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * */
 
-
-#include "main.h"
+#include "globaltypes.h"
 #include "virtobj.h"
 
 class TELEPORT: public VIRTUAL_OBJECT
 {
-public:
-    int radius;
-    int clock;
-    int startClock;
-    int peaked;
-    int dispersing;
-    VIRTUAL_OBJECT *object;
-    TELEPORT *remote;
+  public:
 
-    virtual ~TELEPORT();
-    TELEPORT(GLOBALDATA *global, ENVIRONMENT *env, VIRTUAL_OBJECT *targetObj, int destinationX, int destinationY, int objRadius, int duration);
-    TELEPORT(GLOBALDATA *global, ENVIRONMENT *env, TELEPORT *remoteEnd, int destX, int destY);
-    void initialise();
-    void draw(BITMAP *dest);
-    int applyPhysics();
-    int isSubClass(int classNum);
-    inline virtual int getClass()
-    {
-        return TELEPORT_CLASS;
-    }
-    inline virtual void setEnvironment(ENVIRONMENT *env)
-    {
-        if (!_env || (_env != env))
-        {
-            _env = env;
-            _index = _env->addObject(this);
-        }
-    }
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
+	// Source constructor
+	TELEPORT (VIRTUAL_OBJECT *targetObj,
+	          int32_t destinationX, int32_t destinationY,
+	          int32_t objRadius, int32_t duration, int32_t type);
+	virtual ~TELEPORT ();
+
+
+	/* ----------------------
+	 * --- Public methods ---
+	 * ----------------------
+	 */
+
+	void    applyPhysics ();
+	void    draw ();
+
+    eClasses getClass() { return CLASS_TELEPORT; }
+
+
+private:
+
+	/* -----------------------------------
+	 * --- Constructors and destructor ---
+	 * -----------------------------------
+	 */
+
+	// Target constructor
+	TELEPORT (TELEPORT *remoteEnd, int32_t destX, int32_t destY);
+
+
+	/* -----------------------
+	 * --- Private members ---
+	 * -----------------------
+	 */
+
+	int32_t         clock      = 0;
+	VIRTUAL_OBJECT* object     = nullptr;
+	int32_t         radius     = 0;
+	TELEPORT*       remote     = nullptr;
+	int32_t         startClock = 0;
 };
 
 #endif

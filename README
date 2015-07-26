@@ -1,4 +1,4 @@
-README file for Atomic Tanks 
+README file for Atomic Tanks
 ============================================
 
 What is Atomic Tanks?
@@ -25,7 +25,7 @@ of Atomic Tanks, you will need the Allegro graphic
 package. See http://allegro.cc/
 Also, if you are going to compile/build Atomic Tanks
 from source code, you will need the Allegro development
-package and Boost. These packages can be found at
+package. These packages can be found at
 http://allegro.cc/files/
 Please also note, those of you running Linux can
 usually get Allegro packages through your distribution's
@@ -98,26 +98,25 @@ reasonable defaults, so there is rarely a need to
 use the command-line options. However, Atomic Tanks
 supports the following options:
 
-./atanks -h, --help   (Print list of credits, command-line options and exit.)
-./atanks -f, --fullscreen  (Run the game using the entire screen. Full screen mode.)
+./atanks -h   (Print list of credits, command-line options and exit.)
+./atanks -fs  (Run the game using the entire screen. Full screen mode.)
 ./atanks --windowed  (Run the game in a window. This is the default).
-./atanks --thread     (Enabled use of threads to speed up things.)
-./atanks -w, --width <number>  (Run the game in a window with a set width in pixels.)
-./atanks -t, --height <number>  (Run the game in a window with a set height in pixels.)
-./atanks --depth <number>  (Sets pixel depth. Use either 16 or 32 here.)
-./atanks --datadir <data directory>  (Path to the directory with Atank's data files.)
-./atanks -c, --config <config directory> (Path to config and saved game directory.)
-./atanks --noconfig   (Resets all config options back to defaults.)
 ./atanks --nosound  (Run the game without sound. Sound is on by default.)
 ./atanks --noname   (Do not display player names over the tanks.)
+./atanks --width <number>  (Run the game in a window with a set width in pixels.)
+./atanks --tall <number>  (Run the game in a window with a set height in pixels.)
+./atanks --datadir <data directory>  (Path to the directory with Atank's data files.)
+./atanks --depth <number>  (Sets pixel depth. Use either 16 or 32 here.)
+./atanks --noconfig   (Resets all config options back to defaults.)
 ./atanks --nonetwork  (Prevents atanks from setting up a server.)
 ./atanks --nobackground  (Does not display the green menu background. May prevent crashes on 64-bit.)
 ./atanks --nothread   (Stops threads for running in the background.)
+./atanks --thread     (Enabled use of threads to speed up things.)
 
 Most of these options can be used together, with the exception of "-fs"
 for full screen mode. Simply running "./atanks" is the same as running
 Atomic Tanks with the following options:
-./atanks --windowed --width 800 --height 600 --datadir . depth 32
+./atanks --windowed --width 800 --tall 600 --datadir . depth 32
 
 Please note that as of version 4.3, threads are disabled by default. Use
 the "--thread" flag to enable background threads.
@@ -150,7 +149,7 @@ Use the left and right arrow buttons on your keyboard to
 aim your tank's gun. The up and down arrow keys adjust the
 speed (power) of the shot. The space bar fires the tanks gun. If
 you want to change which weapon you will be using, press the
-TAB button or the BACKSPACE button. The round is over when 
+TAB button or the BACKSPACE button. The round is over when
 there is one tank left standing.
 
 
@@ -168,15 +167,18 @@ SPACEBAR -- Fires weapons and selects/toggles menu items.
 ENTER -- Is similar to pressing the OK button on a menu.
 UP/DOWN arrows -- Adjusts tank power and cycles through menu items. Scrolls on the buying screen.
 LEFT/RIGHT arrows -- Aim the tank's gun. Also buys and sells on the buying screen or adjusts values in menus.
-ESC -- Cancel out of a menu.
+ESC  -- Cancel out of a menu.
 
-F10 -- Tells the computer to take over your tank for the remainder of the round.
-       Also saves games when on the buying screen.
+F1   -- Take a screenshot
+
+F10  -- Tells the computer to take over your tank for the remainder of the round.
+        Also saves games when on the buying screen.
 
 V, v -- The "v" key controls the volume during matches. Pressing lower-case "v"
         decreases the volume and upper-case "V" increases the volume.
 
-~    -- Show/hide the scoreboard during rounds.
+~    -- Show/hide the scoreboard during rounds. On german (and possibly other)
+        keyboards the scoreboard is switched with the key '#'.
 
 
 
@@ -240,7 +242,7 @@ Atomic Tanks is a great game, but it isn't perfect.
 We, the developers, are always trying to improve the
 experience our game brings to you. If you have
 a problem with installing or playing Atomic Tanks,
-please let us know. Mail me at jessefrgsmith@yahoo.ca 
+please let us know. Mail me at jessefrgsmith@yahoo.ca
 We encourage you to give your feedback. Please give
 as many details as possible so we can help you.
 

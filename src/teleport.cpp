@@ -21,185 +21,205 @@
 #include "environment.h"
 #include "globaldata.h"
 #include "teleport.h"
-
-TELEPORT::~TELEPORT()
-{
-    requireUpdate();
-    update();
-    _env->make_bgupdate(_current.x, _current.y, _current.w, _current.h);
-    _env->make_bgupdate(_old.x, _old.y, _old.w, _old.h);
-    _env->removeObject(this);
-    _env = NULL;
-    _global = NULL;
-    object = NULL;
-    remote = NULL;
-}
-
-TELEPORT::TELEPORT(GLOBALDATA *global, ENVIRONMENT *env, VIRTUAL_OBJECT *targetObj, int destinationX, int destinationY,
-                   int objRadius, int duration) : VIRTUAL_OBJECT(),clock(duration),startClock(duration),peaked(0),
-    object(NULL),remote(NULL)
-{
-    setEnvironment(env);
-    player = NULL;
-    _align = LEFT;
-    _global = global;
-    object = targetObj;
-    radius = objRadius;
-    remote = new TELEPORT(global, env, this, destinationX, destinationY);
-    if (!remote)
-        perror("teleport.cpp: Failed allocating memory for remote in TELEPORT::TELEPORT");
-
-    play_sample((SAMPLE *) _global->sounds[item[ITEM_TELEPORT].sound], _env->scaleVolume(255), 128, 1000, 0);
+#include "tank.h"
+#include "sound.h"
 
 #ifdef NETWORK
-    // this seems to be the teleport we usually use
-    int player_index = 0;
-    bool found = false;
-    TANK *the_tank = (TANK*) targetObj;
-    // match the player with the tank
-    while ((player_index < global->numPlayers) && !found)
-    {
-        if ((global->players[player_index]->tank) && (global->players[player_index]->tank == the_tank))
-            found = true;
-        else
-            player_index++;
-    }
-    if (found)
-    {
-        char buffer[64];
-
-        sprintf(buffer, "TELEPORT %d %d %d", player_index, destinationX, destinationY);
-        global->Send_To_Clients(buffer);
-    }
+#  include "player.h"
 #endif
+
+TELEPORT::~TELEPORT ()
+{
+	requireUpdate();
+	update();
+	if (dim_cur.w > 0)
+		global.make_bgupdate (dim_cur.x, dim_cur.y, dim_cur.w, dim_cur.h);
+	if (dim_old.w > 0)
+		global.make_bgupdate (dim_old.x, dim_old.y, dim_old.w, dim_old.h);
+
+	if (remote) {
+		remote->destroy = true;
+		remote->remote  = nullptr;
+	}
+
+	object = nullptr;
+	remote = nullptr;
+
+	// Take out of the chain:
+	global.removeObject(this);
 }
 
-TELEPORT::TELEPORT(GLOBALDATA *global, ENVIRONMENT *env, TELEPORT *remoteEnd, int destX, int destY) : VIRTUAL_OBJECT(),
-                   clock(remoteEnd->startClock),startClock(remoteEnd->startClock),peaked(0)
+TELEPORT::TELEPORT (VIRTUAL_OBJECT *targetObj,
+                    int32_t destinationX, int32_t destinationY,
+                    int32_t objRadius, int32_t duration, int32_t type):
+	VIRTUAL_OBJECT(),
+	clock(duration),
+	object(targetObj),
+	radius(objRadius),
+	startClock(duration)
 {
-    remote = remoteEnd;
-    setEnvironment(env);
-    player = NULL;
-    _align = LEFT;
-    _global = global;
-    object = NULL;
-    x = destX;
-    y = destY;
-    radius = remote->radius;
+
+	if (object) {
+		x = object->x;
+		y = object->y;
+	}
+
+	// Ensure the destination is not occupied by another tank:
+	bool need_check = (type != ITEM_SWAPPER);
+	while (need_check) {
+		TANK* lt = nullptr;
+		need_check = false;
+
+		global.getHeadOfClass(CLASS_TANK, &lt);
+		while ( lt ) {
+			if ( (std::abs(lt->x - destinationX) < objRadius)
+			  && (lt->y > destinationY)
+			  && ((lt->y - destinationY) < objRadius) ) {
+				need_check = true;
+
+				// Maybe move left
+				if ( ( (destinationX >  (objRadius * 2))
+				    && (destinationX <= lt->x) )
+				  || (destinationX >= (env.screenWidth - (objRadius * 2))) )
+					destinationX -= std::abs(lt->x - destinationX);
+				// Or move right
+				else if (destinationX < (env.screenWidth - (objRadius * 2)))
+					destinationX += std::abs(lt->x - destinationX);
+
+				// Maybe move up
+				if ( ( (destinationY >  (MENUHEIGHT + (objRadius * 2)) )
+				    && (destinationY <= lt->y) )
+				  || (destinationY >= (env.screenHeight - (objRadius * 2))) )
+					destinationY -= std::abs(lt->y - destinationY);
+				// Or move down
+				else if (destinationY < (env.screenHeight - (objRadius * 2)))
+					destinationY += std::abs(lt->y - destinationY);
+			}
+
+
+			lt->getNext(&lt);
+		}
+	} // end of needing to check the destination
+
+	try {
+		remote = new TELEPORT (this, destinationX, destinationY);
+	} catch(std::bad_alloc &e) {
+		std::cerr << "Error creating TELEPORT: " << e.what() << std::endl;
+		perror ( "teleport.cc: Failed allocating memory for remote in TELEPORT::TELEPORT");
+	}
+
+	play_fire_sound(ITEM_TELEPORT + WEAPONS, x, 255, 1000);
+
+#ifdef NETWORK
+	// this seems to be the teleport we usually use
+	int   playerindex = 0;
+	bool  found       = false;
+	TANK* the_tank    = static_cast<TANK*>(targetObj);
+
+	// match the player with the tank
+	while ( (playerindex < env.numGamePlayers) && (! found) ) {
+		if ( (env.players[playerindex]->tank)
+		  && (env.players[playerindex]->tank == the_tank) )
+			found = true;
+		else
+			++playerindex;
+	}
+
+	if (found) {
+		char  buffer[64]  = { 0x0 };
+		snprintf(buffer, 63, "TELEPORT %d %d %d",
+				playerindex, destinationX, destinationY);
+		env.sendToClients(buffer);
+	}
+#endif // NETWORK
+
+	// Add to the chain:
+	global.addObject(this);
 }
 
-void TELEPORT::initialise()
+
+
+
+TELEPORT::TELEPORT (TELEPORT *remoteEnd, int32_t destX, int32_t destY) :
+	VIRTUAL_OBJECT(),
+	remote(remoteEnd)
 {
-    VIRTUAL_OBJECT::initialise();
-    peaked = 0;
-    clock = startClock;
+	this->x = destX;
+	this->y = destY;
+	if (remote) {
+		clock = remoteEnd->startClock;
+		radius = remoteEnd->radius;
+		startClock = remoteEnd->startClock;
+	}
+
+	// Add to the chain:
+	global.addObject(this);
 }
 
-int TELEPORT::applyPhysics()
+void TELEPORT::applyPhysics ()
 {
-    if (object)
-    {
-        x = object->x;
-        y = object->y;
-    }
-    else
-        clock = remote->clock;
+	if (object) {
+		if (!clock) {
+			object->x = remote->x;
+			object->y = remote->y;
+			remote->object = object;
+			object = nullptr;
+			remote->clock--;
+		}
+	} else
+		clock = remote->clock;
 
-    if (clock < 1)
-    {
-        if (clock == 0)
-        {
-            if (object)
-            {
-                object->x = remote->x;
-                object->y = remote->y;
-                remote->object = object;
-                object = NULL;
-                remote->clock--;
-            }
-        }
-        if (clock < -startClock / 2)
-            destroy = TRUE;
-    }
-    clock--;
-    return 0;
+	if (clock-- < -startClock / 2)
+		destroy = true;
 }
 
 
-// new teleport version
-void TELEPORT::draw(BITMAP *dest)
+void TELEPORT::draw ()
 {
-    BITMAP *tempBitmap;
-    double pClock = clock;
-    int blobSize, pRadius, maxblobs;
+	if (!remote)
+		return;
 
-    if (pClock < 1.0)
-        pClock = 1.0 + (1.0 - (pClock * 2.0));
-    blobSize = 8 - (int) round(8 / (startClock / pClock)) + 1;
-    pRadius  = radius - (int) round(radius / (startClock / pClock)) + 1;
-    maxblobs = 1 + (pRadius * 4);
+	double  pClock     = clock;
+	int32_t blobSize   = 8;
+	int32_t pRadius    = radius;
+	int32_t maxblobs   = 1;
 
-    tempBitmap = create_bitmap(radius * 2, radius * 2);
-    blit(dest, tempBitmap, remote->x - radius, remote->y - radius, 0, 0, radius * 2, radius * 2);
+	// When the teleporting finishes, the blobs enlarge and disperse
+	// using this then growing factor:
+	if (pClock < 1.0)
+		pClock = 1.0 + (1.0 - (pClock * 2.0));
 
-    if (object)
-        remote->draw(dest);
+	int32_t transMod = 255 - (pClock / startClock * 255);
+	if (transMod > 255) transMod = 255;
+	else if (transMod < 0) transMod = 0;
 
-    drawing_mode(DRAW_MODE_TRANS, NULL, 0, 0);
-    set_trans_blender(0, 0, 0, 255 - (int) ((pClock / startClock) * 255));
-    for (int count = (int) round(maxblobs + pClock); count > pClock; count--)
-    {
-        int xOff = (int) (perlin2DPoint(1.0, 200, 1278 + x + count * 100, pClock, 0.25, 6) * pRadius);
-        int yOff = (int) (perlin2DPoint(1.0, 200, 9734 + y + count * 100, pClock, 0.25, 6) * pRadius);
-        circlefill(dest, x + xOff, y + yOff, blobSize, getpixel (tempBitmap, pRadius + xOff, pRadius + yOff));
-    }
-    drawing_mode(DRAW_MODE_SOLID, NULL, 0, 0);
-    setUpdateArea(x - pRadius - blobSize, y - pRadius - blobSize, (pRadius + blobSize) * 2, (pRadius + blobSize) * 2);
-    requireUpdate();
+	blobSize -= round(8 / (startClock / pClock)) + 1;
+	pRadius  -= round(radius / (startClock / pClock)) + 1;
+	maxblobs += pRadius * 4;
 
-    destroy_bitmap(tempBitmap);
-}
+	BITMAP* tempBitmap = create_bitmap (radius * 2, radius * 2);
+	blit (global.canvas, tempBitmap,
+		remote->x - radius, remote->y - radius, 0, 0,
+		radius * 2, radius * 2);
 
-/*
- *Old version
-void TELEPORT::draw(BITMAP *dest)
-{
-    BITMAP *tempBitmap;
-    int blobSize = 8;
-    int pClock = clock;
-    if (pClock < 0)
-    {
-        pClock = 0;
-        blobSize = (startClock / 2) / - clock;
-    }
+	if (object && remote)
+		remote->draw();
 
-    tempBitmap = create_bitmap(radius * 2, radius * 2);
-    blit(_env->db, tempBitmap, (int) remote->x - radius, (int) remote->y - radius, 0, 0, radius * 2, radius * 2);
+	drawing_mode (DRAW_MODE_TRANS, NULL, 0, 0);
+	set_trans_blender (0, 0, 0, transMod);
 
-    if (object)
-        remote->draw(dest);
+	for (int32_t i = round(maxblobs + pClock); i > pClock; --i) {
+		int32_t xOff = perlin2DPoint (1.0, 200, 1278 + x + (i * 100), pClock, 0.25, 6) * pRadius;
+		int32_t yOff = perlin2DPoint (1.0, 200, 9734 + y + (i * 100), pClock, 0.25, 6) * pRadius;
+		int32_t t_col = getpixel(tempBitmap, pRadius + xOff, pRadius + yOff);
+		circlefill (global.canvas, x + xOff, y + yOff, blobSize, t_col);
+	}
 
-    drawing_mode(DRAW_MODE_TRANS, NULL, 0, 0);
-    set_trans_blender(0, 0, 0, 255 - (int)((pClock / startClock) * 255));
-    for (int count = (radius * radius * 4 / (8 * 8)); count > pClock; count--)
-    {
-        int xOff = (int) (perlin2DPoint (1.0, 200, 1278 + (int)x + count * 100, clock, 0.25, 6) * (radius));
-        int yOff = (int) (perlin2DPoint (1.0, 200, 9734 + (int)y + count * 100, clock, 0.25, 6) * (radius));
-        circlefill(dest, (int) x + xOff, (int) y + yOff, blobSize, getpixel (tempBitmap, radius + xOff, radius + yOff));
-    }
-    drawing_mode(DRAW_MODE_SOLID, NULL, 0, 0);
-    setUpdateArea((int) x - radius - blobSize, (int) y - radius - blobSize, (radius + blobSize) * 2, (radius + blobSize) * 2);
-    requireUpdate();
+	drawing_mode (DRAW_MODE_SOLID, NULL, 0, 0);
 
-    destroy_bitmap(tempBitmap);
-}
-*/
+	setUpdateArea (x - pRadius - blobSize, y - pRadius - blobSize,
+	               (pRadius + blobSize) * 2, (pRadius + blobSize) * 2);
+	requireUpdate ();
 
-int TELEPORT::isSubClass(int classNum)
-{
-    if (classNum == TELEPORT_CLASS)
-        return TRUE;
-    else
-        return FALSE;
-    //return (PHYSICAL_OBJECT::isSubClass(classNum));
+	destroy_bitmap (tempBitmap);
 }
