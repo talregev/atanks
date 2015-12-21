@@ -787,8 +787,10 @@ void TANK::draw()
 
 		drawing_mode(DRAW_MODE_SOLID, nullptr, 0, 0);
 		global.current_drawing_mode = DRAW_MODE_SOLID;
-		setUpdateArea (x - tank_off_x - 15, y - tank_off_y,
-		               ((tank_off_x + 15) * 2) + 1, (tank_off_y * 2) + 20);
+		setUpdateArea (move_x - shld_thickness - rad_x,
+		               move_y - shld_thickness - rad_y,
+		               (rad_x + shld_thickness) * 2,
+		               (rad_y + shld_thickness) * 2);
 	} // End of drawing shield
 
 	// Without a shield, the update area can be smaller

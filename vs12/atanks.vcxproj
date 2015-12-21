@@ -185,7 +185,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\aicore.h" />
-    <ClInclude Include="..\src\allegro.h" />
     <ClInclude Include="..\src\beam.h" />
     <ClInclude Include="..\src\button.h" />
     <ClInclude Include="..\src\client.h" />

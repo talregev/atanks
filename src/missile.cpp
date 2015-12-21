@@ -293,6 +293,15 @@ void MISSILE::applyPhysics ()
 
 	// === 3) Handle funky projectiles ===
 	else if (PT_FUNKY_FLOAT == physType)  {
+
+		// Funky Floats have a 0.5% chance to randomly reverse either direction:
+		if (0 == (rand() % 200)) {
+			if (rand() % 2)
+				xv *= -1.;
+			else
+				yv *= -1.;
+		}
+
 		// Funky floats simply bounce on borders.
 		if ( ((x + xv) < 1) || ((x + xv) > (env.screenWidth - 1) ) )
 			xv = -xv;
@@ -303,23 +312,33 @@ void MISSILE::applyPhysics ()
 		// but here according to floor type
 		if ((y + yv) >= env.screenHeight) {
 			if (WALL_RUBBER == env.current_wallType) {
-				yv *= -0.5;
+				yv *= -BOUNCE_CHANGE;
 				xv *=  0.95;
 			} else if (WALL_SPRING == env.current_wallType) {
 				yv *= -SPRING_CHANGE;
 				xv *= 1.05;
+			} else if ( (WALL_WRAP == env.current_wallType)
+			         && env.isBoxed && env.do_box_wrap ) {
+				y  = MENUHEIGHT + 1;
 			} else {
 				y  = env.screenHeight;
 				yv = 0;
 				hitSomething = true;
+				age = maxAge;
 			}
 		}
 
 		// On the screen top the direction is just reversed, even if
-		// there is a ceiling in boxed mode
+		// there is a ceiling in boxed mode. However, if it is a wrap
+		// ceiling, and the ceiling wrap is enabled, got to the bottom.
 		else if ( (y + yv) <= MENUHEIGHT) {
-			yv *= -0.5;
-			xv *=  0.95;
+			if ( (WALL_WRAP == env.current_wallType)
+			  && env.isBoxed && env.do_box_wrap ) {
+				y  = env.screenHeight - 2;
+			} else {
+				yv *= -0.95;
+				xv *=  0.95;
+			}
 		}
 
 		// eventually apply yv
@@ -491,6 +510,7 @@ struct sSDI
 {
 	int32_t am    = 0;
 	double  dist  = 0.;   // Distance used for sorting
+	double  lvl   = 0.;   // AI level, human players are counted as deadly.
 	sSDI*   next  = nullptr;
 	double  range = 100.; // The more SDI, the further the shot
 	TANK*   tank  = nullptr;
@@ -562,21 +582,20 @@ void MISSILE::Check_SDI()
 		 * 4 The tank already has an SDI beam firing
 		 * 5 The SDI has no shots left for this sequence
 		 * 6 The SDI beam would shoot downwards.
-		 * 7 The tanks owner and the missiles owner are on the same team
-		 *   but not neutral
 		 */
 		if ( !lt->destroy                                      // 1
 		  && (lt->player != player)                            // 2
 		  && !lt->isFlying()                                   // 3
-		  && !lt->player->sdi_has_fired                        // 4
+		  && !lt->player->sdi_has_fired.load(ATOMIC_READ)      // 4
 		  && (lt->player->ni[ITEM_SDI] > lt->player->sdiShots) // 5
-		  && ( (lt->y - 10.) >= y)                             // 6
-		  && ( (TEAM_NEUTRAL == lt->player->team)              // 7
-			|| !player
-			|| (player->team != lt->player->team) ) ) {
+		  && ( (lt->y - 10.) >= y) ) {                         // 6
 			double startX = lt->x;
 			double startY = lt->y - 10.;
 		  	sdi[idx].am    = lt->player->ni[ITEM_SDI] - lt->player->sdiShots;
+			sdi[idx].lvl   = static_cast<double>(
+			                            ( ( lt->player->type == HUMAN_PLAYER )
+			                           || ( lt->player->type  > DEADLY_PLAYER) )
+			                            ? DEADLY_PLAYER : lt->player->type);
 			sdi[idx].tank  = lt;
 			sdi[idx].range = static_cast<double>(SDI_DISTANCE)
 			               + ( static_cast<double>(sdi[idx].am - 1)
@@ -603,7 +622,7 @@ void MISSILE::Check_SDI()
 					sdi[idx].next = curr->next;
 					curr->next    = &sdi[idx];
 				} else
-					// Is new head
+					// It is the new head
 					pSDI = &sdi[idx];
 				++idx;
 			} // end of in range
@@ -616,7 +635,6 @@ void MISSILE::Check_SDI()
 	while (!shotDown && pSDI) {
 		// 20% base chance with +1% per SDI over one.
 		if ( (rand() % 100) < (19 + pSDI->am) ) {
-
 			// Try to predict the coordinates where the missile will go down:
 			MISSILE mind_shot(player, x, y, xv, yv, weapType, MT_MIND_SHOT,
 			                  SDI_PREDICTOR);
@@ -629,10 +647,12 @@ void MISSILE::Check_SDI()
 
 			// Keep flying/rolling/digging/whatever until the missile hits something
 			// or the tank is out of explosion range
-			double x_dist = pSDI->x - mind_shot.x;
-			double y_dist = pSDI->y - mind_shot.y;
-			double x_vel  = 0.;
-			double y_vel  = 0.;
+			double   x_dist    = pSDI->x - mind_shot.x;
+			double   y_dist    = pSDI->y - mind_shot.y;
+			double   x_vel     = 0.;
+			double   y_vel     = 0.;
+			uint32_t max_range = pSDI->lvl
+			                   * std::max(ROUND(pSDI->range), weap->radius);
 			mind_shot.getVelocity(x_vel, y_vel);
 
 			// Apply physics until the missile is either destroyed, or
@@ -642,15 +662,16 @@ void MISSILE::Check_SDI()
 			    && ( (SIGN(x_dist) == SIGN(x_vel))
 			      || (SIGN(y_dist) == SIGN(y_vel))
 			      || (  ABSDISTANCE2(pSDI->x, pSDI->y, mind_shot.x, mind_shot.y)
-			          < static_cast<uint32_t>(weap->radius)) ) ) {
+			          < max_range) ) ) {
 				mind_shot.applyPhysics();
 				x_dist = pSDI->x - mind_shot.x;
 				y_dist = pSDI->y - mind_shot.y;
 				mind_shot.getVelocity(x_vel, y_vel);
 			}
 
-			// If the missile is destroyed, check whether the explosion would hit this
-			// tank. If so, shoot it down!
+			// If the missile is destroyed, check whether the explosion would
+			// a) hit this tank and be) be nearer than the missile is now.
+			// If so, shoot it down!
 			bool will_hit = false;
 			if (mind_shot.destroy) {
 				int32_t x_rad = DRILLER == weapType
@@ -660,8 +681,14 @@ void MISSILE::Check_SDI()
 				               && (CUTTER        >= weapType) )
 				              ? weap->radius / 20
 				              : weap->radius;
-				if ( (std::abs(x_dist) <= x_rad)
-				  && (std::abs(y_dist) <= y_rad) )
+
+				if ( (std::abs(x_dist) <= x_rad) // tank in x range
+				  && (std::abs(y_dist) <= y_rad) // tank in y range
+				  && ( ( std::abs(x - pSDI->x) > x_rad) // misses x radius now
+				    || ( std::abs(y - pSDI->y) > y_rad) // misses y radius now
+						// Is now farther away than when it goes off:
+				    || (   ABSDISTANCE2(x, y, pSDI->tank->x, pSDI->tank->y)
+				        >= ABSDISTANCE2(x, y, mind_shot.x, mind_shot.y) ) ) )
 					will_hit = true;
 			}
 
@@ -690,7 +717,7 @@ void MISSILE::Check_SDI()
 						if ( burnt )
 							pSDI->tank->player->ni[ITEM_SDI]--;
 
-						pSDI->tank->player->sdi_has_fired = true;
+						pSDI->tank->player->sdi_has_fired.store(true, ATOMIC_WRITE);
 
 					} catch (...) {
 						// Just not shot down. ;)
@@ -933,11 +960,15 @@ void MISSILE::triggerTest ()
 				}
 
 				// If the roller is hammered into a wall, detonate it
-				if (env.isBoxed
-				  && (y <= MENUHEIGHT)
-				  && ( (WALL_STEEL == env.current_wallType)
-					|| ( (WALL_WRAP  == env.current_wallType)
-					  && (!env.isBoxed || !env.do_box_wrap) ) ) ) {
+				if ( ( (WALL_STEEL == env.current_wallType)
+				    && ( (x <= 2) || (x >= (env.screenWidth - 3) ) ) )
+				  || (env.isBoxed
+				    && (y <= MENUHEIGHT)
+				    && ( ( (WALL_WRAP  == env.current_wallType)
+				        && ( !env.do_box_wrap
+				          || (  global.surface[ROUND(x)].load(ATOMIC_READ)
+				              < env.screenHeight) ) )
+				      || (WALL_STEEL == env.current_wallType) ) ) ) {
 					quell        = false;
 					hitSomething = true;
 				}
@@ -961,7 +992,7 @@ void MISSILE::triggerTest ()
 
 		// If a weapon has submunition, it goes off now
 		else if (weap->submunition >= 0) {
-			quell = 1; // This one is done
+			quell = true; // This one is done
 
 			if ( (weap->numSubmunitions > 0) && (MT_MIND_SHOT != missileType) ) {
 				WEAPON*   submunition     = &weapon[weap->submunition];
@@ -973,16 +1004,25 @@ void MISSILE::triggerTest ()
 				double    inheritedXV     = weap->impartVelocity * xv;
 				double    inheritedYV     = weap->impartVelocity * yv;
 				int32_t   startY          = y - 20;
+				bool      ceiling_crash   = false;
 
-				// If the weapon is fired into a ceiling, adapt starting y
-				if (env.isBoxed
-				  && (startY <= MENUHEIGHT)
-				  && ( (WALL_STEEL == env.current_wallType)
-					|| ( (WALL_WRAP  == env.current_wallType)
-					  && (!env.isBoxed || !env.do_box_wrap) ) ) )
+				// See whether the weapon was fired into a ceiling:
+				// This applies for both steel ceilings and wrap ceilings,
+				// but the latter only if no ceiling wrap is activated or
+				// if the next pixel at the bottom is dirt.
+				if (env.isBoxed && (startY <= MENUHEIGHT) // Base condition
+				  && ( ( (WALL_WRAP  == env.current_wallType)
+					  && (!env.do_box_wrap // <- No wrap makes it steel
+						// \/ dirt makes the ceiling unwrapable
+				        || (  global.surface[ROUND(x)].load(ATOMIC_READ)
+				            < env.screenHeight) ) )
+				    || (  WALL_STEEL == env.current_wallType) ) ) { // This always blasts
+					ceiling_crash = true;
+					// If the weapon is fired into a ceiling, adapt starting y
 					startY = MENUHEIGHT + 20;
+				}
 
-				// If napalm is going off, play its burn out sound
+				// if napalm is going off, play its burn out sound
 				if ( (weapType >= SML_NAPALM) && (weapType <= LRG_NAPALM))
 					play_explosion_sound(weapType, x, 128 + (weap->radius / 2), 1000);
 
@@ -991,29 +1031,29 @@ void MISSILE::triggerTest ()
 					submunitionPhys = PT_FUNKY_FLOAT;
 
 				// If this is a steel wall hit, the start point angle needs
-				// to be adapted. And erased if this is a ceiling hit
-				if (WALL_STEEL == env.current_wallType) {
+				// to be adapted.
+				if ( (WALL_STEEL == env.current_wallType) && !ceiling_crash) {
 					if ( (CLUSTER <= weapType) && (SUP_CLUSTER >= weapType) ) {
 						if ( x < 2 )
 							startPoint -= weap->divergence + 1 + (rand() % 10);
 						else if ( x > (env.screenWidth - 3) )
 							startPoint += weap->divergence + 1 + (rand() % 10);
-						else if ( y <= BOXED_TOP)
-							startPoint = 0;
 					} else if ( (SML_NAPALM <= weapType)
 					         && (LRG_NAPALM >= weapType) ) {
 						if ( x < 2 )
 							startPoint -= 10 + rand() % 21;
 						else if ( x > (env.screenWidth - 3) )
 							startPoint += 10 + rand() % 21;
-						else if ( y <= BOXED_TOP)
-							startPoint = 0;
-					} else if ( ( (SMALL_MIRV == weapType)
-							   || (CLUSTER_MIRV == weapType) )
-							 && ( y <= BOXED_TOP) ) {
-						startPoint  = 0;
-						inheritedYV = std::abs(inheritedYV);
 					}
+				}
+
+				// If this is a ceiling crash, the start point angle needs
+				// to be erased.
+				if (ceiling_crash) {
+					startPoint = 0;
+					if ( (SMALL_MIRV == weapType)
+					  || (CLUSTER_MIRV == weapType) )
+						inheritedYV = std::abs(inheritedYV);
 				}
 
 				// The spread can be created!
@@ -1086,11 +1126,11 @@ void MISSILE::triggerTest ()
 	// If a countdown was set and this is old enough, this missile is no
 	// longer quelled, regardless of what this means for this weapon type
 	if ( (countdown >= 0) && (age >= countdown) )
-		quell = 0;
+		quell = false;
 
 	// Riot charges always go of in an instant.
 	if ( (weapType >= RIOT_CHARGE) && (weapType <= RIOT_BLAST) ) {
-		quell   = 0;
+		quell   = false;
 		destroy = true;
 	}
 

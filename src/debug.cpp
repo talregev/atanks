@@ -6,11 +6,9 @@
 #include <mutex>
 
 #if defined(ATANKS_DEBUG)
-using std::cout;
-using std::endl;
 
 #if defined(ATANKS_IS_WINDOWS) || defined(ATANKS_DEBUG_LOGTOFILE)
-# include <fstream>
+# include <cstdio>
 #endif
 
 
@@ -47,16 +45,16 @@ void debug_log(const char* moduleName, const char* title, const char* message, .
 	// Unfortunately, for everything to work right,
 	// a WinApp must be created. So write the log msg
 	// to atanks.log instead.
-	std::ofstream out("atanks.log", std::ios_base::app);
-	if (out.is_open()) {
-		out << timebuf << " : " << moduleName << " : ";
-		out << "\"" << title << "\" - " << xMsg << endl;
-		out.close();
+	FILE* out = fopen("atanks.log", "a");
+	if (out) {
+		fprintf(out, "%s : %s : \"%s\" - %s\n",
+		        timebuf, moduleName, title, xMsg);
+		fclose(out);
 	}
 #endif // MSVC or explicit logging to atanks.log
 #if !defined(ATANKS_IS_WINDOWS)
-	cout << timebuf << " : " << moduleName << " : ";
-	cout << "\"" << title << "\" - " << xMsg << endl;
+	fprintf(stdout, "%s : %s : \"%s\" - %s\n",
+	        timebuf, moduleName, title, xMsg);
 #endif // !Windows
 
 

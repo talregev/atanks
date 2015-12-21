@@ -498,7 +498,7 @@ enum weaponType
 	REDUCER            = 51, // Last ballistic
 	SML_LAZER          = 52,
 	MED_LAZER          = 53,
-	LRG_LAZER          = 54, // Last weapon
+	LRG_LAZER          = 54, // Last weapon (WEAPONS == 55)
 	SML_METEOR         = 55,
 	MED_METEOR         = 56,
 	LRG_METEOR         = 57,
@@ -513,13 +513,13 @@ enum weaponType
 #define ITEM_NO_SHIELD   -1
 enum itemType
 {
-	ITEM_TELEPORT             =  0,
-	ITEM_SWAPPER              =  1,
-	ITEM_MASS_TELEPORT        =  2,
-	ITEM_FAN                  =  3,
-	ITEM_VENGEANCE            =  4,
-	ITEM_DYING_WRATH          =  5,
-	ITEM_FATAL_FURY           =  6,
+	ITEM_TELEPORT             =  0, // 55 (weap_idx - WEAPONS)
+	ITEM_SWAPPER              =  1, // 56
+	ITEM_MASS_TELEPORT        =  2, // 57
+	ITEM_FAN                  =  3, // 58
+	ITEM_VENGEANCE            =  4, // 59
+	ITEM_DYING_WRATH          =  5, // 60
+	ITEM_FATAL_FURY           =  6, // 61
 	ITEM_LGT_SHIELD           =  7,
 	ITEM_MED_SHIELD           =  8,
 	ITEM_HVY_SHIELD           =  9,
@@ -534,8 +534,8 @@ enum itemType
 	ITEM_DIMPLEP              = 18,
 	ITEM_PARACHUTE            = 19,
 	ITEM_REPAIRKIT            = 20,
-	ITEM_FUEL                 = 21,
-	ITEM_ROCKET               = 22,
+	ITEM_FUEL                 = 21, // 76
+	ITEM_ROCKET               = 22, // 77
 	ITEM_SDI                  = 23 // Last item
 };
 

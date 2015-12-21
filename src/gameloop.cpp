@@ -31,33 +31,33 @@
 class ObjectUpdater;
 
 /// === Helper functions ===
-inline bool   advance_tank        ();
-inline void   change_wind_strength();
-inline void   check_fps           (ObjectUpdater* upd);
-inline void   check_overtime      (AICore &aicore);
-inline void   check_skiptime      ();
-inline void   clear_voices        ();
-inline void   check_winner        ();
-inline double colorDistance       (int32_t col1, int32_t col2);
-inline void   delete_destroyed    (AICore &aicore);
-inline void   do_naturals         ();
-inline void   draw_FPS_Counter    ();
-inline void   draw_objects        (AICore &aicore);
-inline void   draw_eor_scoreboard (); // The [e]nd-[o]f-[r]ound score board
-inline void   draw_mini_scoreboard(); // The ingame mini score board
-inline void   draw_top_bar        ();
-inline bool   explode_tanks       ();
-inline void   fire_weapon         ();
-inline void   graph_bar           (int32_t x, int32_t y, int32_t col,
+static inline bool   advance_tank        ();
+static inline void   change_wind_strength();
+static inline void   check_fps           (ObjectUpdater* upd);
+static inline void   check_overtime      (AICore &aicore);
+static inline void   check_skiptime      ();
+static inline void   clear_voices        ();
+static inline void   check_winner        ();
+static inline double colorDistance       (int32_t col1, int32_t col2);
+static inline void   delete_destroyed    (AICore &aicore);
+static inline void   do_naturals         ();
+static inline void   draw_FPS_Counter    ();
+static inline void   draw_objects        (AICore &aicore);
+static inline void   draw_eor_scoreboard (); // The [e]nd-[o]f-[r]ound score board
+static inline void   draw_mini_scoreboard(); // The ingame mini score board
+              void   draw_top_bar        ();
+static inline bool   explode_tanks       ();
+static inline void   fire_weapon         ();
+static inline void   graph_bar           (int32_t x, int32_t y, int32_t col,
                                    int32_t actual, int32_t max);
-inline void   graph_bar_center    (int32_t x, int32_t y, int32_t col,
+static inline void   graph_bar_center    (int32_t x, int32_t y, int32_t col,
                                    int32_t actual, int32_t max);
-inline void   init_new_round      ();
-inline bool   manage_input        (AICore &aicore);
-inline void   set_level_settings  (LevelCreator* lcr);
-inline void   set_tank_settings   ();
-inline void   update_display      ();
-inline void   update_objects      (ObjectUpdater* upd);
+static inline void   init_new_round      ();
+static inline bool   manage_input        (AICore &aicore);
+static inline void   set_level_settings  (LevelCreator* lcr);
+static inline void   set_tank_settings   ();
+static inline void   update_display      ();
+static inline void   update_objects      (ObjectUpdater* upd);
 
 
 /// === Static helper values ===
@@ -144,8 +144,15 @@ public:
 				// Note: No argument to load(), use the most strict default!
 				std::this_thread::yield();
 
+
 			// Okay, do the updating for this class:
 			global.getHeadOfClass(static_cast<eClasses>(class_), &obj);
+
+			// If this is the floating text class, lock it, or AI
+			// feedback might lead to data races.
+			if (CLASS_FLOATTEXT == class_)
+				global.lockClass(class_);
+
 			while (obj) {
 
 				// Explosions must be known at once:
@@ -218,6 +225,10 @@ public:
 
 				obj = next_obj;
 			} // End of looping objects of one class
+
+			// If this is the floating text class, unlock it again.
+			if (CLASS_FLOATTEXT == class_)
+				global.unlockClass(class_);
 
 			// All done
 			isDone.store( true,  ATOMIC_WRITE);
@@ -562,7 +573,7 @@ void game ()
 ///  ==========================
 
 
-inline bool advance_tank()
+static inline bool advance_tank()
 {
 	/* The whole finding of a next tank to have their shot is needed in
 	 * two situations during the fire stage:
@@ -625,7 +636,7 @@ inline bool advance_tank()
 }
 
 
-inline void change_wind_strength ()
+static inline void change_wind_strength ()
 {
 	if (!env.windvariation || !env.windstrength)
 		return;
@@ -652,7 +663,7 @@ inline void change_wind_strength ()
 
 // See whether decorations must be reduced or time can be wasted
 // to achieve the set FPS.
-inline void check_fps(ObjectUpdater* upd)
+static inline void check_fps(ObjectUpdater* upd)
 {
 	if ( !global.skippingComputerPlay ) {
 		game_us_needed = game_us_get();
@@ -697,7 +708,7 @@ inline void check_fps(ObjectUpdater* upd)
 // Check whether the AI time is up and force a draw if it is.
 // This method does not check whether it is needed and must not
 // be called if global.skippingComputerPlay is false!
-inline void check_overtime(AICore &aicore)
+static inline void check_overtime(AICore &aicore)
 {
 	// Check every second whether the AI clock
 	// should be changed:
@@ -751,7 +762,7 @@ inline void check_overtime(AICore &aicore)
 }
 
 
-inline void check_skiptime()
+static inline void check_skiptime()
 {
 	// Check whether to reset the AI_clock
 	int32_t cur_health = 0;
@@ -783,7 +794,7 @@ inline void check_skiptime()
 }
 
 
-inline void clear_voices()
+static inline void clear_voices()
 {
 	// Assume one voice per 2 ms to be usable again
 	/// @todo : This must be substituted by a real direct
@@ -799,7 +810,7 @@ inline void clear_voices()
 }
 
 
-inline void check_winner()
+static inline void check_winner()
 {
 	bool    all_jedi       = true;
 	bool    all_sith       = true;
@@ -854,7 +865,7 @@ double colorDistance (int32_t col1, int32_t col2)
 }
 
 
-inline void delete_destroyed(AICore &aicore)
+static inline void delete_destroyed(AICore &aicore)
 {
 	vobj_t* next_obj = nullptr;
 	vobj_t* obj      = nullptr;
@@ -869,7 +880,11 @@ inline void delete_destroyed(AICore &aicore)
 		if (CLASS_TANK == class_)
 			continue;
 
-		global.getHeadOfClass(static_cast<eClasses>(class_), &obj);
+		eClasses e_class = static_cast<eClasses>(class_);
+
+		global.getHeadOfClass(e_class, &obj);
+		global.lockClass(e_class);
+
 		while(obj) {
 			obj->getNext(&next_obj);
 
@@ -877,10 +892,18 @@ inline void delete_destroyed(AICore &aicore)
 			if (obj->destroy) {
 				obj->requireUpdate();
 				obj->update();
+
+				// For deleting the object, the class must be unlocked,
+				// or we'll hit a deadlock with global.removeObject().
+				global.unlockClass(e_class);
 				delete obj;
+				global.lockClass(e_class);
 			}
 			obj = next_obj;
 		} // End of looping objects of one class
+
+		// Finished:
+		global.unlockClass(e_class);
 	} // End of looping classes
 
 	// Eventually re-allow AICore to create FLOATTEXT instances again
@@ -950,7 +973,7 @@ void do_naturals()
 }
 
 
-inline void draw_FPS_Counter()
+static inline void draw_FPS_Counter()
 {
 	++FPS_counter;
 
@@ -980,7 +1003,7 @@ inline void draw_FPS_Counter()
 }
 
 
-inline void draw_objects(AICore &aicore)
+static inline void draw_objects(AICore &aicore)
 {
 	vobj_t* obj = nullptr;
 
@@ -1002,8 +1025,8 @@ inline void draw_objects(AICore &aicore)
 			}
 
 			if ( (false == has_deco.load(ATOMIC_READ))
-			  && ( (CLASS_DECOR_DIRT == class_)
-				|| (CLASS_DECOR_SMOKE == class_) ) )
+			  && ( (CLASS_DECOR_DIRT  == class_)
+			    || (CLASS_DECOR_SMOKE == class_) ) )
 				has_deco.store(true, ATOMIC_WRITE);
 
 			obj->getNext(&obj);
@@ -1017,7 +1040,7 @@ inline void draw_objects(AICore &aicore)
 
 
 /// @brief the ingame mini score board
-inline void draw_mini_scoreboard()
+static inline void draw_mini_scoreboard()
 {
 	int32_t line = MENUHEIGHT + 2;
 
@@ -1202,7 +1225,7 @@ void draw_top_bar ()
 
 /// Let all tanks explode that are destroyed
 /// @return true if at least one tank goes bye bye
-inline bool explode_tanks()
+static inline bool explode_tanks()
 {
 	// return if something is exploding already
 	if (has_explosion.load(ATOMIC_READ))
@@ -1310,7 +1333,7 @@ inline bool explode_tanks()
 
 
 /// @brief Wrapper to automatically trigger firing in simultaneous mode, too.
-inline void fire_weapon()
+static inline void fire_weapon()
 {
 	assert( (STAGE_AIM == global.stage)
 	  && " ERROR: fire_weapon() called, but not STAGE_AIM!");
@@ -1347,7 +1370,7 @@ inline void fire_weapon()
 
 
 // Draws indication bar
-inline void graph_bar(int32_t x, int32_t y, int32_t col, int32_t actual,
+static inline void graph_bar(int32_t x, int32_t y, int32_t col, int32_t actual,
                       int32_t max_)
 {
 	rect     (global.canvas, x,     y,     x + max_ + 2,   y + 8, BLACK);
@@ -1356,7 +1379,7 @@ inline void graph_bar(int32_t x, int32_t y, int32_t col, int32_t actual,
 
 
 // Draws indication bar - centered
-inline void graph_bar_center(int32_t x, int32_t y, int32_t col,
+static inline void graph_bar_center(int32_t x, int32_t y, int32_t col,
                              int32_t actual, int32_t max_)
 {
 	rect     (global.canvas, x, y,
@@ -1367,7 +1390,7 @@ inline void graph_bar_center(int32_t x, int32_t y, int32_t col,
 
 
 // do new round preparations
-inline void init_new_round()
+static inline void init_new_round()
 {
 	// First env,
     env.newRound();
@@ -1387,7 +1410,7 @@ inline void init_new_round()
 		txt->getNext(&txt);
 	}
 
-	// Initialize the inline global values, so no old data from a previous
+	// Initialize the static inline global values, so no old data from a previous
 	// run is carried over. (Unless this is wanted, of course)
 	AI_time_change  = 0;
 	curr_tank       = nullptr;
@@ -1435,7 +1458,7 @@ inline void init_new_round()
 
 
 /// @brief Wrapper to combine both human input and AI actions.
-inline bool manage_input(AICore &aicore)
+static inline bool manage_input(AICore &aicore)
 {
 	bool done = false;
 
@@ -1478,7 +1501,7 @@ inline bool manage_input(AICore &aicore)
   * This must work in parallel with the shop(), so any drawing must
   * lock the land, do the drawing and unlock it again.
 **/
-inline void set_level_settings(LevelCreator* lcr)
+static inline void set_level_settings(LevelCreator* lcr)
 {
 	//  -------------------------
 	// ===  Choosing colours   ===
@@ -1630,7 +1653,7 @@ inline void set_level_settings(LevelCreator* lcr)
 
 
 /// @brief tank placement and player ordering
-inline void set_tank_settings()
+static inline void set_tank_settings()
 {
 	//  -------------------------
 	// ===   Tank Placement    ===
@@ -1763,7 +1786,7 @@ inline void set_tank_settings()
 /// @brief the [e]nd [o]f [r]ound score board
 /// If the stage is STAGE_ENDGAME, credits and points are awarded and the
 /// function waits for user input before it returns
-inline void draw_eor_scoreboard()
+static inline void draw_eor_scoreboard()
 {
 	// Clear key buffer
 	if (STAGE_ENDGAME == global.stage) {
@@ -1883,7 +1906,12 @@ inline void draw_eor_scoreboard()
 
 		// Create the score order.
 		// The scores are ordered by score->diff->kills->killed->name
-		sScore* score = sort_scores();
+		sScore* score_array = sort_scores();
+
+		// And get the head entry:
+		sScore* score = score_array;
+		while (score->prev)
+			score = score->prev;
 
 
 		// Eventually the player scores can be displayed:
@@ -1920,13 +1948,18 @@ inline void draw_eor_scoreboard()
 		}
 
 		// Clean up
-		delete [] score;
+		delete [] score_array;
 	} // End of handling winner display
 }
 
 
-/// @brief sort players by scores.
-/// @return a pointer to the scores array. This must be deleted.
+/** @brief sort players by scores.
+  *
+  * The return value is the pointer to the allocated array, users
+  * must use its prev() pointer to find the head entry.
+  *
+  * @return a pointer to the scores array. This must be deleted.
+**/
 sScore* sort_scores()
 {
 	sScore* scores     = new sScore[env.numGamePlayers];
@@ -1993,11 +2026,11 @@ sScore* sort_scores()
 		}
 	} // End of sorting scores
 
-	return score_head;
+	return scores;
 }
 
 
-inline void update_display()
+static inline void update_display()
 {
 	if (show_frame) {
 		// do not show custom mouse cursor while drawing
@@ -2018,7 +2051,7 @@ inline void update_display()
 
 
 
-inline void update_objects(ObjectUpdater* upd)
+static inline void update_objects(ObjectUpdater* upd)
 {
 	// Start all updater threads
 	for (int32_t class_ = 0; class_ < CLASS_COUNT; ++class_)
@@ -2046,7 +2079,7 @@ inline void update_objects(ObjectUpdater* upd)
 	global.getHeadOfClass(CLASS_TANK, &lt);
 	while (lt) {
 		if (lt->player)
-			lt->player->sdi_has_fired = false;
+			lt->player->sdi_has_fired.store(false, ATOMIC_WRITE);
 		lt->getNext(&lt);
 	}
 }

@@ -196,14 +196,6 @@ void OptionItemColour::displayCross()
 }
 
 
-/// @brief return 0, this special class has no decrease/increase value
-int32_t OptionItemColour::getDecInc()
-{
-	return 0;
-}
-
-
-
 /// @brief return true, the action function must be able to return an exit code.
 bool OptionItemColour::isExitButton()
 {

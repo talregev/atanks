@@ -74,8 +74,7 @@ void generate_land (LevelCreator* lcr, int32_t xoffset, int32_t yoffset, int32_t
 	clear_to_color(temp_land, PINK);
 	clear_to_color(global.terrain, PINK);
 
-	for( int32_t x = 0; lcr->can_work() && (x < env.screenWidth); ++x ) {
-		int32_t depth   = 0;
+	for (int32_t x = 0; lcr->can_work() && (x < env.screenWidth); ++x) {
 		int32_t surface = 1;
 
 		// surface[x] will end up being the y coordinate of the
@@ -89,9 +88,43 @@ void generate_land (LevelCreator* lcr, int32_t xoffset, int32_t yoffset, int32_t
 			                              lambda, octaves) )
 			        / 2. * land_height;
 		global.surface[x].store(surface);
+	} // End of generating surface array
 
+	// If this is a wrapped landcape, smooth out both sides towards their
+	// opposite counterparts
+	if (WALL_WRAP == env.current_wallType) {
+        int32_t length = env.screenWidth / 20; // 5% left + right = 10% overall
 
-		// Generate detailed depths
+        for (int32_t x = 0; lcr->can_work() && (x < length) ; ++x) {
+			// The idea is to compare the strips from left to right with the
+			// points being taken by a ratio greater the nearer to its wall.
+
+			int32_t left  = x;
+			int32_t right = env.screenWidth - (x + 1);
+
+			double  ratio_n = ( static_cast<double>(x)
+			                  / static_cast<double>(length)
+			                  / 2.) + .5;   // [n]ear: 50% at the wall, 100% at length.
+			double  ratio_f = 1. - ratio_n; // [f]ar : 50% at the wall,   0% at length.
+
+			// Get the heights currently set
+			double  old_left_y  = global.surface[left ].load(ATOMIC_READ);
+			double  old_right_y = global.surface[right].load(ATOMIC_READ);
+
+			// Assemble new heights
+			double  new_left_y  = (old_left_y  * ratio_n) + (old_right_y * ratio_f);
+			double  new_right_y = (old_right_y * ratio_n) + (old_left_y  * ratio_f);
+
+			// Now the new surface values can be stored:
+			global.surface[left ].store(ROUND(new_left_y));
+			global.surface[right].store(ROUND(new_right_y));
+        }
+	}
+
+	// Generate detailed depths
+	for (int32_t x = 0; lcr->can_work() && (x < env.screenWidth); ++x) {
+		int32_t depth   = 0;
+		int32_t surface = global.surface[x].load();
 		if (env.detailedLandscape && (LAND_NONE != land_type)) {
 			memcpy (depthStrip[0], depthStrip[1], env.screenHeight * sizeof(double));
 			for (depth = 1; depth < env.screenHeight; depth++) {

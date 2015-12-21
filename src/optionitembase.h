@@ -113,7 +113,6 @@ public:
 	virtual bool    canGoDown   ()               =0;
 	virtual bool    canGoUp     ()               =0;
 	virtual void    display     (bool show_full) =0;
-	virtual int32_t getDecInc   ()               =0;
 	virtual bool    isExitButton()               =0;
 
 

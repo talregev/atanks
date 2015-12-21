@@ -64,13 +64,6 @@
 
 # define NOMINMAX
 
-  // A trick from winalleg.h to fix the BITMAP conflict
-# define BITMAP WINDOWS_BITMAP
-# include <windows.h>
-# undef BITMAP
-// Note: Letting winalleg.h include windows.h leads to
-// the WinMain magic not working.
-
 #endif // IS_WINDOWS
 
 
@@ -102,11 +95,11 @@
 #ifdef ATANKS_IS_MSVC
 #  define ATANKS_GET_POS(target) { \
      ATANKS_GET_FILE(target) \
-     atanks_snprintf(target, 255, "%s:%d %s", target, __LINE__, __FUNCTION__); \
+     atanks_snprintf(target, 255, "%-10s:%4d %-24s", target, __LINE__, __FUNCTION__); \
    }
 #else
 #  define ATANKS_GET_POS(target) { \
-     atanks_snprintf(target, 255, "%s:%d %s", basename(__FILE__), __LINE__, __FUNCTION__); \
+     atanks_snprintf(target, 255, "%-10s:%4d %-24s", basename(__FILE__), __LINE__, __FUNCTION__); \
    }
 #endif
 

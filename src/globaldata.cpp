@@ -794,6 +794,12 @@ void GLOBALDATA::load_from_file (FILE* file)
 }
 
 
+void GLOBALDATA::lockClass(eClasses class_)
+{
+	objLocks[class_].lock();
+}
+
+
 void GLOBALDATA::lockLand()
 {
 	landLock.lock();
@@ -1024,7 +1030,8 @@ void GLOBALDATA::slideLand()
 			// Calc the top and bottom of the column to slide
 
 			// Find top-most non-PINK pixel
-			int32_t row = 0;
+			int32_t row = MENUHEIGHT + (env.isBoxed ? 1 : 0);
+
 			for ( ;(row < dropTo[col])
 				&& (PINK == getpixel(terrain, col, row));
 				++row) ;
@@ -1110,12 +1117,11 @@ void GLOBALDATA::slideLand()
 						// If the top pixel is not PINK, and the source is not
 						// too high, increase dropAdd:
 						int32_t over_top = top_row - dropAdd;
-						if ( ( over_top <= max_top)
-						  && ( over_top >  0) ) {
-							if (PINK != getpixel(terrain, col, over_top) ) {
+						while ( ( over_top <= max_top)
+						     && ( over_top >  0)
+						     && ( PINK != getpixel(terrain, col, over_top) ) ) {
 								++dropAdd;
 								--over_top;
-							}
 						}
 
 						if (dropAdd > (dropTo[col] - (top_row + fp[col])) ) {
@@ -1154,7 +1160,8 @@ void GLOBALDATA::slideLand()
 						// nice long columns. (Happens with dirt balls when
 						// "fixed" under the menubar.
 						if (over_top <= max_top) {
-							putpixel(terrain, col, max_top, PINK);
+							putpixel(terrain, col, max_top,     PINK);
+							putpixel(terrain, col, max_top + 1, PINK);
 						}
 
 						surface[col].fetch_add(dropAdd);
@@ -1164,6 +1171,12 @@ void GLOBALDATA::slideLand()
 			}
 		} // End of actual slide
 	} // End of looping columns
+}
+
+
+void GLOBALDATA::unlockClass(eClasses class_)
+{
+	objLocks[class_].unlock();
 }
 
 

@@ -2,7 +2,7 @@ NOTE: From now on, new changes appear at the top of this file.
 
 ============ Atanks-6.3 released ===================
 
-	Sven has done a hug eamount of code changes for this release. The
+	Sven has done a huge amount of code changes for this release. The
 	key highlights are as follows:
 	- Improved AI.
 	- Smoother/faster buying screen navigation.
@@ -15,7 +15,7 @@ NOTE: From now on, new changes appear at the top of this file.
 	- Improved Unicode support.
 	- Various code clean-up.
 	- Added dirt debris.
-	- Improved revgence mode for AI.
+	- Improved revenge mode for AI.
 	- Menus should now respond faster.
 	- Network code clean-up.
 	- Added more in-code documentation.

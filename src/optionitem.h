@@ -476,14 +476,6 @@ public:
 	}
 
 
-	/// @brief return the increment-/decrement value as int32_t
-	virtual int32_t getDecInc()
-	{
-		return static_cast<int32_t>(decinc);
-	}
-
-
-
 	/// @brief return true if this is an ET_BUTTON with a key code and no action function.
 	bool isExitButton()
 	{
@@ -512,7 +504,7 @@ private:
 	void activateValue(int32_t val)
 	{
 		// A few short-cuts that make reading the following a lot easier:
-		tgt_T t_val = static_cast<tgt_T>(val);
+		tgt_T t_val = static_cast<tgt_T>(val * decinc);
 		tgt_T t_max = static_cast<tgt_T>(maxVal);
 		tgt_T t_min = static_cast<tgt_T>(minVal);
 

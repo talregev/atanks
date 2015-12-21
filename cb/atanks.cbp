@@ -119,6 +119,24 @@
 					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
+			<Target title="AICORE to Log">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES DEBUG_LOG_TO_FILE=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_AICORE=YES DEBUG_LOG_TO_FILE=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_AICORE=YES DEBUG_LOG_TO_FILE=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_AICORE=YES DEBUG_LOG_TO_FILE=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES DEBUG_LOG_TO_FILE=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
 			<Target title="AICORE FIN">
 				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
@@ -135,6 +153,24 @@
 					<DistClean command="$make -f $makefile distclean$target" />
 					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES" />
 					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="AICORE FIN to LOG">
+				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES DEBUG_LOG_TO_FILE=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES DEBUG_LOG_TO_FILE=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES DEBUG_LOG_TO_FILE=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES DEBUG_LOG_TO_FILE=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_AICORE=YES DEBUG_FINANCE=YES DEBUG_LOG_TO_FILE=YES &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="AIM">
@@ -341,7 +377,6 @@
 		<Unit filename="../src/globals.h" />
 		<Unit filename="../src/globaltypes.cpp" />
 		<Unit filename="../src/globaltypes.h" />
-		<Unit filename="../src/imagedefs.h" />
 		<Unit filename="../src/land.cpp" />
 		<Unit filename="../src/land.h" />
 		<Unit filename="../src/main.cpp" />

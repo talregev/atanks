@@ -741,7 +741,11 @@ void do_ai_shopping(PLAYER* player, int32_t maxBoost, int32_t maxScore)
 			              player->ni[i], item[i].getName())
 	}
 	DEBUG_LOG_FIN(player->getName(), "-------------------", 0)
+
+	int32_t oldMoneyToSave = -1; // So the same message isn't repeated over and over again.
 #endif // ATANKS_DEBUG_FINANCE
+
+	player->updatePreferences(maxBoost, maxScore);
 
 	// money saving will be made possible when:
 	// 1. It's not the first three rounds
@@ -764,12 +768,19 @@ void do_ai_shopping(PLAYER* player, int32_t maxBoost, int32_t maxScore)
 		if ( (global.currentround > 5)
 		  && ((env.rounds - global.currentround) > 3) ) {
 			moneyToSave = player->getMoneyToSave(!buy_count);
-			DEBUG_LOG_FIN(player->getName(),
-			              "Maximum Money to save: %d (I have %d)",
-			              moneyToSave, player->money)
+#ifdef ATANKS_DEBUG_FINANCE
+			if (oldMoneyToSave != moneyToSave) {
+				DEBUG_LOG_FIN(player->getName(),
+				              "Maximum Money to save: %d (I have %d)",
+				              moneyToSave, player->money)
+				oldMoneyToSave = moneyToSave;
+			}
 		} else
 			DEBUG_LOG_FIN(player->getName(),
 			              "No money to save this round!", 0);
+#else
+		}
+#endif // ATANKS_DEBUG_FINANCE
 
 		int32_t numPara     = player->ni[ITEM_PARACHUTE];
 		int32_t numDmgWeaps = 0;
@@ -785,8 +796,7 @@ void do_ai_shopping(PLAYER* player, int32_t maxBoost, int32_t maxScore)
 		if ( (player->money > moneyToSave)
 		  || ( (numPara   < ai_level) && (env.landSlideType > SLIDE_NONE) )
 		  || (numDmgWeaps <  (ai_level * 2)) )
-			pressed = player->chooseItemToBuy(maxBoost, maxScore,
-			                                  !buy_count, last_buy_idx);
+			pressed = player->chooseItemToBuy(maxBoost, last_buy_idx);
 		else
 			pressed = -1; // Forced to end.
 

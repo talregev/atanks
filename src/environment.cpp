@@ -305,6 +305,7 @@ void ENVIRONMENT::destroy()
 	if (gloat)        { delete    gloat;        gloat        = nullptr; }
 	if (ingame)       { delete    ingame;       ingame       = nullptr; }
 	if (instructions) { delete    instructions; instructions = nullptr; }
+	if (panic)        { delete    panic;        panic        = nullptr; }
 	if (kamikaze)     { delete    kamikaze;     kamikaze     = nullptr; }
 	if (retaliation)  { delete    retaliation;  retaliation  = nullptr; }
 	if (revenge)      { delete    revenge;      revenge      = nullptr; }
@@ -974,6 +975,7 @@ void ENVIRONMENT::load_text_files()
 	LOAD_TEXT_BLOCK(gloat, "gloat")
 	LOAD_TEXT_BLOCK(ingame, "ingame")
 	LOAD_TEXT_BLOCK(instructions, "instr")
+	LOAD_TEXT_BLOCK(panic, "panic")
 	LOAD_TEXT_BLOCK(kamikaze, "kamikaze")
 	LOAD_TEXT_BLOCK(retaliation, "retaliation")
 	LOAD_TEXT_BLOCK(revenge, "revenge")
@@ -1384,8 +1386,6 @@ void ENVIRONMENT::Reset_Options()
 	fog                   = 0;
 	set_fps(60);
 	gravity               = 0.15;
-	halfHeight            = DEFAULT_SCREEN_HEIGHT / 2;
-	halfWidth             = DEFAULT_SCREEN_WIDTH / 2;
 	interest              = 1.25;
 	itemtechLevel         = 5;
 	landSlideDelay        = MAX_GRAVITY_DELAY;
@@ -1406,8 +1406,6 @@ void ENVIRONMENT::Reset_Options()
 	scoreTeamHit          = 10;
 	scoreUnitDestroyBonus = 5000;
 	scoreUnitSelfDestroy  = 0;
-	screenHeight          = DEFAULT_SCREEN_HEIGHT;
-	screenWidth           = DEFAULT_SCREEN_WIDTH;
 	sellpercent           = 0.80;
 	shadowedText          = true;
 	skipComputerPlay      = SKIP_HUMANS_DEAD;
@@ -1443,11 +1441,6 @@ bool ENVIRONMENT::save_to_file (FILE *file)
 {
 	if (!file)
 		return false;
-
-	if (temp_screenWidth)
-		screenWidth  = temp_screenWidth;
-	if (temp_screenHeight)
-		screenHeight = temp_screenHeight;
 
 	fprintf (file, "*ENV*\n");
 
@@ -1490,8 +1483,8 @@ bool ENVIRONMENT::save_to_file (FILE *file)
 	fprintf (file, "SCORETEAMHIT=%d\n", scoreTeamHit);
 	fprintf (file, "SCOREUNITDESTROYBONUS=%d\n", scoreUnitDestroyBonus);
 	fprintf (file, "SCOREUNITSELFDESTROY=%d\n", scoreUnitSelfDestroy);
-	fprintf (file, "SCREENHEIGHT=%d\n", screenHeight);
-	fprintf (file, "SCREENWIDTH=%d\n", screenWidth);
+	fprintf (file, "SCREENHEIGHT=%d\n", temp_screenHeight);
+	fprintf (file, "SCREENWIDTH=%d\n", temp_screenWidth);
 	fprintf (file, "SELLPERCENT=%f\n", sellpercent);
 	fprintf (file, "SERVERNAME='%s'\n", server_name);
 	fprintf (file, "SERVERPORT='%s'\n", server_port);

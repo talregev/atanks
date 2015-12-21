@@ -18,9 +18,6 @@
     <ClInclude Include="..\src\aicore.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\allegro.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\beam.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

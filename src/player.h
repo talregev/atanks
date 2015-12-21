@@ -81,8 +81,7 @@ public:
 	 */
 
 	void        checkOppMem         ();
-	int32_t     chooseItemToBuy     (int32_t max_boost, int32_t max_score,
-	                                 bool first_look, int32_t &last_idx);
+	int32_t     chooseItemToBuy     (int32_t max_boost, int32_t &last_idx);
 	eControl    controlTank         (AICore* aicore, bool allow_fire);
 	void        drawIndicator       (int32_t x, int32_t y, int32_t h);
 #ifdef NETWORK
@@ -110,12 +109,14 @@ public:
 	void        save_game_data      (FILE* file);
 	void        save_to_file        (FILE* file);
 	const char* selectGloatPhrase   ();
+	const char* selectPanicPhrase   (PLAYER* shocker);
 	const char* selectKamikazePhrase();
 	const char* selectRetaliationPhrase();
 	const char* selectRevengePhrase ();
 	const char* selectSuicidePhrase ();
 	void        setLastOpponent     (sOpponent* last_opp);
 	void	    setName             (const char* name_);
+	void        updatePreferences   (int32_t max_boost, int32_t max_score);
 
 
 	/* ----------------------
@@ -143,7 +144,7 @@ public:
 	int32_t        nm[WEAPONS];
 	PLAYER*        revenge            = nullptr;
 	int32_t        score              = 0;
-	bool           sdi_has_fired      = false; // Only one shot per frame
+	abool_t        sdi_has_fired;           // Only one shot per frame
 	int32_t        sdiShots           = 0;
 	bool           selected           = false;
 	double         selfPreservation   = .5; // Lengths gone to to avoid self-harm
@@ -183,7 +184,6 @@ private:
 	int32_t     getAmpValue              ();
 	int32_t     getArmourValue           ();
 	eControl    humanControls            (AICore* aicore);
-	void        updatePreferences        (int32_t max_boost, int32_t max_score);
 
 
 	/* -----------------------
@@ -192,8 +192,9 @@ private:
 	 */
 
 	int32_t   boostBought      = -1;
-	int32_t   currPref[THINGS]; // current preferences, calculated for each round
-	int32_t   desired[THINGS]; // Shopping wish list
+	int32_t   currPref[THINGS];     // current preferences, calculated for each round
+	int32_t   desired[THINGS];      // Shopping wish list
+	int32_t   saveMoneyFor[THINGS]; // List of items the AI wants to buy
 	opp_t*    last_opponent    = nullptr;
 	char      name[NAME_LEN + 1];
 	bool      needAmp          = false;

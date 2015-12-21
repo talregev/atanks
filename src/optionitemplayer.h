@@ -65,7 +65,6 @@ public:
 	virtual bool    canGoDown   ();
 	virtual bool    canGoUp     ();
 	virtual void    display     (bool show_full);
-	virtual int32_t getDecInc   ();
 	virtual bool    isExitButton();
 	void            setLanguage ();
 

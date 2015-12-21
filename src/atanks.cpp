@@ -424,7 +424,12 @@ static const char* do_winner()
 						y, WHITE, -1, " %6s", "Won");
 
 	// Now get the score list:
-	sScore* score = sort_scores();
+	sScore* score_array = sort_scores();
+
+	// And get the head entry:
+	sScore* score = score_array;
+	while (score->prev)
+		score = score->prev;
 
 
 	// Eventually the player scores can be displayed:
@@ -457,7 +462,7 @@ static const char* do_winner()
 		draw_text_in_box(&qarea, quote, false);
 
 	// Clean up
-	delete [] score;
+	delete [] score_array;
 
 	return return_string;
 }

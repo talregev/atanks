@@ -321,7 +321,6 @@ void optionsMenu ()
 
 		if (RO_RESET == optionsRetCode) {
 			env.Reset_Options();
-			mMain.redrawAll(true);
 			optionsRetCode = 0;
 		} else if (RO_BACK == optionsRetCode)
 			optionsRetCode = 0;

@@ -915,7 +915,6 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 	double xrad      =    DRILLER       == type    ? weap_rad / 20. : weap_rad;
 	double yrad      = ( (SHAPED_CHARGE <= type)
 	                  && (CUTTER        >= type) ) ? weap_rad / 20. : weap_rad;
-	double minrad    = std::min(xrad, yrad);
 	double in_rate_x = 0.;
 	double in_rate_y = 0.;
 	double dmg       = 0.;
@@ -929,9 +928,23 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 
 		// Shaped charges and drillers have a minimum distance under which they
 		// deal no damage:
-		else if ( ( ( (SHAPED_CHARGE > type) || (CUTTER < type) )
-		         && (DRILLER != type) )
-		       || (FABSDISTANCE2(tank->x, tank->y, hit_x, hit_y) > minrad) ) {
+		else if ( ( ( (SHAPED_CHARGE > type) || (CUTTER < type) ) //     ( Not shaped
+		         || (std::abs(tank->x - hit_x) > yrad) )          //       or x distance okay )
+		       && ( (DRILLER != type)                             // and (not driller
+		         || (std::abs(tank->y - hit_y) > xrad) ) ) {      //       or y distance okay )
+			/* Note: The radii are reversed as the opposite radius is the
+			 *       minimum distance needed for the main blast radius.
+			 * Note: The above is built from the following formula:
+			 * Be a = Weapon is a shaped charge, wide boy or cutter,
+			 *    b = x distance is greater than the weapons x range minimum,
+			 *    c = Weapon is the driller,
+			 *    d = y distance is greater than the weapons y range minimum.
+			 * Then the following term must be true to be allowed to enter this block:
+			 * (~a v b) ^ (~c v d) which reads like:
+			 *       (Not a shaped weapon OR the x distance is in order)
+			 *   AND (Not the driller     OR the y distance is in order)
+			 * The above if block actually is exactly that from bottom to top.
+			 */
 
 			dmg = weapon[type].damage;
 

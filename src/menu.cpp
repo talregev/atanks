@@ -14,7 +14,7 @@
 void flush_inputs(); // From files.h
 void init_mouse_cursor(); // from atanks.cpp to change the mouse cursor
 
-static int32_t MOUSE_RELEASE_DELAY = 10; // Slows down constant mouse presses
+static int32_t MOUSE_RELEASE_DELAY = 20; // Slows down constant mouse presses
 static int32_t MOUSE_DELAY_REDUCT  = 5;  // Every so many rounds the delay is reduced
 
 
@@ -886,9 +886,9 @@ int32_t Menu::operator()()
 				// ET_VALUE needs handling for left/right keys:
 				if (ET_VALUE == type) {
 					if (KEY_RIGHT == key_code)
-						event = curr->getDecInc();
+						event = 1;
 					else if (KEY_LEFT == key_code)
-						event = -1 * curr->getDecInc();
+						event = -1;
 					// If the right mouse button or ctrl key was pressed,
 					// multiply the event by 10
 					if (mrb_is_pressed || has_ctrl_down)

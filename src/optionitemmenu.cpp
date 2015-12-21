@@ -108,14 +108,6 @@ void OptionItemMenu::display(bool show_full)
 }
 
 
-/// @brief return 0, this special class has no decrease/increase value
-int32_t OptionItemMenu::getDecInc()
-{
-	return 0;
-}
-
-
-
 /// @brief return true, the menu must be able to return an exit code.
 bool OptionItemMenu::isExitButton()
 {

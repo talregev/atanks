@@ -37,15 +37,17 @@ static bool has_ctrl_pressed  = false;
 static bool has_shift_pressed = false;
 
 /// @brief default ctor
-PLAYER::PLAYER()
+PLAYER::PLAYER() :
+	sdi_has_fired(ATOMIC_VAR_INIT(false))
 {
 	// Do a memset initialization thanks to VC++
-	memset(ni,       0, sizeof(int32_t) * ITEMS);
-	memset(nm,       0, sizeof(int32_t) * WEAPONS);
-	memset(currPref, 0, sizeof(int32_t) * THINGS);
-	memset(desired,  0, sizeof(int32_t) * THINGS);
-	memset(name,     0, sizeof(char)    * NAME_LEN);
-	memset(weapPref, 0, sizeof(int32_t) * THINGS);
+	memset(ni,           0, sizeof(int32_t) * ITEMS);
+	memset(nm,           0, sizeof(int32_t) * WEAPONS);
+	memset(currPref,     0, sizeof(int32_t) * THINGS);
+	memset(desired,      0, sizeof(int32_t) * THINGS);
+	memset(saveMoneyFor, 0, sizeof(int32_t) * THINGS);
+	memset(name,         0, sizeof(char)    * NAME_LEN);
+	memset(weapPref,     0, sizeof(int32_t) * THINGS);
 
 	nm[0] = 99; // need some small missiles. ;)
 	strncpy(name, "New Player", NAME_LEN);
@@ -121,26 +123,39 @@ void PLAYER::boostPrefences(bool boostArmour, bool boostAmps, bool boostWeapons)
 		// Lower weapon preferences if there are enough in stock already
 		if (i && (i < WEAPONS)) {
 			double cur_amount = nm[i] / weapon[i].getDelayDiv();
-			double max_amount = weapon[i].amt * ai_level
-							  / weapon[i].getDelayDiv();
-			double mod_amount = cur_amount - max_amount;
-			if (mod_amount > 1.) {
-				pref /= mod_amount;
+			double one_amount = weapon[i].amt / weapon[i].getDelayDiv();
+			double max_amount = one_amount * ai_level;
+			double div_amount = cur_amount - max_amount;
+
+			// - cur_amount is the total amount of single shots. getDelayDiv()
+			// is used, because it simply returns the number of shots fired by
+			// delayed weapons, while it returns always 1 for the other weapons.
+			// - one_amount - The number of nm[i] that is gotten by buying one
+			//                unit.
+			// - max_amount - below this no reduction or sale is considered.
+			// - div_amount - if positive, the bot has enough in stock.
+			//              - if larger than one_amount, selling the excess
+			//                amount is considered.
+
+			if (div_amount >= 1.) {
+				pref /= div_amount;
 				DEBUG_LOG_FIN(name,
 							  "Lower %s pref (%d in stock) %d -> %d",
 							  weapon[i].getName(),
 							  ROUND(cur_amount), currPref[i], ROUND(pref))
 
 				if (env.sellpercent > 0.01) {
-					int32_t saleable = (mod_amount - RAND_AI_1P)
-									 / weapon[i].amt;
+
+					// saleable are the units considered to be sold:
+					int32_t saleable = (div_amount - RAND_AI_1P) / one_amount;
+
 					if (saleable > 0) {
 						money += ROUNDu(weapon[i].cost * env.sellpercent)
 							   * saleable;
 						nm[i] -= weapon[i].amt * saleable;
 						DEBUG_LOG_FIN(name,
 									  "Sold %d %s for $%s",
-									  weapon[i].amt * saleable,
+									  saleable,
 									  weapon[i].getName(),
 									  Add_Comma(ROUNDu( weapon[i].cost
 													  * env.sellpercent)
@@ -155,7 +170,10 @@ void PLAYER::boostPrefences(bool boostArmour, bool boostAmps, bool boostWeapons)
 			int32_t j = i - WEAPONS;
 			if ( (j < ITEM_ARMOUR) || (j > ITEM_VIOLENT_FORCE) ) {
 				double cur_amount = ni[j];
-				double max_amount = item[j].amt * ai_level;
+				double one_amount = item[j].amt;
+				double max_amount = one_amount * ai_level;
+
+				// Note: The values are the same as above.
 
 				// Repair kit and SDI are limited differently
 				if (ITEM_REPAIRKIT == j)
@@ -163,25 +181,28 @@ void PLAYER::boostPrefences(bool boostArmour, bool boostAmps, bool boostWeapons)
 				else if (ITEM_SDI == j)
 					max_amount *= defensive + 2. + (ai_level / 2.);
 
-				double mod_amount = cur_amount - max_amount;
-				if (mod_amount > 1.) {
-					pref /= mod_amount;
+				double div_amount = cur_amount - max_amount;
+
+				if (div_amount >= 1.) {
+					pref /= div_amount;
 					DEBUG_LOG_FIN(name,
 								  "Lower %s pref (%d in stock) %d -> %d",
 								  item[j].getName(),
 								  ROUND(cur_amount), currPref[i],
 								  ROUND(pref))
+
 					if ( (env.sellpercent > 0.01) && (j < ITEM_VENGEANCE) ) {
-						// Note only fans and teleporters are considered here!
-						int32_t saleable = (mod_amount - RAND_AI_1P)
-										 / item[j].amt;
+
+						// Note: Armour and Amps are not considered here!
+						int32_t saleable = (div_amount - RAND_AI_1P) / one_amount;
+
 						if (saleable > 0) {
 							money += ROUNDu(item[j].cost * env.sellpercent)
 								   * saleable;
 							ni[j] -= item[j].amt * saleable;
 							DEBUG_LOG_FIN(name,
 										  "Sold %d %s for $%s",
-										  item[j].amt * saleable,
+										  saleable,
 										  item[j].getName(),
 										  Add_Comma(ROUNDu( item[j].cost
 														  * env.sellpercent)
@@ -281,20 +302,12 @@ void PLAYER::checkOppMem()
 
 
 /// @brief Have the AI choosing something to buy.
-int32_t PLAYER::chooseItemToBuy (int32_t max_boost, int32_t max_score,
-	                             bool first_look, int32_t &last_idx)
+int32_t PLAYER::chooseItemToBuy (int32_t max_boost, int32_t &last_idx)
 {
 
 	// Do not do this if there is no money:
 	if (money < 1000)
 		return -1;
-
-	// If this is the first call in a shopping round, the
-	// shopping wish list must be re-filled.
-	if (first_look) {
-		last_idx = 0;
-		updatePreferences(max_boost, max_score);
-	} // End of preparing wish list
 
 	// Possibly pre-select an item by checking the current situation:
 	int32_t currItem = computerSelectPreBuyItem (max_boost);
@@ -529,11 +542,12 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 
 	/*	Prior buying anything else, a 5 step system takes place:
 	 * 1.: Parachutes (if gravity is on)
-	 * 2.: Minimum weapon probability (aka 5 medium and 3 large missiles
-	 * 3.: Armour/Amps
-	 * 4.: "Tools" to free themselves like Riot Blasts
-	 * 5.: Shields, if enough money is there
-	 * 6.: if all is set, look for dimpled/slick projectiles!
+	 * 2.: Minimum weapon probability (aka 5 medium and 3 large missiles)
+	 * 3.: The most expensive item from the saveMoneyFor list
+	 * 4.: Armour/Amps
+	 * 5.: "Tools" to free themselves like Riot Blasts
+	 * 6.: Shields, if enough money is there
+	 * 7.: if all is set, look for dimpled/slick projectiles!
 	 */
 
 
@@ -564,7 +578,30 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 	}
 
 
-	// Step 3: Check for Armour / Amps (if the bot remembers to check)
+	// Step 3: Check weapons/items currently saving money for:
+	int32_t saved_cost = 0;
+	int32_t saved_item = 0;
+	for (int32_t i = 0; i < THINGS; ++i) {
+		if ( (saveMoneyFor[i] > 0)
+		  && (saveMoneyFor[i] < money)
+		  && (saveMoneyFor[i] > saved_cost) ) {
+			saved_cost = saveMoneyFor[i];
+			saved_item = i;
+		}
+	}
+	// Got one?
+	if (saved_item > 0) {
+		DEBUG_LOG_FIN(name, "Finally got enough money for %s!",
+		              saved_item < WEAPONS
+		                ? weapon[saved_item].getName()
+		                : item[saved_item - WEAPONS].getName())
+		// Take it out from the wish list:
+		saveMoneyFor[saved_item] = 0;
+		return saved_item;
+	}
+
+
+	// Step 4: Check for Armour / Amps (if the bot remembers to check)
 	if ( (boostBought < ai_level) && RAND_AI_1P ) {
 		int32_t boost_value = getBoostValue();
 		int32_t boost_limit = max_boost - boost_value;
@@ -646,9 +683,9 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 	} // end of step 3
 
 
-	// 4.: Freeing tools
+	// 5.: Freeing tools
 	if (RAND_AI_0P) {
-		if (mood < 2.) {
+		if ( !nm[HVY_RIOT_BOMB] || !nm[RIOT_BOMB] || (mood < 2.) ) {
 
 			// More offensive in this round, check for riot bombs
 			if ( (nm[HVY_RIOT_BOMB] < 2)
@@ -683,7 +720,7 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 	} // End of step 4
 
 
-	// 5.: Shields
+	// 6.: Shields
 	if ((shieldBought < ai_level) && RAND_AI_1P) {
 		if (mood <= 1.5) {
 
@@ -743,7 +780,7 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 	} // End of step 5
 
 
-    // Step 6: Slick / Dimpled Projectiles
+    // Step 7: Slick / Dimpled Projectiles
     if ( (ni[ITEM_SLICKP] + ni[ITEM_DIMPLEP]) < 100 ) {
 
 		if ( (ni[ITEM_DIMPLEP] < 50)
@@ -1197,6 +1234,8 @@ int32_t PLAYER::generateDesiredList()
 {
 	int32_t result = 0;
 
+	memset(desired, 0, sizeof(int32_t) * THINGS);
+
 	for (int32_t i = 1; i < THINGS; ++i) {
 		if (env.isItemAvailable(i)) {
 			desired[i]  = i;
@@ -1573,60 +1612,93 @@ int32_t PLAYER::getItemPref(int32_t idx)
 
 int32_t PLAYER::getMoneyToSave(bool first_look)
 {
-	int32_t avgPref     = 0;
+	// If this is the first look in a shopping round,
+	// the list of items to save money for must be built:
+	if (first_look) {
+		int32_t avgPref     = 0;
+		int32_t prefCount   = 0;
+		int32_t prefLimit   = 0;
+		memset(saveMoneyFor, 0, sizeof(int32_t) * THINGS);
+
+		// if the preferences are exceptionally low, a div by 0
+		// might occur, so it has to be made dynamic:
+		for (int32_t i = 0; i < THINGS; ++i) {
+			if (currPref[i] > prefLimit) {
+				prefLimit += currPref[i];
+				prefCount++;
+			}
+		}
+
+		prefLimit /= prefCount ? prefCount : 1;
+		prefCount  = 0;
+
+		// Now it is guaranteed, that prefCount and avgPref
+		// will result in values > 0.
+		for (int32_t i = 0; i < THINGS; ++i) {
+			if (currPref[i] > prefLimit) {
+				prefCount++;
+				avgPref += currPref[i];
+			}
+		}
+
+		// Complete the average preference of the most valuable weapons:
+		avgPref /= prefCount ? prefCount : 1;
+
+		// Now go through the list and add everything above the
+		// average into the save money list, if the amount in stock
+		// is too low:
+		for (int32_t i = 0; i < THINGS; ++i) {
+			int32_t j = i - WEAPONS; // short cut
+			if ( (currPref[i] > avgPref)
+			  && ( ( (i <  WEAPONS) && (nm[i] < weapon[i].amt) )
+			    || ( (j == ITEM_VIOLENT_FORCE) && needAmp)
+			    || ( (j == ITEM_PLASTEEL)      && needArmour) ) ) {
+				saveMoneyFor[i] = i <  WEAPONS ? weapon[i].cost : item[j].cost;
+				DEBUG_LOG_FIN(name, " => Save money for %s!",
+				              i <  WEAPONS
+				                ? weapon[i].getName()
+				                : item[j].getName())
+			} // End of having a big enough preference
+		} // End of looping THINGS
+	} // End of building safe-for-list
+
+
+	// moneyToSafe can be easily generated (and regenerated)
+	// by walking through the list of things currently saved
+	// money for:
 	double  moneyToSave = 0.;
-	int32_t prefCount   = 0;
-	int32_t prefLimit   = 0;
 	double  wanted      = 0.;
+	double  max_cost    = 0.; // The most expensive item is counted twice
+	for (int32_t i = 0; i < THINGS; ++i) {
+		int32_t j = i - WEAPONS; // short cut
 
-	// if the preferences are exceptionally low, a div by 0
-	// might occur, so it has to be made dynamic:
-	for (int32_t i = 0; i < WEAPONS; ++i) {
-		if (currPref[i] > prefLimit)
-			prefLimit = (prefLimit + currPref[i]) / 2;
-	}
-
-	// Now it is guaranteed, that prefCount and avgPref
-	// will result in values > 0.
-	for (int32_t i = 0; i < WEAPONS; ++i) {
-		if (currPref[i] > prefLimit) {
-			prefCount++;
-			avgPref += currPref[i];
+		if (saveMoneyFor[i] > 0) {
+			// Still needed?
+			if ( ( (i <  WEAPONS) && (nm[i] < weapon[i].amt) )
+			  || ( (j == ITEM_VIOLENT_FORCE) && needAmp)
+			  || ( (j == ITEM_PLASTEEL)      && needArmour) ) {
+			  	moneyToSave += saveMoneyFor[i];
+			  	wanted      += 1.;
+				if (saveMoneyFor[i] > max_cost)
+					max_cost = saveMoneyFor[i];
+			} else
+				// nope...
+				saveMoneyFor[i] = 0;
 		}
 	}
 
-	// Complete the average preference of the most valuable weapons:
-	avgPref /= prefCount ? prefCount : 1;
-
-	// Now go through the list once more and count everything
-	// that is above this average for its costs and inventory
-	// value - weapons that are in stock already do not need
-	// to be saved for.
-	for (int32_t i = 0; i < WEAPONS; ++i) {
-
-		if ( (currPref[i] > avgPref) && (nm[i] < weapon[i].amt) ) {
-			// This weapon is "wanted" and low in stock
-			moneyToSave += weapon[i].cost;
-			wanted      += 1.;
-		}
-	}
-
-	// If amps/armour are wanted, add their cost
-	if (needAmp) {
-		moneyToSave += item[ITEM_VIOLENT_FORCE].cost;
+	// If anything is wanted, the most expensive item is counted twice.
+	// This is done so the bots do not consider having enough money
+	// too early, just like humans would.
+	if (max_cost > 1.) {
+		moneyToSave += max_cost;
 		wanted      += 1.;
-		DEBUG_LOG_FIN(name, "Chosen to save money for Violent Force!", 0);
-	}
-	if (needArmour) {
-		moneyToSave += item[ITEM_PLASTEEL].cost;
-		wanted      += 1.;
-		DEBUG_LOG_FIN(name, "Chosen to save money for Plasteel Plating!", 0);
-	}
 
-	// The average money to save modified by the player type
-	// is the result:
-	moneyToSave /= wanted > 0. ? wanted : 1.;
-	moneyToSave *= 1. + (static_cast<double>(LAST_PLAYER_TYPE - type) / 10.);
+		// The average money to save modified by the player type
+		// is the result:
+		moneyToSave = (moneyToSave / wanted)
+		            * (1. + (static_cast<double>(LAST_PLAYER_TYPE - type) / 10.));
+	}
 
 	/* Results for Armageddon only @ 100k credits:
 	 * (wanted is 1 in this test case)
@@ -2310,10 +2382,25 @@ void PLAYER::newRound()
 	  && (type < DEADLY_PLAYER) )
 		++type;
 
-	changed_weapon = false;
+	// reset some basic values
+	changed_weapon    = false;
 	time_left_to_fire = env.maxFireTime;
-	skip_me = false;
-	last_shield_used = 0;
+	skip_me           = false;
+	last_shield_used  = 0;
+
+	// Save damage from opponents if there was some not processed.
+	// Although this would be done automatically once the AI takes
+	// this player over the next time, lingering damage from the
+	// last round can lead to panic actions and/or revenge actions
+	// against players, who haven't fired, yet.
+	// Noting the damage will raise the probability, but only once
+	// the opponent had their first shot.
+	for (int32_t i = 0; i < oppCount; ++i) {
+		if (opponents[i].damage_last > 0) {
+			opponents[i].damage_from += opponents[i].damage_last;
+			opponents[i].damage_last  = 0;
+		}
+	}
 }
 
 
@@ -2503,6 +2590,25 @@ const char* PLAYER::selectGloatPhrase ()
 }
 
 
+/// @return a constructed panic phrase which must be freed!
+const char *PLAYER::selectPanicPhrase (PLAYER* shocker)
+{
+	if (! shocker)
+		return nullptr;
+
+	const char* line  = env.panic->Get_Random_Line();
+	size_t      tLen  = strlen(shocker->getName()) + strlen(line);
+	char*       pText = (char *)calloc(tLen + 1, sizeof (char));
+
+	if (!pText)
+		return nullptr;
+
+	snprintf(pText, tLen, line, shocker->getName());
+
+	return pText;
+}
+
+
 const char *PLAYER::selectKamikazePhrase ()
 {
 	return env.kamikaze->Get_Random_Line();
@@ -2516,15 +2622,12 @@ const char *PLAYER::selectRetaliationPhrase ()
 		return nullptr;
 
 	const char* line  = env.retaliation->Get_Random_Line();
-	size_t      tLen  = strlen(revenge->getName()) + 32 + strlen(line);
+	const char* rname = revenge->getName();
+	size_t      tLen  = strlen(rname) + 4 + strlen(line);
 	char*       pText = (char *)calloc(tLen + 1, sizeof (char));
 
-	if (!pText)
-		return nullptr;
-
-	strncpy(pText, line, tLen);
-	strncat(pText, revenge->getName(), tLen - strlen(pText));
-	strncat(pText, " !!!", tLen - strlen(pText));
+	if (pText)
+		atanks_snprintf(pText, tLen, "%s%s !!!", line, rname);
 
 	return pText;
 }
@@ -2576,11 +2679,11 @@ void PLAYER::updatePreferences(int32_t max_boost, int32_t max_score)
 	if (getBoostValue() < (max_boost / ai_level)) {
 		// Yes. which ?
 		if (defensive < 0.) {
-			DEBUG_LOG_FIN(name, "Cart: Need to boost amps    (%d / %d)",
+			DEBUG_LOG_FIN(name, "updPref: Need to boost amps    (%d / %d)",
 						  getBoostValue(), max_boost / ai_level)
 			needAmp   = true; // Try to come back with more damage output
 		} else {
-			DEBUG_LOG_FIN(name, "Cart: Need to boost armour  (%d / %d)",
+			DEBUG_LOG_FIN(name, "updPref: Need to boost armour  (%d / %d)",
 						  getBoostValue(), max_boost / ai_level)
 			needArmour = true; // Try to come back with more endurance
 		}
@@ -2589,7 +2692,7 @@ void PLAYER::updatePreferences(int32_t max_boost, int32_t max_score)
 	// Fallen behind? Need more weapons?
 	if ( (score <= (max_score / (ai_level + 1)))
 	  && (weapons_in_stock < (2 * ai_level)) ) {
-		DEBUG_LOG_FIN(name, "Cart: Need to boost weapons (%d / %d)",
+		DEBUG_LOG_FIN(name, "updPref: Need to boost weapons (%d / %d)",
 					  score, max_score / (ai_level + 1))
 		needDamage = true;
 	}

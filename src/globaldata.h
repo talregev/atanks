@@ -133,6 +133,7 @@ public:
 	bool    isCloseBtnPressed ();
 	bool    isDirtInBox       (int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 	void    load_from_file    (FILE* file);
+	void    lockClass         (eClasses class_);
 	void    lockLand          ();
 	void    make_bgupdate     (int32_t x, int32_t y, int32_t w, int32_t h);
 	void    make_fullUpdate   ();
@@ -146,6 +147,7 @@ public:
 	void    set_curr_tank     (TANK* tank_);
 	void    set_command       (int32_t cmd);
 	void    slideLand         ();
+	void    unlockClass       (eClasses class_);
 	void    unlockLand        ();
 	void    unlockLandSlide   (int32_t left, int32_t right);
 

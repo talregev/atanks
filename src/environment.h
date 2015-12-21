@@ -253,6 +253,7 @@ public:
 	TEXTBLOCK* gloat        = nullptr;
 	TEXTBLOCK* ingame       = nullptr;
 	TEXTBLOCK* instructions = nullptr;
+	TEXTBLOCK* panic        = nullptr;
 	TEXTBLOCK* kamikaze     = nullptr;
 	TEXTBLOCK* retaliation  = nullptr;
 	TEXTBLOCK* revenge      = nullptr;

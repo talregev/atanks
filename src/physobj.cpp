@@ -404,8 +404,11 @@ bool checkPixelsBetweenTwoPoints (double *startX, double *startY, double endX, d
 		  && (endY > top)
 		  && (endY < bottom) ) {
 
-			if (PINK != getpixel(global.terrain, endX, endY) )
-				result = true;
+			if (PINK != getpixel(global.terrain, endX, endY) ) {
+				*startX = endX;
+				*startY = endY;
+				result  = true;
+			}
 
 		} // End of having a valid position
 		return result;

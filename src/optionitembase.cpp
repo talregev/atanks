@@ -268,7 +268,7 @@ void OptionItemBase::insert_before(OptionItemBase* new_next)
   *
   * @param[in] x X coordinate to test.
   * @param[in] y Y coordinate to test.
-  * @param[out] ret Value to set to an assigned key code or inc/dec value.
+  * @param[out] ret Value to set to an assigned key code or -1/+1 for ET_VALUE inc/dec click.
   * @return true if this option is hit, false otherwise.
 **/
 bool OptionItemBase::is_click_in(int32_t x, int32_t y, int32_t &ret)
@@ -278,6 +278,9 @@ bool OptionItemBase::is_click_in(int32_t x, int32_t y, int32_t &ret)
 	int32_t xRight  = xLeft + width  - 2;
 	int32_t xBottom = xTop  + height - 2;
 	bool    result  = false;
+
+	// reset ret
+	ret = 0;
 
 	// Note: No need to check anything if y is somewhere else
 	if ( (y >= xTop ) && (y <= xBottom) ) {
@@ -297,14 +300,14 @@ bool OptionItemBase::is_click_in(int32_t x, int32_t y, int32_t &ret)
 			// Left "DOWN" button
 			if ( (x >= up_left) && (x <= up_right) ) {
 				result = true;
-				ret    = -1 * this->getDecInc();
+				ret    = -1;
 				hasWheelresult = true;
 			}
 
 			// Right "UP" button
 			else if ( ( x >= dn_left) && (x <= dn_right) ) {
 				result = true;
-				ret    = this->getDecInc();
+				ret    = 1;
 				hasWheelresult = true;
 			}
 		} // End of checking ET_VALUE wheel buttons
