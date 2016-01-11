@@ -7,6 +7,10 @@
 
 #include <cassert>
 
+#if _MSC_VER >= 1900
+	FILE _iob[] = { *stdin, *stdout, *stderr };
+	extern "C" FILE * __cdecl __iob_func(void) { return _iob; }
+#endif
 
 /// @brief Maximum AI Level is the highest level being lucky, thus +1.
 const int32_t maxAiLevel = DEADLY_PLAYER + 1;

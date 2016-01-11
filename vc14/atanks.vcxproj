@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{146B9823-15FD-45DC-8EA4-56670798D8D8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>atanks</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)../</OutDir>
+    <IntDir>$(Configuration)_x86\</IntDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+    <LibraryPath>$(SolutionDir)..\third-party\allegro-4.4.3\lib\x86;$(SolutionDir)..\third-party\windows\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_64_d</TargetName>
+    <OutDir>$(SolutionDir)../</OutDir>
+    <IntDir>$(Configuration)_x64\</IntDir>
+    <LibraryPath>$(SolutionDir)..\third-party\allegro-4.4.3\lib\x64;$(SolutionDir)..\third-party\windows\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)../</OutDir>
+    <IntDir>$(Configuration)_x86\</IntDir>
+    <LibraryPath>$(SolutionDir)..\third-party\allegro-4.4.3\lib\x86;$(SolutionDir)..\third-party\windows\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_64</TargetName>
+    <OutDir>$(SolutionDir)../</OutDir>
+    <IntDir>$(Configuration)_x64\</IntDir>
+    <LibraryPath>$(SolutionDir)..\third-party\allegro-4.4.3\lib\x64;$(SolutionDir)..\third-party\windows\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level2</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;VERSION="6.4";ATANKS_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;ALLEGRO_STATICLINK;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\third-party\allegro-4.4.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..</AdditionalLibraryDirectories>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;alleg.lib;dinput8.lib;winmm.lib;ddraw.lib;dsound.lib;dxguid.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level2</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;VERSION="6.4";ATANKS_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;ALLEGRO_STATICLINK;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\third-party\allegro-4.4.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..</AdditionalLibraryDirectories>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;alleg.lib;dinput8.lib;winmm.lib;ddraw.lib;dsound.lib;dxguid.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;VERSION="6.4";_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;ALLEGRO_STATICLINK;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\third-party\allegro-4.4.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)..</AdditionalLibraryDirectories>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;alleg.lib;dinput8.lib;winmm.lib;ddraw.lib;dsound.lib;dxguid.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;VERSION="6.4";_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;ALLEGRO_STATICLINK;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\third-party\allegro-4.4.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)..</AdditionalLibraryDirectories>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;alleg.lib;dinput8.lib;winmm.lib;ddraw.lib;dsound.lib;dxguid.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\aicore.h" />
+    <ClInclude Include="..\src\beam.h" />
+    <ClInclude Include="..\src\button.h" />
+    <ClInclude Include="..\src\client.h" />
+    <ClInclude Include="..\src\clock.h" />
+    <ClInclude Include="..\src\debris_pool.h" />
+    <ClInclude Include="..\src\debug.h" />
+    <ClInclude Include="..\src\decor.h" />
+    <ClInclude Include="..\src\environment.h" />
+    <ClInclude Include="..\src\explosion.h" />
+    <ClInclude Include="..\src\externs.h" />
+    <ClInclude Include="..\src\extern\dirent.h" />
+    <ClInclude Include="..\src\files.h" />
+    <ClInclude Include="..\src\floattext.h" />
+    <ClInclude Include="..\src\gameloop.h" />
+    <ClInclude Include="..\src\gfxData.h" />
+    <ClInclude Include="..\src\globaldata.h" />
+    <ClInclude Include="..\src\globals.h" />
+    <ClInclude Include="..\src\globaltypes.h" />
+    <ClInclude Include="..\src\imagedefs.h" />
+    <ClInclude Include="..\src\land.h" />
+    <ClInclude Include="..\src\main.h" />
+    <ClInclude Include="..\src\menu.h" />
+    <ClInclude Include="..\src\missile.h" />
+    <ClInclude Include="..\src\network.h" />
+    <ClInclude Include="..\src\optioncontent.h" />
+    <ClInclude Include="..\src\optionitem.h" />
+    <ClInclude Include="..\src\optionitembase.h" />
+    <ClInclude Include="..\src\optionitemcolour.h" />
+    <ClInclude Include="..\src\optionitemmenu.h" />
+    <ClInclude Include="..\src\optionitemplayer.h" />
+    <ClInclude Include="..\src\optionscreens.h" />
+    <ClInclude Include="..\src\optiontypes.h" />
+    <ClInclude Include="..\src\physobj.h" />
+    <ClInclude Include="..\src\player.h" />
+    <ClInclude Include="..\src\player_types.h" />
+    <ClInclude Include="..\src\resource.h" />
+    <ClInclude Include="..\src\satellite.h" />
+    <ClInclude Include="..\src\shop.h" />
+    <ClInclude Include="..\src\sky.h" />
+    <ClInclude Include="..\src\sound.h" />
+    <ClInclude Include="..\src\tank.h" />
+    <ClInclude Include="..\src\teleport.h" />
+    <ClInclude Include="..\src\text.h" />
+    <ClInclude Include="..\src\update.h" />
+    <ClInclude Include="..\src\virtobj.h" />
+    <ClInclude Include="..\src\winclock.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\aicore.cpp" />
+    <ClCompile Include="..\src\atanks.cpp" />
+    <ClCompile Include="..\src\beam.cpp" />
+    <ClCompile Include="..\src\button.cpp" />
+    <ClCompile Include="..\src\client.cpp" />
+    <ClCompile Include="..\src\clock.cpp" />
+    <ClCompile Include="..\src\debris_pool.cpp" />
+    <ClCompile Include="..\src\debug.cpp" />
+    <ClCompile Include="..\src\decor.cpp" />
+    <ClCompile Include="..\src\environment.cpp" />
+    <ClCompile Include="..\src\explosion.cpp" />
+    <ClCompile Include="..\src\extern\dirent.c" />
+    <ClCompile Include="..\src\files.cpp" />
+    <ClCompile Include="..\src\floattext.cpp" />
+    <ClCompile Include="..\src\gameloop.cpp" />
+    <ClCompile Include="..\src\gfxData.cpp" />
+    <ClCompile Include="..\src\globaldata.cpp" />
+    <ClCompile Include="..\src\globaltypes.cpp" />
+    <ClCompile Include="..\src\land.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\menu.cpp" />
+    <ClCompile Include="..\src\missile.cpp" />
+    <ClCompile Include="..\src\network.cpp" />
+    <ClCompile Include="..\src\optionitembase.cpp" />
+    <ClCompile Include="..\src\optionitemcolour.cpp" />
+    <ClCompile Include="..\src\optionitemmenu.cpp" />
+    <ClCompile Include="..\src\optionitemplayer.cpp" />
+    <ClCompile Include="..\src\optionscreens.cpp" />
+    <ClCompile Include="..\src\optiontypes.cpp" />
+    <ClCompile Include="..\src\perlin.cpp" />
+    <ClCompile Include="..\src\physobj.cpp" />
+    <ClCompile Include="..\src\player.cpp" />
+    <ClCompile Include="..\src\player_types.cpp" />
+    <ClCompile Include="..\src\satellite.cpp" />
+    <ClCompile Include="..\src\shop.cpp" />
+    <ClCompile Include="..\src\sky.cpp" />
+    <ClCompile Include="..\src\sound.cpp" />
+    <ClCompile Include="..\src\tank.cpp" />
+    <ClCompile Include="..\src\teleport.cpp" />
+    <ClCompile Include="..\src\text.cpp" />
+    <ClCompile Include="..\src\update.cpp" />
+    <ClCompile Include="..\src\virtobj.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\atanks.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
