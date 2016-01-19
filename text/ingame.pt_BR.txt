@@ -1,83 +1,83 @@
-Select Players
-Rounds
-New Game Name
-or Load Game
-Load Game
-Campaign
-Okay
+Escolher Jogadores
+Voltas
+Nome do Novo Jogo
+ou Carregar Jogo
+Carregar Jogo
+Campanha
+Ok
 Voltar
-You must select at least 2 players
+Deve escolher pelos menos 2 jogadores
 You can only have up to 10 players
-Player
-Money
-Round
-Score
-Press F10 to save your current game.
-Use the up and down arrows to scroll
-through the item list.
-Saved game
+Jogador
+Dinheiro
+Volta
+Pontuação
+Carregue em F10 para gravar o jogo atual
+Utilize as teclas subir e descer para navegar
+pela lista.
+Jogo gravado
 Ângulo:
-Power:
-Team
-Fuel
-Wind:
-Return
-Main Menu
-Quit
-Skip AI
-Players
-Create New
-Name
-Colour
-Type
+Força:
+Equipa
+Gasóleo
+Vento:
+Voltar
+Menu Principal
+Saír
+Saltar IA
+Jogadores
+Criar Novo
+Nome
+Cor
+Tipo
 Generate Pref
-Played
-Won
-Tank Type
-Delete This Player
+Jogado
+Ganho
+Tipo de Tanque
+Apagar Este Jogador
 A new version
 is ready for download.
 Could not find a game by that name.
-Qty. in inventory
-Failed to save game.
-Choosing colours
-Rendering Sky
-Rendering Landscape
-Winner: Jedi
-Winner: Sith
-Winner
-Draw
-              Player Scores                   Kill:Die
-Player Scores
-Accelerated AI
-Your Name
-unnamed
+Quantia no inventário
+Erro ao gravar o jogo.
+Escolha de Cores
+Desenho do Céu 
+Desenho das Paisagem
+Ganhou: Jedi
+Ganhou: Sith
+Ganhou
+Igualidade
+              Pontuações Jogadores           Ganhos:Percas
+Puntuações
+IA accelerada
+O seu Nome
+semNome
 Human
 Useless
 Guesser
 Range
 Targetter
-Deadly
-Per Game
+Mortal
+Por Jogo
 Only Once
 Normal
-Classic
+Clássico
 Big Grey
 T34
 Sith
 Neutral
 Jedi
-Return
-Main Menu
-Quit
-Skip AI
-Heavy
-Future
+Voltar
+Menu Principal
+Saír
+Saltar IA
+Pesado
+Futuro
 UFO
-Spider
-Server version did not match client version.
-Server screen size does not match ours.
-Client has become disconnected from the server.
-The server is full or the game has not started.
-The server closed our connection.
-The game is finished.
+Aranha
+A versão do servidor é diferente da sua.
+O tamanho do ecrã do servidor é diferente do seu.
+O cliente foi desligado do servidor.
+O servidor está cheio ou o jogo não começou.
+O servidor fechou a ligação.
+O jogo acabou.
