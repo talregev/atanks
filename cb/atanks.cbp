@@ -428,6 +428,7 @@
 		<Unit filename="../src/virtobj.h" />
 		<Unit filename="../src/winclock.h" />
 		<Unit filename="../text/weapons.txt" />
+		<Unit filename="../text/weapons_de.txt" />
 		<Extensions>
 			<envvars />
 			<code_completion />

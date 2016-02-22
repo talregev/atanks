@@ -576,7 +576,7 @@ void EXPLOSION::explode ()
 					if (PERCENT_BOMB == weapType)
 						lt->addDamage(player, dmg); // already set, no multiplier
 					else if (REDUCER == weapType) {
-						lt->player->damageMultiplier *= 0.75; // already checked
+						lt->player->damageMultiplier *= 0.667; // already checked
 					} else
 						lt->addDamage(player, dmg
 									* (player ? player->damageMultiplier : 1.) );

@@ -1359,8 +1359,9 @@ bool TANK::isInEllipse(double ex, double ey, double rx, double ry,
 **/
 bool TANK::moveTank(int32_t direction)
 {
-	// Return false now if there is no fuel or the tank is currently flying
-	if ( (player->ni[ITEM_FUEL] < 1 ) || (yv < 0.) || (yv > 0.) )
+	// return now if the tank is flying/falling or has no fuel
+	if ( (player->ni[ITEM_FUEL] < 1 ) // No fuel ?
+	  || (yv < 0.) || (yv > 0.) )     // flying / falling ?
 		return false;
 
 	// Safety: assert DIR_LEFT/RIGHT
@@ -1370,36 +1371,39 @@ bool TANK::moveTank(int32_t direction)
 		return false;
 
 	// Check whether the target pixel is beyond the border or occupied
-	int32_t next_x = x + direction;
-	int32_t min_y  = y + tank_off_y - tank_sag - 4 ;
-
-	if ( (next_x < 1)
-	  || (next_x >= env.screenWidth)
+	int32_t nextX = ROUND(x + direction);
+	if ( (nextX < 1)
+	  || (nextX >= env.screenWidth)
 	  || (env.landType == LAND_NONE) )
 		return false;
 
-	if (PINK != getpixel(global.terrain, next_x, min_y))
-		return false;
+	// select the next pixel on the left/right that is not terrain
+	float   nextY  = global.surface[nextX].load(ATOMIC_READ) - 1;
 
-	// move tank
-	x += direction;
-	player->ni[ITEM_FUEL]--;
+	// If there is more terrain to climb, the pixel after the next must
+	// be taken into account, too
+	int32_t afterX = nextX + direction;
+	float   afterY = nextY;
+	if ( (afterX > 0) && (afterX < env.screenWidth) )
+		afterY  = global.surface[afterX].load(ATOMIC_READ) - 1;
 
-	// Allow the tank to move up a bit if necessary
-	y = min_y + 5;
-	if (y > env.screenHeight - 1)
-		y = env.screenHeight - 1;
+	// If the tank is not climbing too much, let it move:
+	if ( (nextY > (y - tank_sag)) && (afterY > (y - tank_off_y + tank_sag)) ) {
+		// move tank
+		x = nextX;
+		player->ni[ITEM_FUEL]--;
 
-	while ( ( y > min_y ) && (PINK != getpixel(global.terrain, x, y)))
-		--y;
-	// Now fix y back to normal coordinate
-	y -= tank_off_y - tank_sag;
+		// climb and correct for the tank extension
+		y = nextY - tank_off_y + tank_sag;
 
-	// But secure y
-	if (y > (env.screenHeight - tank_off_y))
-		y = env.screenHeight - tank_off_y;
+		// But secure y
+		if (y > (env.screenHeight - tank_off_y))
+			y = env.screenHeight - tank_off_y;
+		return true;
+	}
 
-	return true;
+	// No move:
+	return false;
 }
 
 

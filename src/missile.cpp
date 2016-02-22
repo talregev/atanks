@@ -270,33 +270,46 @@ void MISSILE::applyPhysics ()
 				hitSomething = true;
 
 		else {
-			// roll roller
-			float surfY = global.surface[ROUND(x)].load(ATOMIC_READ) - 1;
+			// To honour the size of the rollers, they have the following
+			// rules about the path they roll:
+			// - The small roller can climb four and fall six pixels.
+			// - The large roller can climb six and fall nine pixels.
+			// - The death roller can climb nine and fall twelve pixels.
+			int32_t maxClimb = SML_ROLLER == weapType ?  4 :
+			                   LRG_ROLLER == weapType ?  6 :
+			                   DTH_ROLLER == weapType ?  9 : 1;
+			int32_t maxFall  = SML_ROLLER == weapType ?  6 :
+			                   LRG_ROLLER == weapType ?  9 :
+			                   DTH_ROLLER == weapType ? 12 : 1;
 
-			// Check whether terrain is going down
-			if ( (surfY > y) && (y < (env.screenHeight - 5)) ) {
+			// get next surface pixel
+			float surfY = global.surface[ROUND(x+xv)].load(ATOMIC_READ) - 1;
 
-				// Do not fall more than five pixels if terrain gives way.
-				if ( surfY < (y + 5) )
-					y  = surfY;
+			// Check whether the terrain is going down
+			if (surfY > y) {
+				// Do not fall more than 'maxFall' pixels if terrain gives way.
+				if ( surfY <= (y + maxFall) )
+					y  = surfY - 1;
 				else
-					y += 5;
-			} else {
-				// Normal movement:
-				x += xv > 0 ? 1 : xv < 0 ? -1 : 0;
+					y += maxFall;
+				// Do not fall through the floor:
+				if (y > (env.screenHeight - maxClimb))
+					y =  env.screenHeight - maxClimb;
+			}
 
-				if	(y >= MENUHEIGHT) {
-					// The small roller can climb two, the large three and
-					// the death roller four pixels. Everything else
-					// rolling is limited to one pixel.
-					int32_t maxHeight = y -
-								(SML_ROLLER == weapType ? 2 :
-								 LRG_ROLLER == weapType ? 3 :
-								 DTH_ROLLER == weapType ? 4 : 1);
-					if (surfY >= maxHeight)
-						y = surfY - 1;
-				}
-			} // End of normal movement
+			// Check whether the terrain is going up
+			else if (surfY < y) {
+				// If terrain is going up, it can be climbed,
+				// or the rollers path ends here
+				if ( surfY >= (y - maxClimb) )
+					y = surfY - 1;
+				else
+					// too steep!
+					hitSomething = true;
+			}
+
+			// Normal transversal movement:
+			x += xv > 0 ? 1 : xv < 0 ? -1 : 0;
 
 			// Adapt angle according to movement
 			if (xv > 0.0) angle = (angle +   3) % 256;

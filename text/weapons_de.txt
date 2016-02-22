@@ -6,7 +6,7 @@ Mittlere Rakete
 Kleine Wirkung, kleinflächige Explosion.
 
 Große Rakete
-Mittlerer Wirkung, mittelflächige Explosion.
+Mittlere Wirkung, mittelflächige Explosion.
 
 Kleine Atombombe
 Große Wirkung, großflächige Explosion.
@@ -15,7 +15,7 @@ Atombombe
 Sehr große Wirkung, riesige Explosion.
 
 Totenkopf
-Massive, tötliche Explosion.
+Massive, tödliche Explosion.
 
 Kleiner Streuer
 5 Kleine Raketen mit einem Schuss.
@@ -35,14 +35,14 @@ Todesstreuer
 Armageddon
 3 Totenköpfe mit einem Schuss.
 
-Kleine Raktenkette
-Feuert drei kleine Rakten nacheinander ab.
+Kleine Raketenkette
+Feuert drei kleine Raketen nacheinander ab.
 
 Raketenkette
-Feuert fünf kleine Rakten nacheinander ab.
+Feuert fünf kleine Raketen nacheinander ab.
 
 Jack Hammer
-Feuert acht kleine Rakten nacheinander ab.
+Feuert acht kleine Raketen nacheinander ab.
 
 Shaped Charge
 Hoch wirksame horizontale Explosion. Die gesamte Energie ist zu den Seiten fokusiert und erhöht den Schaden und verdampft die gesamte Umgebung im Bereich der Explosion.
@@ -153,7 +153,7 @@ Prozent Bombe
 Zerstört die Hälfte der gegnerischen Panzerung.
 
 Reduzierer
-Vermindert die Kraft gegnerischer Waffen.
+Vermindert die Kraft der gegnerischen Waffen um ein Drittel.
 
 Kleiner Laser
 Ein 50kW Laserstrahl.

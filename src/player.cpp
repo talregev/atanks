@@ -49,7 +49,6 @@ PLAYER::PLAYER() :
 	memset(name,         0, sizeof(char)    * NAME_LEN);
 	memset(weapPref,     0, sizeof(int32_t) * THINGS);
 
-	nm[0] = 99; // need some small missiles. ;)
 	strncpy(name, "New Player", NAME_LEN);
 
 	// 25% of time set to perplay weapon preferences
@@ -1222,10 +1221,10 @@ void PLAYER::exitShop()
 		damageMultiplier += std::pow(tmpDM, 0.6);
 
 	// All players need small missiles:
-	int32_t max_small_missiles = 500 + (rand() % 500); // max 999
-	nm[SML_MIS] += 50 + (rand() % 50);
-	if (nm[SML_MIS] > max_small_missiles)
-		nm[SML_MIS] = max_small_missiles;
+	if (nm[SML_MIS] < 100)
+		nm[SML_MIS] += 100 + (rand() % 100); // + [100;199]
+	if (nm[SML_MIS] < 250)
+		nm[SML_MIS] +=  50 + (rand() %  50); // + [ 50; 99]
 }
 
 
@@ -1974,9 +1973,10 @@ void PLAYER::initialise (bool loaded_game)
 {
 	// Initialize basic values if this is not loaded
 	if (!loaded_game) {
-		nm[0] = MAX_ITEMS_IN_STOCK;
 		memset(nm, 0, sizeof(int32_t) * WEAPONS);
 		memset(ni, 0, sizeof(int32_t) * ITEMS);
+
+		ni[ITEM_FUEL] = 100; // Supply some initial fuel
 
 		kills  = 0;
 		killed = 0;
@@ -2354,7 +2354,7 @@ void PLAYER::newGame()
 }
 
 
-// run this at the begining of each turn
+// run this at the beginning of each turn
 void PLAYER::newRound()
 {
 	// if the player is under computer control, give it back to the player
