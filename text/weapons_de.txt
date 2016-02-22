@@ -254,5 +254,5 @@ Rakete
 Schießt den Panzer in die Luft.
 
 SDI Missile Defense System
-Bietet Schutz gegen ankommende Geschosse.
+Bietet etwas Schutz gegen ankommende Geschosse. Weiter Käufe erhöhen die Reichweite des SDI Systems. Es besteht eine Chance von 1% dass ein SDI Laser bei Gebrauch ausbrennt.
 

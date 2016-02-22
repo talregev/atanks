@@ -32,9 +32,9 @@
 
 TANK::TANK () :
 	PHYSICAL_OBJECT(false),
-	healthText(nullptr, -1, -1, 0., 0., WHITE,     CENTRE, TS_NO_SWAY, -1),
-	nameText(  nullptr, -1, -1, 0., 0., WHITE,     CENTRE, TS_NO_SWAY, -1),
-	shieldText(nullptr, -1, -1, 0., 0., TURQUOISE, CENTRE, TS_NO_SWAY, -1)
+	healthText(nullptr, -1, -1, 0., 0., WHITE,     CENTRE, TS_NO_SWAY, -1, true),
+	nameText(  nullptr, -1, -1, 0., 0., WHITE,     CENTRE, TS_NO_SWAY, -1, true),
+	shieldText(nullptr, -1, -1, 0., 0., TURQUOISE, CENTRE, TS_NO_SWAY, -1, true)
 {
 	// The shield phase delta depends on currently set FPS
 	shld_delta /= static_cast<double>(env.frames_per_second);
@@ -141,7 +141,7 @@ void TANK::activateCurrentSelection()
 					MISSILE* newmis = new MISSILE(player,
 					                   x + (env.slope[ca][0] * turr_off_x),
 									   y + (env.slope[ca][1] * turr_off_x),
-									   mxv, myv, cw, MT_WEAPON, 1);
+									   mxv, myv, cw, MT_WEAPON, 1, 0);
 
 					// set up / check volley
 					if (weapon[cw].delay && (0 == fire_another_shot) )
@@ -439,7 +439,7 @@ void TANK::applyDamage ()
 							.0, -.5, team_hit ? PURPLE : self_hit ? RED : GREEN,
 							CENTRE,
 							env.swayingText ? TS_HORIZONTAL : TS_NO_SWAY,
-							200);
+							200, false);
 					if (global.stage < STAGE_SCOREBOARD)
 						global.updateMenu = true;
 				} catch (...) {
@@ -460,8 +460,9 @@ void TANK::applyDamage ()
 
 			try {
 				new FLOATTEXT(creditTo->selectGloatPhrase(),
-							creditTo->tank->x, creditTo->tank->y - 30,
-							.0, -.4, creditTo->color, CENTRE, TS_NO_SWAY, 200);
+				              creditTo->tank->x, creditTo->tank->y - 30,
+				              .0, -.4, creditTo->color, CENTRE, TS_NO_SWAY,
+				              200, false);
 			} catch (...) {
 				perror ( "tank.cpp: Failed to allocate memory for"
 						 " gloating text in applyDamage().");
@@ -472,8 +473,8 @@ void TANK::applyDamage ()
 		if (self_hit && destroy && !global.skippingComputerPlay) {
 			try {
 				new FLOATTEXT(player->selectSuicidePhrase(),
-								x, y - 30, .0, -.4, player->color,
-								CENTRE, TS_NO_SWAY, 300);
+				              x, y - 30, .0, -.4, player->color,
+				              CENTRE, TS_NO_SWAY, 300, false);
 			} catch (...) {
 				perror ( "tank.cpp: Failed allocate memory for suicide"
 						 " text in applyDamage().");
@@ -500,6 +501,8 @@ void TANK::applyDamage ()
 				t_dmg += sh_dmg - old_sh;
 				sh_dmg = old_sh;
 			}
+			if (t_dmg > l)
+				t_dmg = l;
 
 			sh = old_sh - sh_dmg;
 			l -= t_dmg;
@@ -525,7 +528,8 @@ void TANK::applyDamage ()
 			snprintf (buf, 9, "%d", full_damage);
 			try {
 				new FLOATTEXT(buf, x, y - 30, .0, -.3, RED, CENTRE,
-						env.swayingText ? TS_HORIZONTAL : TS_NO_SWAY, 300);
+				              env.swayingText ? TS_HORIZONTAL : TS_NO_SWAY,
+				              300, false);
 			} catch (...) {
 				perror ( "tank.cpp: Failed to allocate memory for damage"
 						 " text in applyDamage().");
@@ -1503,6 +1507,36 @@ void TANK::reactivate_shield ()
 }
 
 
+/// @brief do tank repairs
+void TANK::repair()
+{
+	if ( (repair_rate > 0) && (l < maxLife) ) {
+		int32_t old_life = l;
+
+		// Apply repair
+		l += repair_rate;
+		if (l > maxLife)
+			l = maxLife;
+
+		// update text
+		snprintf(buf, 9, "%d", l);
+		healthText.set_text(buf);
+
+		// add float text
+		if (!global.skippingComputerPlay) {
+			try {
+				snprintf(buf, 9, "+%d", l - old_life);
+				new FLOATTEXT(buf, x, y - 30, .0, -.8, GREEN, CENTRE,
+				              TS_NO_SWAY, 120, false);
+			} catch (...) {
+				perror("tank.cpp: Failed to allocate memory for healing"
+					   " text in repair().");
+			}
+		}
+	}
+}
+
+
 bool TANK::repulse (double xpos, double ypos, double* xa, double* ya,
                     ePhysType phys_type)
 {
@@ -1689,11 +1723,6 @@ void TANK::simActivateCurrentSelection ()
 
 	// allow naturals to happen again
 	global.naturals_activated = 0;
-
-	// apply repairs
-	l += repair_rate;
-	if (l > maxLife)
-		l = maxLife;
 
 	snprintf (buf, 5, "%d", l);
 	healthText.set_text(buf);

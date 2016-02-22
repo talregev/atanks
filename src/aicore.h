@@ -127,6 +127,7 @@ struct sWeapListEntry;
   *
   * Best achieved values over the full targetting cycle:
   * best_setup_angle     : (angle)
+  * best_setup_damage    : (0)
   * best_setup_item      : (nullptr)
   * best_setup_mem       : (nullptr)
   * best_setup_overshoot : (MAX_OVERSHOOT)
@@ -308,6 +309,7 @@ struct sWeapListEntry;
   *                                       found, yet.
   *      plStage        : (PS_CALCULATE)  AI enters the calculation stage.
   *      isBlocked      : (false)         Will be set to true if the aiming finds out that a hill blocks the path.
+  *      hasFlipped     : (false)         Set to true by calcStandard() if flipped towards a wall.
   *      needAim        : (false)         Will be set to true if a weapon is chosen that needs aiming.
   *      curr_overshoot : (MAX_OVERSHOOT) The overshoot for the current aiming round.
   *      offset_x       : (0)             Some weapons need a horizontal offset to aim at, like the napalm weapons.
@@ -397,6 +399,8 @@ struct sWeapListEntry;
   *
   *          This method does no aiming but sets needed offsets and generates an angle and a power value to begin with.
   *
+  *          hasFlipped : This is set to true, if the bot decides to flip through a wrap wall or towards a bounce/rubber
+  *                       wall. aim() then can check whether to flip back because the wall isn't even reached.
   *       3.6.1 calculate the offsets for the x and y coordinate needed by the chosen weapon. This is done with the
   *             method calcOffset(bool is_last).
   *
@@ -828,7 +832,7 @@ private:
 	void        traceCluster   (int32_t subType, int32_t subCount,
 	                            int32_t sub_x, int32_t sub_y,
 	                            double inh_xv, double inh_yv);
-	bool        traceShot      (int32_t trace_angle,
+	bool        traceShot      (int32_t trace_angle, int32_t delay_idx,
 	                            bool &finished, bool &top_wrapped,
 	                            int32_t &reached_x_, int32_t &reached_y_,
 	                            double &end_xv, double &end_yv);
@@ -896,6 +900,7 @@ private:
 	int32_t    buried_l    = 0;       //!< left side buried level
 	int32_t    buried_r    = 0;       //!< right side buried level
 	double     currLife    = 0.;
+	bool       hasFlipped  = false;   //!< Used by calcStandard() and aim() to check for flipping errors.
 	itEntry_t* item_curr   = nullptr; //!< Currently selected entry
 	itEntry_t* item_head   = nullptr; //!< Last selected entry
 	itEntry_t* item_last   = nullptr; //!< Entry with highest score
@@ -937,6 +942,7 @@ private:
 	// Values used to memorize the best setup in a round
 	int32_t    best_round_score     = NEUTRAL_ROUND_SCORE;
 	int32_t    best_setup_angle     = 0;
+	int32_t    best_setup_damage    = 0;
 	itEntry_t* best_setup_item      = nullptr;
 	opEntry_t* best_setup_mem       = nullptr;
 	int32_t    best_setup_overshoot = MAX_OVERSHOOT;

@@ -1,7 +1,7 @@
 .PHONY: all install clean veryclean user winuser osxuser ubuntu \
 dist tarball zipfile source-dist i686-dist win32-dist
 
-VERSION := 6.4
+VERSION := 6.5_rc1
 
 
 DEBUG   ?= NO

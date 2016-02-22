@@ -14,6 +14,7 @@ obj/*
 patches
 patches_sent
 *.patch
+*patch*.zip
 
 
 # build results

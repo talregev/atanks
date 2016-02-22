@@ -764,7 +764,7 @@ void EXPLOSION::do_throw()
 
         // find first earth pixel:
         if ( (ypos < y) && (maxY > ypos)
-		  && checkPixelsBetweenTwoPoints(&xpos, &ypos, xpos, maxY)) {
+		  && checkPixelsBetweenTwoPoints(&xpos, &ypos, xpos, maxY, 0.0, nullptr)) {
 
 			// Try to get a free debris pool item
 			sDebrisItem* deb_item = global.get_debris_item(deb_rad);

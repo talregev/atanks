@@ -106,6 +106,8 @@ protected:
 	bool    lacerated    = false; //!< Set to true if the velocity check fails.
 	double  mass         = 0.;
 	double  maxVel       = 0.;    //!< maximum Velocity
+	double  mindDelay    = 0.;    //!< for mind shots to travel through dirt if delayed
+	double  mindPassed   = 0.;    //!< Counts the amount of dirt a delayed shot already passed through
 	bool    noimpact     = false;
 	int32_t spin         = 0;
 
@@ -113,8 +115,9 @@ protected:
 
 
 /// global helper methods:
-bool checkPixelsBetweenTwoPoints(double *startX, double *startY,
-								double endX, double endY);
+bool checkPixelsBetweenTwoPoints(double* startX,    double* startY,
+                                 double  endX,      double  endY,
+                                 double  can_delay, double* has_delayed);
 void getDirtBounceReact(int32_t x, int32_t y, double xv, double yv,
 						double &rxv, double &ryv);
 

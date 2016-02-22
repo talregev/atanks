@@ -73,6 +73,7 @@ public:
 	bool    moveTank(int32_t direction);
 	void    newRound (int32_t pos_x, int32_t pos_y);
 	void    reactivate_shield ();
+	void    repair();
 	bool    repulse (double xpos, double ypos, double* xa, double* ya,
 	                 ePhysType phys_type);
 	void    resetFlashDamage();

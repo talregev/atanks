@@ -612,6 +612,12 @@ static inline bool advance_tank()
 			death_substitute = false;
 			next_tank        = nullptr;
 			need_update      = true;
+
+			// Activate shields and repair the tank.
+			if (curr_tank) {
+				curr_tank->reactivate_shield();
+				curr_tank->repair();
+			}
 		} else if (!curr_tank || !curr_tank->player || curr_tank->destroy) {
 			// We need a death substitute
 			if (next_tank && !next_tank->destroy)
@@ -628,6 +634,7 @@ static inline bool advance_tank()
 			fire              = false;
 			global.updateMenu = true;
 			global.set_curr_tank(curr_tank);
+
 			return true;
 		}
 	} // End of checking for tank advancement
@@ -945,8 +952,9 @@ void do_naturals()
 
 			try {
 				new MISSILE(nullptr, 1 + (rand () % (env.screenWidth - 2)),
-							MENUHEIGHT + (env.isBoxed ? 1 : 0), mxv, myv,
-							SML_METEOR + (rand () % env.meteors), MT_NATURAL, 1);
+				            MENUHEIGHT + (env.isBoxed ? 1 : 0), mxv, myv,
+				            SML_METEOR + (rand () % env.meteors), MT_NATURAL,
+				            1, 0);
 				global.naturals_activated++;
 				return;
 			} catch (...) { /* can't do anything here */ }
@@ -965,7 +973,7 @@ void do_naturals()
 				new MISSILE(nullptr, 1 + (rand () % (env.screenWidth - 2)),
 				            MENUHEIGHT + (env.isBoxed ? 1 : 0), mxv, myv,
 				            DIRT_BALL + ( rand() % env.falling_dirt_balls),
-				            MT_NATURAL, 1);
+				            MT_NATURAL, 1, 0);
 				global.naturals_activated++;
 			} catch (...) { /* can't do anything here */ }
 		}
@@ -1174,12 +1182,15 @@ void draw_top_bar ()
 		// Show the weapon / item icon
 		draw_sprite(global.canvas, env.stock[ (tank->cw > 0) ? tank->cw : 1], 700, 1);
 
-		// Eventually print out money and Fuel
+		// Eventually print out money, fuel and power
 		textprintf_ex(global.canvas, font, 386, y1, BLACK, -1,
 		              "$%s", Add_Comma(tank->player->money));
 		textprintf_ex(global.canvas, font, 386, y2, BLACK, -1,
 		              "%s: %d", env.ingame->Get_Line(21),
 		              tank->player->ni[ITEM_FUEL]);
+		textprintf_ex(global.canvas, font, 386, y3, BLACK, -1,
+		              "%s: %.2f", "Power",
+		              tank->player->damageMultiplier);
 	} // End of displaying player info
 
 
@@ -1341,7 +1352,6 @@ static inline void fire_weapon()
 
 	if (curr_tank && !curr_tank->destroy) {
 		has_action.store(true);
-		curr_tank->reactivate_shield();
 		curr_tank->simActivateCurrentSelection();
 	}
 
@@ -1393,17 +1403,18 @@ static inline void graph_bar_center(int32_t x, int32_t y, int32_t col,
 static inline void init_new_round()
 {
 	// First env,
-    env.newRound();
+	srand(time(NULL));
+	env.newRound();
 
-    // then the players in case the campaign mode rise kicks in
-    for (int32_t i = 0; i < env.numGamePlayers; ++i)
-        env.players[i]->newRound();
+	// then the players in case the campaign mode rise kicks in
+	for (int32_t i = 0; i < env.numGamePlayers; ++i)
+		env.players[i]->newRound();
 
 	// finally global, so campaign mode round is changed after the players.
 	global.newRound();
 
-    // clear floating text
-    FLOATTEXT* txt = nullptr;
+	// clear floating text
+	FLOATTEXT* txt = nullptr;
 	global.getHeadOfClass(CLASS_FLOATTEXT, &txt);
 	while (txt) {
 		txt->newRound();
@@ -1442,7 +1453,7 @@ static inline void init_new_round()
 			human_players++;
 	}
 
-    // set wind
+	// set wind
 	if (env.windstrength)
 		global.wind = (rand() % env.windstrength) - (env.windstrength / 2);
 	else
@@ -1555,8 +1566,7 @@ static inline void set_level_settings(LevelCreator* lcr)
 	//=============================
 	lcr->working_on(2);
 	if (lcr->can_work())
-		generate_land (lcr, rand() % env.screenWidth, rand() % env.screenHeight,
-		               env.screenHeight);
+		generate_land (lcr, rand() % env.screenWidth, env.screenHeight);
 
 
 	//  -------------------------

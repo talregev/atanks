@@ -338,6 +338,6 @@ Launches the tank into the air.
 2000 2 1 4 0 0 0
 
 SDI Missile Defense
-Offers some protection against incoming missiles.
+Offers some protection against incoming missiles. Additional purchases increase the range of defense. There is a 1% chance on each use that an item will burn out.
 10000 1 0 5 5 0
 

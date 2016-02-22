@@ -546,7 +546,8 @@ TANK* GLOBALDATA::get_next_tank(bool *wrapped_around)
 	while (!found && (wrapped < 2)) {
 		if (index >= MAXPLAYERS) {
 			index = 0;
-			*wrapped_around = true;
+			if (wrapped_around)
+				*wrapped_around = true;
 			wrapped++;
 		}
 
@@ -571,6 +572,23 @@ TANK* GLOBALDATA::get_next_tank(bool *wrapped_around)
 		updateMenu = true;
 
 	return next_tank;
+}
+
+
+/// @brief randomly return one active tank
+TANK* GLOBALDATA::get_random_tank()
+{
+	int32_t idx      = rand() % MAXPLAYERS;
+	int32_t attempts = 2;
+	while ( (!order[idx] || order[idx]->destroy)
+	     && (idx < MAXPLAYERS) && attempts ) {
+		if (++idx >= MAXPLAYERS) {
+			idx = 0;
+			--attempts;
+		}
+	}
+
+	return order[idx];
 }
 
 

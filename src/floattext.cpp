@@ -3,9 +3,11 @@
 FLOATTEXT::FLOATTEXT (const char* text_, int32_t xpos, int32_t ypos,
                       double xv_, double yv_, int32_t color_,
                       alignType alignment, eTextSway sway_type,
-                      int32_t max_age) :
+                      int32_t max_age, bool is_fixed_) :
 	VIRTUAL_OBJECT(),
 	color(color_),
+	is_fixed(is_fixed_),
+	is_pushed(!is_fixed),
 	pos_x(xpos),
 	pos_y(ypos)
 {
@@ -25,8 +27,8 @@ FLOATTEXT::FLOATTEXT (const char* text_, int32_t xpos, int32_t ypos,
 	// The font and thus its height is fixed:
 	dim_cur.h = env.fontHeight + (env.fontHeight % 2);
 
-	x         = xpos;
-	y         = ypos;
+	x         = pos_x;
+	y         = pos_y;
 	dim_cur.x = ROUND(pos_x);
 	dim_cur.y = ROUND(pos_y);
 	set_sway_type(sway_type);
@@ -66,7 +68,8 @@ FLOATTEXT::~FLOATTEXT()
 		right  = std::min(env.screenWidth, left + dim_old.w + 1);
 		bottom = std::min(env.screenHeight, top + dim_old.h + 1);
 
-		global.make_bgupdate(left, top, right - left, bottom - top);
+		if ( (right > left) && (bottom > top) )
+			global.make_bgupdate(left, top, right - left, bottom - top);
 	}
 
 	// Free allocated text
@@ -122,6 +125,36 @@ void FLOATTEXT::applyPhysics()
 }
 
 
+
+void FLOATTEXT::check_pos(bool is_new)
+{
+	if (is_fixed)
+		is_pushed = false; // Do nothing.
+	else {
+		FLOATTEXT* curr          = nullptr;
+		bool       curr_is_older = true; // We start with head, which is the oldest.
+		global.getHeadOfClass(CLASS_FLOATTEXT, &curr);
+
+
+		is_pushed = false;
+		while (curr) {
+			if (this == curr)
+				curr_is_older = false; // The following are newer texts
+			else if (!curr->is_fixed) {
+				// If the other text is older, this one is
+				// pushed.
+				if (curr_is_older || is_new)
+					this->push_down(curr->overlaps_by(this), true);
+				// otherwise the other is pushed.
+				else
+					curr->push_down(this->overlaps_by(curr), false);
+			} // End of having another text
+			curr->getNext(&curr);
+		}
+	} // End of not fixed text
+}
+
+
 /// Little Helper, move it somewhere else if it makes sense to be used elsewhere
 #define SAFE_MAKECOL(r_, g_, b_) makecol( \
 	r_ < 0 ? 0 : r_ > 255 ? 255 : r_, \
@@ -139,7 +172,12 @@ void FLOATTEXT::draw()
 	if (1 > dim_cur.w) {
 		dim_cur.w = text_length(font, text) + 3;
 		dim_cur.w += dim_cur.w % 2;
-	}
+		if (!is_fixed)
+			check_pos(true);
+	} else if (is_pushed)
+		// check, someone thought this to be in the way!
+		check_pos(false);
+
 
 	// Current position according to alignment:
 	int32_t left   = LEFT  == align ? dim_cur.x
@@ -208,6 +246,72 @@ void FLOATTEXT::newRound()
 {
 	if (maxAge > 0)
 		age = maxAge + 1;
+}
+
+
+/** @brief return the number of pixels this overlaps with @a other vertically.
+  * @param[in] other The floating text to compare this with.
+  * @return 0 if no overlapping found. <0 if @a other overlaps above,
+  * >0 if @a other overlaps below the centre of this text.
+  *
+  * Note: If either is fixed, the method always returns 0.
+**/
+int32_t FLOATTEXT::overlaps_by(const FLOATTEXT* other)
+{
+    if (other && (other != this)) {
+
+		// return at once if either is fixed.
+		if (this->is_fixed || other->is_fixed)
+			return 0; // Non of your business!
+
+		// Otherwise only check vertical
+		if ( ((other->dim_cur.x + other->dim_cur.w) > dim_cur.x)
+		  && ((dim_cur.x + dim_cur.w)               > other->dim_cur.x) ) {
+			int32_t this_y2  = dim_cur.y        + dim_cur.h;
+			int32_t other_y2 = other->dim_cur.y + other->dim_cur.h;
+
+			if ( (other_y2 > dim_cur.y)
+			  && (this_y2  > other->dim_cur.y) ) {
+				// If the other text is above this one, push it up by the
+				// overlapping amount, which is the distance from
+				// this y to their y + h.
+				// Otherwise, the other text is to be pushed down by an amount
+				// that is the distance from their y to this y + h
+				if ( (other->dim_cur.y < dim_cur.y) // Should be enough, but if
+				  || (other_y2         < this_y2) ) // not, favour pushing up
+					return dim_cur.y - other_y2;    // in any case.
+				else
+					return this_y2 - other->dim_cur.y;
+			}
+		} // End of x overlapping
+    } // End of having a different other
+
+    return 0;
+}
+
+
+/// @brief push down this text by ydiff pixels
+void FLOATTEXT::push_down(int32_t ydiff, bool is_new)
+{
+	if (ydiff && !is_fixed) {
+
+		// new(er) texts can be pushed by up to 3, older texts
+		// by only one pixel.
+		int32_t push_by = is_new
+		                ? (ydiff > 3 ? 3 : ydiff < -3 ? -3 : ydiff)
+		                : (ydiff > 1 ? 1 : ydiff < -1 ? -1 : ydiff);
+
+		pos_y = dim_cur.y = y = y + push_by;
+
+		// Whenever a text is pushed up, raise its speed by 1% / 3%.
+		// And when it is pushed down, lower its speed by 1% / 3%.
+		// Otherwise speedy texts keep bumping into the same
+		// over and over again.
+		yv *= 1.00 + (-0.01 * push_by);
+
+		is_pushed = true;
+	}
+
 }
 
 

@@ -57,7 +57,7 @@ public:
 	explicit MISSILE (PLAYER* player_, double xpos, double ypos,
 	                  double xvel, double yvel,
 	                  int32_t weapon_type, eMissileType missile_type,
-	                  int32_t ai_level_);
+	                  int32_t ai_level_, int32_t delay_idx_);
 	~MISSILE ();
 
 

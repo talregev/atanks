@@ -162,7 +162,7 @@ const gradient * const land_gradients[] =
 
 class LevelCreator;
 
-void generate_land(LevelCreator* lcr, int32_t xoffest, int32_t yoffset, int32_t heightx);
+void generate_land(LevelCreator* lcr, int32_t yoffset, int32_t heightx);
 
 #endif
 

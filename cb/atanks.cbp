@@ -4,13 +4,13 @@
 	<Project>
 		<Option title="atanks" />
 		<Option makefile_is_custom="1" />
-		<Option execution_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+		<Option execution_dir="../" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="veryclean">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -30,8 +30,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="user">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -48,8 +48,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="user LTO">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -66,8 +66,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="user ggdb3">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -84,8 +84,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="user debug">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -102,8 +102,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="AICORE">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -120,8 +120,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="AICORE to Log">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -138,8 +138,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="AICORE FIN">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -156,8 +156,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="AICORE FIN to LOG">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -174,8 +174,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="AIM">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -192,8 +192,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="EMO">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -210,8 +210,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="FIN">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -228,8 +228,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="OBJ">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -246,8 +246,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="PHY">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -264,8 +264,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="FIN PHY">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -282,8 +282,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="SAN address">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -300,8 +300,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="SAN leak">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -318,8 +318,8 @@
 				</MakeCommands>
 			</Target>
 			<Target title="SAN thread">
-				<Option output="/home/sed/pryde/PrydeWorX/atanks_aiu/atanks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="/home/sed/pryde/PrydeWorX/atanks_aiu" />
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
 				<Option object_output="../obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
