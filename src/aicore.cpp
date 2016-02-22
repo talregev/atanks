@@ -2262,7 +2262,7 @@ bool AICore::getMemory()
 		if ( -1 < (pref = player->getItemPref(idx) ) ) {
 			item_curr->amount     = player->ni[idx];
 			item_curr->preference = pref;
-			item_curr->selectable = item[idx].selectable;
+			item_curr->selectable = item[idx].selectable ? true : false;
 			item_curr->type       = idx;
 
 			// The kamikaze value is only pre-set to true for vengeance
@@ -2782,6 +2782,13 @@ bool AICore::hasExited() const
 bool AICore::initialize()
 {
 	DEBUG_LOG_AI(player->getName(), "Starting think work, setting up.", 0)
+
+#if defined(ATANKS_IS_WINDOWS)
+	// Here srand() is thread local according to MSDN.
+	// This affects cygwin/mingw builds, too.
+	// Thanks to billy Buerger for pointing this out!
+	srand(time(nullptr));
+#endif // Microsoft Windows Build
 
 	/// === Step 1 : Copy relevant data ===
 	ai_level      = static_cast<int32_t>(player->type);

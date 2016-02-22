@@ -1503,6 +1503,13 @@ static inline bool manage_input(AICore &aicore)
 **/
 static inline void set_level_settings(LevelCreator* lcr)
 {
+#if defined(ATANKS_IS_WINDOWS)
+	// Here srand() is thread local according to MSDN.
+	// This affects cygwin/mingw builds, too.
+	// Thanks to billy Buerger for pointing this out!
+	srand(time(nullptr));
+#endif // Microsoft Windows Build
+
 	//  -------------------------
 	// ===  Choosing colours   ===
 	//=============================
@@ -1548,7 +1555,8 @@ static inline void set_level_settings(LevelCreator* lcr)
 	//=============================
 	lcr->working_on(2);
 	if (lcr->can_work())
-		generate_land (lcr, rand (), 0, env.screenHeight);
+		generate_land (lcr, rand() % env.screenWidth, rand() % env.screenHeight,
+		               env.screenHeight);
 
 
 	//  -------------------------

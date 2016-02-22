@@ -2024,14 +2024,14 @@ bool PLAYER::load_from_file (FILE *file)
 			}
 
 			// strip newline character
-			int32_t line_length = strlen(line);
+			size_t line_length = strlen(line);
 			while ( line[line_length - 1] == '\n') {
 				line[line_length - 1] = '\0';
 				line_length--;
 			}
 
 			// find equal sign
-			int32_t equal_position = 1;
+			size_t equal_position = 1;
 			while ( ( equal_position < line_length )
 				 && ( line[equal_position] != '='  ) )
 				equal_position++;
@@ -2149,14 +2149,14 @@ void PLAYER::load_game_data(FILE* file)
 			}
 
 			// strip newline character
-			int32_t line_length = strlen(line);
+			size_t line_length = strlen(line);
 			while ( line[line_length - 1] == '\n') {
 				line[line_length - 1] = '\0';
 				line_length--;
 			}
 
 			// find equal sign
-			int32_t equal_position = 1;
+			size_t equal_position = 1;
 			while ( ( equal_position < line_length )
 				 && ( line[equal_position] != '='  ) )
 				equal_position++;

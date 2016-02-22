@@ -297,8 +297,8 @@ void FLOATTEXT::set_text(const char* text_)
 	if (text && text_ && !strcmp(text, text_))
 		return;
 
-	int new_len = text_ ? strlen(text_)  : 0;
-	int old_len = text  ? strlen(text)   : 0;
+	size_t new_len = text_ ? strlen(text_)  : 0;
+	size_t old_len = text  ? strlen(text)   : 0;
 
 	// clean up old text
 	if (text && old_len)

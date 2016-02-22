@@ -665,8 +665,6 @@ static void init_game_settings()
 			fprintf (stderr, "detect_digi_driver detected no sound device\n");
 	} // End of sound initialization
 
-	srand (time (0));
-
   	// Colour initialization, must be done here when allegro is initialized.
 	BLACK       = makecol (0x00, 0x00, 0x00);
 	BLUE        = makecol (0x00, 0x00, 0xff);
@@ -796,8 +794,8 @@ static bool loadPlayers(FILE* file)
 		try {
 			player_new = new PLAYER();
 		} catch (std::exception &e) {
-			fprintf(stderr, "%s:%d : Failed to allocate memory for player\n",
-					__FILE__, __LINE__);
+			fprintf(stderr, "%s:%d : Failed to allocate memory for player (%s)\n",
+					__FILE__, __LINE__, e.what());
 			status = false;
 		}
 
@@ -1470,6 +1468,9 @@ int32_t main (int32_t argc, char** argv)
 		cerr << "ERROR: Could not find data dir." << endl;
 		return EXIT_FAILURE;
 	}
+
+	// Initialize random number generation
+	srand (time(nullptr));
 
 	// try to find config dir
 	env.find_config_dir();
