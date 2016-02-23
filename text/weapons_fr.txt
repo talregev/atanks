@@ -155,6 +155,9 @@ Destroys half of the target's armour
 Reducer
 Lowers the explosive power of an enemy's missiles.
 
+Theft Bomb
+Steals 5k from opponent on impact.
+
 Small Laser
 A 50kW laser beam.
 

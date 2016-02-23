@@ -212,6 +212,10 @@ Reducer
 Lowers the explosive power of an enemy's missiles by one third.
 6000 3 25 0.3 30 3 4 0 30 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
+Theft Bomb
+Steals 5k from opponent on impact.
+3000 3 25 0.3 40 3 4 0 31 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
 Small Laser
 A 50kW laser beam.
 5000 5 1 0.0 2 5 5 30 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0

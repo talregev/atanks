@@ -155,6 +155,9 @@ Destroys half of the target's armour
 Reducer
 Lowers the explosive power of an enemy's missiles.
 
+Theft Bomb
+Steals 5k from opponent on impact.
+
 Малый лазер
 Луч мощностью 50КВт. Способен прожечь лист железа или грунт.
 

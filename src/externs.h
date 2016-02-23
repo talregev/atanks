@@ -41,9 +41,9 @@ extern ENVIRONMENT env;
 
 
 // === Defined colours used everywhere ===
-extern int32_t BLACK, BLUE, DARK_GREEN, DARK_GREY, DARK_RED, GREY, GREEN,
-               LIGHT_GREEN, LIME_GREEN, ORANGE, PINK, PURPLE, RED, SILVER,
-               TURQUOISE, WHITE, YELLOW;
+extern int32_t BLACK, BLUE, DARK_GREEN, DARK_GREY, DARK_RED, GOLD, GREY,
+               GREEN, LIGHT_GREEN, LIME_GREEN, ORANGE, PINK, PURPLE, RED,
+               SILVER, TURQUOISE, WHITE, YELLOW;
 
 
 // === General values that are globally used ===

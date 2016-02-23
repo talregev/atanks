@@ -409,8 +409,17 @@ void EXPLOSION::draw()
 
 						for (int32_t i = 1 + (curFrame % 2); i < rad; i += 2)
 							circle(global.canvas, x, y, i, i < (rad / 2) ? col_mid : col_back);
-						setUpdateArea (x - rad - 1, y - rad - 1,
-									(rad + 1) * 2, (rad + 1) * 2);
+						setUpdateArea(x - rad - 1, y - rad - 1,
+						              (rad + 1) * 2, (rad + 1) * 2);
+					} else if (THEFT_BOMB == weapType) {
+						int32_t col_front = GOLD;
+						int32_t col_back  = GetShadeColor(BLACK, false, col_front);
+
+						circlefill(global.canvas, x, y, rad,     col_front);
+						circle    (global.canvas, x, y, rad / 2, col_back);
+
+						setUpdateArea(x - rad - 1, y - rad - 1,
+						              (rad + 1) * 2, (rad + 1) * 2);
 					} else {
 						// This is something else. But what?
 						fprintf(stderr, "EXPLOSION::draw() Unknown weapon type %d\n",
@@ -576,10 +585,42 @@ void EXPLOSION::explode ()
 					if (PERCENT_BOMB == weapType)
 						lt->addDamage(player, dmg); // already set, no multiplier
 					else if (REDUCER == weapType) {
+						// Note: dmg was set to a fake damage of 1.0
 						lt->player->damageMultiplier *= 0.667; // already checked
-					} else
+					} else if ( (THEFT_BOMB == weapType)
+					         && (lt->player != player) ) {
+						// Note: dmg was set to a fake damage of 1.0
+						int32_t max_amount = ROUND(player->damageMultiplier * 5000);
+						int32_t amount     = lt->player->money <= max_amount
+						                   ? lt->player->money
+						                   : max_amount; // you have?
+
+						// We indicate the theft by a red string on top of the tank
+						static char the_money[17] = { 0x0 };
+						snprintf(the_money, 16, "-$%s", Add_Comma(amount) );
+
+						if (!global.skippingComputerPlay) {
+							// show how much the shooter gets
+							try {
+								new FLOATTEXT(the_money,
+								              lt->x, lt->y - 30,
+								              .0, -.5, RED,
+								              CENTRE,
+								              env.swayingText ? TS_HORIZONTAL : TS_NO_SWAY,
+								              200, false);
+								if (global.stage < STAGE_SCOREBOARD)
+									global.updateMenu = true;
+							} catch (...) {
+								perror("tank.cpp: Failed allocating memory for"
+								       "money text in explode().");
+							}
+						}
+
+						lt->player->money -= amount; // the actual theft.
+						player->money     += amount; // money goes to the shooter.
+					} else if (THEFT_BOMB != weapType)
 						lt->addDamage(player, dmg
-									* (player ? player->damageMultiplier : 1.) );
+						            * (player ? player->damageMultiplier : 1.) );
 				} // End of having damage to deal
 
 				lt->getNext(&lt);
@@ -924,6 +965,8 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 			dmg = ((tank->l + tank->sh) / 2) + 1;
 		else if ( (REDUCER == type)
 		       && (tank->player->damageMultiplier > 0.1) )
+			dmg = 1.; // So result > 0 can be checked
+		else if (THEFT_BOMB == type)
 			dmg = 1.; // So result > 0 can be checked
 
 		// Shaped charges and drillers have a minimum distance under which they

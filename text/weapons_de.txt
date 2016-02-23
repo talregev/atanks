@@ -155,6 +155,9 @@ Zerstört die Hälfte der gegnerischen Panzerung.
 Reduzierer
 Vermindert die Kraft der gegnerischen Waffen um ein Drittel.
 
+Diebstahlbombe
+Stiehlt dem Gegner 5k beim Einschlag.
+
 Kleiner Laser
 Ein 50kW Laserstrahl.
 

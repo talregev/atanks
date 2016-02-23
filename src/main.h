@@ -221,7 +221,7 @@ using std::string;
 
 #define MENUHEIGHT 40
 #define BOXED_TOP 41 // This is the highest non-border pixel in boxed mode
-#define	BALLISTICS 52
+#define	BALLISTICS 53
 #define	BEAMWEAPONS 3
 #define WEAPONS (BALLISTICS + BEAMWEAPONS)
 #define ITEMS 24
@@ -495,16 +495,17 @@ enum weaponType
 	SMALL_DIRT_SPREAD  = 48,
 	CLUSTER_MIRV       = 49,
 	PERCENT_BOMB       = 50,
-	REDUCER            = 51, // Last ballistic
-	SML_LAZER          = 52,
-	MED_LAZER          = 53,
-	LRG_LAZER          = 54, // Last weapon (WEAPONS == 55)
-	SML_METEOR         = 55,
-	MED_METEOR         = 56,
-	LRG_METEOR         = 57,
-	SML_LIGHTNING      = 58,
-	MED_LIGHTNING      = 59,
-	LRG_LIGHTNING      = 60 // Last natural
+	REDUCER            = 51,
+	THEFT_BOMB         = 52, // Last ballistic
+	SML_LAZER          = 53,
+	MED_LAZER          = 54,
+	LRG_LAZER          = 55, // Last weapon (WEAPONS == 55)
+	SML_METEOR         = 56,
+	MED_METEOR         = 57,
+	LRG_METEOR         = 58,
+	SML_LIGHTNING      = 59,
+	MED_LIGHTNING      = 60,
+	LRG_LIGHTNING      = 61 // Last natural
 };
 
 
