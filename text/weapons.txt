@@ -162,11 +162,11 @@ Produce a small earthquake on impact
 
 Shock Wave
 Produce a large earthquake on impact
-10000 2 60 0.2 100 2 3 20 15 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+8000 2 60 0.2 100 2 3 20 15 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
 
 Tectonic Shift
 Produce a huge earthquake on impact
-30000 1 100 0.2 150 3 4 30 16 1 0 0 5 0 0 -1 0 0 0 0 0 -1 0
+16000 1 100 0.2 150 3 4 30 16 1 0 0 5 0 0 -1 0 0 0 0 0 -1 0
 
 Riot Bomb
 Destroy a small volume of dirt without damaging anything else
@@ -186,15 +186,15 @@ Cuts through a large cone of dirt directly in front of the gun
 
 Dirt Ball
 Produce a small sphere of material to bury your opponents
-3000 5 15 0.2 40 0 2 0 11 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+2000 5 15 0.2 40 0 2 0 11 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
 
 Large Dirt Ball
 Produce a large sphere of material to bury your opponents
-7000 2 30 0.2 70 1 2 0 12 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+4000 2 30 0.2 70 1 2 0 12 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
 
 Super Dirt Ball
 Produce a huge ball of material to bury your opponents
-10000 1 60 0.2 120 2 2 0 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+7000 1 60 0.2 120 2 2 0 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 Small Dirt Spread
 Drop little piles of dirt on your enemies
@@ -218,15 +218,15 @@ Steals 5k from opponent on impact.
 
 Small Laser
 A 50kW laser beam.
-5000 5 1 0.0 2 5 5 30 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+4000 5 1 0.0 2 5 5 30 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 Medium Laser
 A 100kW laser beam
-10000 3 1 0.0 5 5 5 65 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+8000 3 1 0.0 5 5 5 65 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 Large Laser
 A powerful 200kW laser beam
-15000 2 1 0.0 9 5 5 150 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+12000 2 1 0.0 9 5 5 150 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 *NATURALS*
 Small Meteor
