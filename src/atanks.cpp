@@ -1473,6 +1473,15 @@ int32_t main (int32_t argc, char** argv)
 	// Initialize random number generation
 	srand (time(nullptr));
 
+	// Set the game version global
+#ifdef VERSION
+	{
+		double this_version = 0.;
+		sscanf(VERSION, "%lf", &this_version);
+		game_version = static_cast<int32_t>(this_version * 10);
+	}
+#endif // VERSION
+
 	// try to find config dir
 	env.find_config_dir();
 
@@ -1491,7 +1500,7 @@ int32_t main (int32_t argc, char** argv)
 
 	// Create the update checker thread:
 	update_data updateData("projects.sourceforge.net", "version.txt",
-	                       "atanks.sourceforge.net", VERSION);
+	                       "atanks.sourceforge.net");
 
 	std::thread updateThread(std::ref(updateData));
 	if (env.check_for_updates)

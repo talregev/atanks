@@ -599,7 +599,7 @@ void EXPLOSION::explode ()
 					else if ( (THEFT_BOMB == weapType)
 					         && (lt->player != player) ) {
 						// Note: dmg was set to a fake damage of 1.0
-						int32_t max_amount = ROUND(player->damageMultiplier * 5000);
+						int32_t max_amount = ROUND(player->damageMultiplier * THEFT_AMOUNT);
 						int32_t amount     = lt->player->money <= max_amount
 						                   ? lt->player->money
 						                   : max_amount; // you have?

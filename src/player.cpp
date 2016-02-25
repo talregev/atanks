@@ -1388,6 +1388,11 @@ void PLAYER::generatePreferences()
 					worth = 300. * ai_rate
 					      * -(defensive - 2.)
 					      * selfPreservation;
+				// Note: The theft bomb is a debuff weapon with extra benefits. ;-)
+				if (THEFT_BOMB == currItem)
+					worth = (150. + vengeful) * ai_rate
+					      * ( (selfPreservation + 2.) / 2.)
+					      * (std::abs(defensive) + 1.0);
 
 				// === 5. Shaped weapons are deadly but limited ===
 				//--------------------------------------------------
@@ -2122,7 +2127,14 @@ bool PLAYER::load_from_file (FILE *file)
 }
 
 
-void PLAYER::load_game_data(FILE* file)
+/** @brief Load player data from @a file which has the @a file_version.
+  *
+  * Version additions that are not found in earlier versions:
+  * <ul>
+  * <li>Version 65 : THEFT_BOMB
+  * </ul>
+**/
+void PLAYER::load_game_data(FILE* file, int32_t file_version)
 {
 	if (!file)
 		return;
@@ -2220,8 +2232,31 @@ void PLAYER::load_game_data(FILE* file)
 				int32_t prf_val = -1;
 				sscanf(value, "%d %d", &prf_idx, &prf_val);
 				if ( (prf_idx > -1) && (prf_idx < THINGS) ) {
-					weapPref[prf_idx] = prf_val;
-					has_pref_loaded   = true; // to separate old versus new save games
+
+					/* === Version Checks for new weapons / items === */
+
+					if ( (file_version < 65) && (prf_idx >= THEFT_BOMB) ) {
+						if (THEFT_BOMB == prf_idx) {
+							// Generate a value
+							weapPref[THEFT_BOMB] = (150. + vengeful)
+							                     * (static_cast<double>(type) / 2. + .5)
+						                         * ( (selfPreservation + 2.) / 2.)
+						                         * (std::abs(defensive) + 1.0);
+							DEBUG_LOG_EMO(name, "New preference for %s : %5d",
+							              weapon[THEFT_BOMB].getName(),
+							              weapPref[THEFT_BOMB])
+						}
+						++prf_idx; // Skip new index value
+					} // End of version 65 THEFT_BOMB
+
+					/* === Store data === */
+					// (If someone edited the save game, the index might
+					//  be too larger now, so check again to be safe!)
+					if (prf_idx < THINGS)
+						weapPref[prf_idx] = prf_val;
+
+					// separate very old from new save games
+					has_pref_loaded   = true;
 				}
 			}
 
@@ -2230,8 +2265,19 @@ void PLAYER::load_game_data(FILE* file)
 				int32_t weap_idx = -1;
 				int32_t weap_val = -1;
 				sscanf(value, "%d %d", &weap_idx, &weap_val);
-				if ( (weap_idx > -1) && (weap_idx < WEAPONS) )
-					nm[weap_idx] = weap_val;
+				if ( (weap_idx > -1) && (weap_idx < WEAPONS) ) {
+
+					/* === Version Checks for new weapons === */
+
+					if ( (file_version < 65) && (weap_idx >= THEFT_BOMB) )
+						++weap_idx; // Skip new index value
+
+					/* === Store data === */
+					// (If someone edited the save game, the index might
+					//  be too larger now, so check again to be safe!)
+					if (weap_idx < WEAPONS)
+						nm[weap_idx] = weap_val;
+				}
 			}
 
 			// Inventory of the items
@@ -2239,8 +2285,13 @@ void PLAYER::load_game_data(FILE* file)
 				int32_t item_idx = -1;
 				int32_t item_val = -1;
 				sscanf(value, "%d %d", &item_idx, &item_val);
-				if ( (item_idx > -1) && (item_idx < ITEMS) )
+				if ( (item_idx > -1) && (item_idx < ITEMS) ) {
+
+					/* === Version Checks for new weapons === */
+					// Currently there are no new items.
+
 					ni[item_idx] = item_val;
+				}
 			}
 
 			// Opponents Memory

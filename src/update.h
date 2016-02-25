@@ -12,10 +12,9 @@ struct update_data
 	char* host_name           = nullptr;
 	char* remote_file         = nullptr;
 	char  update_string[1024];
-	char* current_version     = nullptr;
 
 	explicit update_data(const char* server_, const char* remote_,
-	                     const char* host_,   const char* version_);
+	                     const char* host_);
 	~update_data();
 
 	void operator()();

@@ -245,6 +245,10 @@ using std::string;
 #define MAX_ITEMS_IN_STOCK 999999
 #define MAX_MONEY_IN_WALLET 1000000000
 
+// to make the theft bomb base steal easier to change, here
+// is a useful define. Maybe, one day, we'll add it to the options?
+#define THEFT_AMOUNT 5000
+
 // Use these instead of the (most strict) defaults,
 // But only where timing by memory fences do not matter.
 #define ATOMIC_READ  std::memory_order_acquire
@@ -496,10 +500,10 @@ enum weaponType
 	CLUSTER_MIRV       = 49,
 	PERCENT_BOMB       = 50,
 	REDUCER            = 51,
-	THEFT_BOMB         = 52, // Last ballistic
+	THEFT_BOMB         = 52, // Last ballistic (WEAPONS == 53)
 	SML_LAZER          = 53,
 	MED_LAZER          = 54,
-	LRG_LAZER          = 55, // Last weapon (WEAPONS == 55)
+	LRG_LAZER          = 55, // Last weapon (WEAPONS == 56)
 	SML_METEOR         = 56,
 	MED_METEOR         = 57,
 	LRG_METEOR         = 58,

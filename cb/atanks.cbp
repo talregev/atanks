@@ -227,6 +227,24 @@
 					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_FINANCE=YES &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
+			<Target title="EMO FIN">
+				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
+				<Option object_output="../obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -j17 -f $makefile user DEBUG=YES DEBUG_EMOTION=YES DEBUG_FINANCE=YES" />
+					<CompileFile command="$make -f $makefile $file DEBUG=YES DEBUG_EMOTION=YES DEBUG_FINANCE=YES" />
+					<Clean command="$make -f $makefile veryclean DEBUG=YES DEBUG_EMOTION=YES DEBUG_FINANCE=YES" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target DEBUG=YES DEBUG_EMOTION=YES DEBUG_FINANCE=YES" />
+					<SilentBuild command="$make -j17 -f $makefile user DEBUG=YES DEBUG_EMOTION=YES DEBUG_FINANCE=YES &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
 			<Target title="OBJ">
 				<Option output="../atanks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../" />

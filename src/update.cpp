@@ -21,11 +21,10 @@
 
 /// @brief update_data default ctor
 update_data::update_data(const char* server_, const char* remote_,
-	                     const char* host_,   const char* version_) :
+	                     const char* host_) :
 	server_name    (server_  ? strdup(server_)  : strdup("")),
 	host_name      (host_    ? strdup(host_)    : strdup("")),
-	remote_file    (remote_  ? strdup(remote_)  : strdup("")),
-	current_version(version_ ? strdup(version_) : strdup(""))
+	remote_file    (remote_  ? strdup(remote_)  : strdup(""))
 {
 	memset(update_string, 0, sizeof(char) * 1024);
 }
@@ -36,7 +35,6 @@ update_data::~update_data()
 	if (server_name)     free (server_name);
 	if (host_name)       free (host_name);
 	if (remote_file)     free (remote_file);
-	if (current_version) free (current_version);
 }
 
 
@@ -51,7 +49,6 @@ void update_data::operator()()
 		char buffer[1024];
 		char* found = nullptr;
 		int got_bytes;
-		double this_version, web_version;
 		int32_t towrite, written;
 
 
@@ -92,9 +89,13 @@ void update_data::operator()()
 		if (found) {
 			found += 9;
 			found[5] = '\0';
+
+			double web_version = 0.;
 			sscanf(found, "%lf", &web_version);
-			sscanf(current_version, "%lf", &this_version);
-			if (web_version > this_version)
+
+			int32_t ext_version = static_cast<int32_t>(web_version * 10);
+
+			if (ext_version > game_version)
 				snprintf(update_string, 1024, "A new version, %2.1lf, is ready for download.", web_version);
 		}
 

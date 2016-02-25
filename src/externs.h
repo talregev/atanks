@@ -52,6 +52,7 @@ extern const char* errorMessage;
 extern int32_t     errorX, errorY;
 extern int32_t     k, K;
 extern int32_t     fi, lx, ly;
+extern int32_t     game_version;
 extern WEAPON      weapon[WEAPONS];    // from files.cpp
 extern WEAPON      naturals[NATURALS]; // from files.cpp
 extern ITEM        item[ITEMS];        // from files.cpp

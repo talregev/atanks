@@ -99,7 +99,7 @@ public:
 	int32_t     getWeapPref         (int32_t idx);
 	void	    initialise          (bool loaded_game);
 	bool        load_from_file      (FILE* file);
-	void        load_game_data      (FILE* file);
+	void        load_game_data      (FILE* file, int32_t file_version);
 	void        newGame             ();
 	void	    newRound            ();
 	void        noteDamageFrom      (PLAYER* opponent, int32_t damage, bool destroyed);

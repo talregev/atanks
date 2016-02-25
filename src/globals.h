@@ -19,6 +19,7 @@ const char* errorMessage;
 int32_t     errorX, errorY;
 int32_t	    k, K; // k = key pressed, K = Key Code from k
 int32_t     fi, lx, ly;
+int32_t     game_version; // Used for update check and save file upgrades
 
 
 // === Gradients ===
