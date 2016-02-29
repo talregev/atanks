@@ -89,6 +89,8 @@ struct sWeapListEntry;
   * ai_type_mod   : (from level)   Multiplier [1.0;3.0] according to ai_level_d, used on important decisions to
   *                                strengthen higher bot levels.
   * blast_*       : (0)            Damage values of the available normal missiles.
+  * canMove       : (true)         As long as it is true, allows the AI to consider using fuel/rockets.
+  * isMovedBy     : (0)            Set from the outside via hasMoved() to indicate the result of movement attempts.
   * isShocked     : (false)        Whether the bot is shocked by anothers massive damage they dealt.
   * revengee      : (nullptr)      sOpponent pointer set to a bot this one wants revenge against.
   * shocker       : (nullptr)      sOpponent pointer set to the bot that caused isShocked to become true.
@@ -472,9 +474,10 @@ struct sWeapListEntry;
   *
   *     3.8  Eventually return the value of 'result'.
   *
-  *   4  done = calcAim(bool is_last) - called if calcAttack() returned true, needAim is true and isBlocked is false.
+  *   4  done = aim(bool is_last, bool can_move) - called if calcAttack() returned true, needAim is true and isBlocked is false.
   *
   *        Param 1 : True if tgt_attempts equals findTgtAttempts and needSuccess is still true.
+  *        Param 2 : True if opp_attempts is at least halve of findOppAttempts.
   *
   *      Here the aiming is done for the selected weapon against the selected target.
   *
@@ -544,7 +547,18 @@ struct sWeapListEntry;
   *            best_prime_hit = curr_prime_hit
   *            best_score     = hit_score
   *
-  *     4.5  Basically there are four different situations that need different actions.
+  *     4.5 Otherwise, if it does not seem to be possible to find a valid setup within half of the attempts the AI has,
+  *          try to move the tank a little according to the following rules:
+  *
+  *          - If the target is very near (under two bitmap widths) then move away.
+  *          Otherwise:
+  *          - If the angle is steep (75° and up), assume the shot must go over a hill and move away from the target.
+  *          - If the angle is flat  (15° and down), move towards the target, the way seems clear at least.
+  *          Otherwise:
+  *          - If the overshoot is negative (too short), move towards the target.
+  *          - If the overshoot is positive (too far), move away from the target.
+  *
+  *     4.6  Basically there are four different situations that need different actions.
   *          If the shot, or some of the spread or cluster shots, did not finish, it must be tried to change the used
   *          angle and power so the next attempt does finish.
   *          With steel walls or a wrapped ceiling ceiling with dirt on the ground the shot can have crashed. This can
@@ -554,7 +568,7 @@ struct sWeapListEntry;
   *          And finally the hit might be farther away. The last modifications might have been too strong or in the
   *          wrong direction.
   *
-  *       4.5.1 Try to fix unfinished shots using void fixUnfinished(int32_t &ang_mod, int32_t &pow_mod).
+  *       4.6.1 Try to fix unfinished shots using void fixUnfinished(int32_t &ang_mod, int32_t &pow_mod).
   *
   *               Param 1 : Reference to the angle modifier to adapt.
   *               Param 2 : Reference to the power modifier to adapt.
@@ -572,7 +586,7 @@ struct sWeapListEntry;
   *             last_reverted   : true if last_ang_mod is signed differently than the resulting ang_mod.
   *             last_was_better : false
   *
-  *       4.5.2 Try to fix crashed shots using void fixCrashed(int32_t &ang_mod, int32_t &pow_mod).
+  *       4.6.2 Try to fix crashed shots using void fixCrashed(int32_t &ang_mod, int32_t &pow_mod).
   *
   *               Param 1 : Reference to the angle modifier to adapt.
   *               Param 2 : Reference to the power modifier to adapt.
@@ -594,7 +608,7 @@ struct sWeapListEntry;
   *             last_reverted   : true if last_ang_mod is signed differently than the resulting ang_mod.
   *             last_was_better : false
   *
-  *       4.5.3 If the shot did finish and did not crash and hit nearer to the target than the last, a few adaptations
+  *       4.6.3 If the shot did finish and did not crash and hit nearer to the target than the last, a few adaptations
   *             might be needed.
   *
   *             If the resulting hit_score is worse than last_score, it must be ensured, that ang_mod has the same sign
@@ -606,7 +620,7 @@ struct sWeapListEntry;
   *             last_reverted   : true if last_ang_mod is signed differently than the resulting ang_mod.
   *             last_was_better : true if hit_score is lower than last_score, false otherwise.
   *
-  *       4.5.4 If the shot did finish and did not crash but hit farther away than the last, use
+  *       4.6.4 If the shot did finish and did not crash but hit farther away than the last, use
   *             void fixOvershoot(int32_t& ang_mod, int32_t& pow_mod, int32_t hit_score).
   *
   *               Param 1 : Reference to the angle modifier to adapt.
@@ -657,17 +671,17 @@ struct sWeapListEntry;
   *
   *             last_reverted   : true if last_ang_mod is signed differently than the resulting ang_mod.
   *
-  *     4.6  If the current angle is 180°, so pointing straight up, ang_mod is zero and no hit_score greater than zero
+  *     4.7  If the current angle is 180°, so pointing straight up, ang_mod is zero and no hit_score greater than zero
   *          was achieved, a random ang_mod in the interval [2;6] towards the opponent is generated to fix this vertical
   *          shot. Vertical trick shots using wind are only accepted if the resulting hit_score is positive.
   *
-  *     4.7  If the power modification according to the current overshoot and ang_mod is too low, it is strengthened
+  *     4.8  If the power modification according to the current overshoot and ang_mod is too low, it is strengthened
   *          using the difference of the overshoot and pow_mod divided by ang_mod and multiplied by the AI's focusRate.
   *
-  *     4.8  Sanitize ang_mod and pow_mod, both applied must not lead to invalid values. Then apply both to curr_angle
+  *     4.9  Sanitize ang_mod and pow_mod, both applied must not lead to invalid values. Then apply both to curr_angle
   *          and curr_power.
   *
-  *     4.9  Save the current values in the last_* members:
+  *     4.10 Save the current values in the last_* members:
   *
   *            last_ang_mod   = ang_mod
   *            last_overshoot = curr_overshoot
@@ -676,7 +690,7 @@ struct sWeapListEntry;
   *
   *          After this, the loop ends and the work flow restarts at 4.1.
   *
-  *     4.10 When all aiming attempts are used up, an emergency plan to free the tank or unblock its path might be
+  *     4.11 When all aiming attempts are used up, an emergency plan to free the tank or unblock its path might be
   *          triggered if all of the following conditions are true:
   *
   *          - is_last and needSuccess are both true,
@@ -687,13 +701,13 @@ struct sWeapListEntry;
   *          - either the overshoot is greater than the weapons radius without being a ceiling crash, or fixOvershoot()
   *            detected a hill in the path.
   *
-  *     4.11 Eventually, if a new best_round_score is achieved, remember the current settings:
+  *     4.12 Eventually, if a new best_round_score is achieved, remember the current settings:
   *
   *            best_round_score = best_score;
   *            curr_angle       = best_angle;
   *            curr_power       = best_power;
   *
-  *     4.12 Return true if either best_round_score is larger than zero, or both is_last and needSuccess are true.
+  *     4.13 Return true if either best_round_score is larger than zero, or both is_last and needSuccess are true.
   *
   *   5  If the aiming was successful, a few more checks are made.
   *
@@ -768,6 +782,7 @@ public:
 	bool    can_work     () const;
 	void    forbidText   ();
 	bool    hasExited    () const;
+	void    hasMoved     (int32_t direction);
 	bool    start        (PLAYER* player_);
 	bool    status       (int32_t &aItem, int32_t &aAngle,
 	                      int32_t &aPower, ePlayerStages &pl_stage);
@@ -799,7 +814,7 @@ private:
 	 * -----------------------
 	 */
 
-	bool        aim            (bool is_last);
+	bool        aim            (bool is_last, bool can_move);
 	bool        calcAttack     (int32_t attempt);
 	bool        calcBoxed      (bool is_last);
 	void        calcHitDamage  (int32_t hit_x, int32_t hit_y, double weap_rad,
@@ -822,6 +837,7 @@ private:
 	const char* getLevelName   (int32_t level) const;
 	bool        getMemory      ();
 	bool        initialize     ();
+	bool        moveTank       ();
 	void        sanitizeCurr   ();
 	bool        selectItem     (bool is_last);
 	bool        selectTarget   (bool is_last);
@@ -855,6 +871,7 @@ private:
 	// Internal values
 	mutex_t    actionMutex;
 	condv_t    actionCondition;
+	abool_t    canMove;
 	volatile
 	bool       canWork          = true;
 	int32_t    curr_angle       = 90;    //!< The angle that is currently tested
@@ -870,6 +887,7 @@ private:
 	bool       isBlocked        = false; //!< Set to true if a shot can't get through
 	volatile
 	bool       isFinished       = false; //!< Set to true when operator() ends
+	ai32_t     isMovedBy;
 	bool       isShocked        = false;
 	volatile
 	bool       isStopped        = false;

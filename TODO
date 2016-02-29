@@ -3,29 +3,8 @@ higher priority stuff should be at the top of the file,
 lower priority at the bottom. It is currently only vaguely correct.
 
 	Bugs:
-	- Player options can become scrambled
-          if accessed too often.
-          -> Should be fixed with atanks-5.9_aiu1
-	- Wrap around ceiling should not destroy projectile.
-          -> Of course it should. Wrapping is only horizontal, not vertical.
-          -> Added a new option to enable that in atanks-6.0_aiu8
 	- Make sure network client doesn't get
           unlimited shots.
-	- Atanks crashes when Windows players click the Network option
-          in the main Options menu.
-          -> Should be fixed with atanks-5.9_aiu1
-	- When cycling through tanks on Players screen,
-	  the old tank does not get erased.
-          -> Should be fixed with atanks-5.9_aiu1
-	- AI controlled tanks buy a limited number of defensive
-          upgrades during very long games. Plating, for example.
-
-In player.cpp the PLAYER::computerSelectItem selects a weapon or item for the bot to use.
-Values less than WEAPONS are weapons and values from WEAPONS to THINGS are items.
-After lots of black magic to select a weapon or item, finally in line 3567 the current_weapon containing a value from 0 to THINGS is passed to PLAYER::computerSelectTarget, which in line 3189 uses it as index into the array weapon which only has size WEAPONS, resulting in a segfault.
-Line 3561 also calls PLAYER::computerSelectTarget with a value from 0 to THINGS, so probably the same can happen there.
-I don't know how to fix this, since I don't know how PLAYER::computerSelectTarget should behave when an item is passed instead of a weapon, but probaly some of you know this and can fix.
-          -> This is fixed in atanks-6.1_aiu2
 
 	Features:
 	- Add scroll bar to buying screen.
@@ -38,14 +17,8 @@ I don't know how to fix this, since I don't know how PLAYER::computerSelectTarge
           avoid the missile defence system by masking 
           its heat signature 
           Yield: Large missile
-	- Better AI against tanks with SDI.
-          -> Added in atanks-6.1_aiu3
 	- Update client ground surface more often.
-	- When switching languages, player menu should display correct text.
-          -> Should be fixed with atanks-5.9_aiu1
 	- Client needs a buying screen.
-	- Make tank size variable.
-          -> It is in atanks-6.0_aiu? Don't remember which...
 	- Add rocks as semi-destructable items.
 
 
@@ -66,7 +39,8 @@ I don't know how to fix this, since I don't know how PLAYER::computerSelectTarge
 
 	-- Make main window scalable
            (Needs to wait until Allegro 5.x)
-           -> Allegro 5 is a no-opt. I gave up on it but will try SFML-2 soon.
+           -> Allegro 5 is a no-opt. And porting to SFML-2 or SDL2 would be
+              a major rewrite of the game. But maybe one day.
 
 	-- Harder ground
            -> What is that supposed to mean?

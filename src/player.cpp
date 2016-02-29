@@ -526,6 +526,21 @@ eControl PLAYER::computerControls (AICore* aicore, bool allow_fire)
 		}
 	} // End of handling firing stage
 
+	// If the AI wants to move their tank, do so:
+	else if (PS_MOVE_LEFT == plStage) {
+		if (tank->moveTank(DIR_LEFT)) {
+			aicore->hasMoved(DIR_LEFT);
+			return CONTROL_OTHER;
+		} else
+			aicore->hasMoved(0); // No movement possible
+	} else if (PS_MOVE_RIGHT == plStage) {
+		if (tank->moveTank(DIR_RIGHT)) {
+			aicore->hasMoved(DIR_RIGHT);
+			return CONTROL_OTHER;
+		} else
+			aicore->hasMoved(0); // No movement possible
+	}
+
 	return CONTROL_NONE;
 }
 
@@ -546,7 +561,8 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 	 * 4.: Armour/Amps
 	 * 5.: "Tools" to free themselves like Riot Blasts
 	 * 6.: Shields, if enough money is there
-	 * 7.: if all is set, look for dimpled/slick projectiles!
+	 * 7.: Fuel, everybody shall have at least 100 units.
+	 * 8.: if all is set, look for dimpled/slick projectiles!
 	 */
 
 
@@ -779,7 +795,15 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 	} // End of step 5
 
 
-    // Step 7: Slick / Dimpled Projectiles
+	// Step 7: Fuel
+	if ( (ni[ITEM_FUEL] < 100)
+	  && (money >= item[ITEM_FUEL].cost) ) {
+		DEBUG_LOG_FIN(name, "Pre-selecting Fuel", 0)
+		return (WEAPONS + ITEM_FUEL);
+	}
+
+
+    // Step 8: Slick / Dimpled Projectiles
     if ( (ni[ITEM_SLICKP] + ni[ITEM_DIMPLEP]) < 100 ) {
 
 		if ( (ni[ITEM_DIMPLEP] < 50)
@@ -1489,7 +1513,7 @@ void PLAYER::generatePreferences()
 					worth = baseProb / 15. * ai_rate;
 					break;
 				case ITEM_FUEL:
-					worth     = -5000; // Bots don't need fuel
+					worth = baseProb / 30. * ai_rate;
 					isWarhead = true;  // Yes, it's a lie. ;-)
 					break;
 				case ITEM_ROCKET:
@@ -2133,6 +2157,12 @@ bool PLAYER::load_from_file (FILE *file)
   * <ul>
   * <li>Version 65 : THEFT_BOMB
   * </ul>
+  *
+  * Version changes from earlier versions:
+  * <ul>
+  * <li>Version 65 : FUEL needs preferences
+  * </ul>
+  *
 **/
 void PLAYER::load_game_data(FILE* file, int32_t file_version)
 {
@@ -2248,6 +2278,22 @@ void PLAYER::load_game_data(FILE* file, int32_t file_version)
 						}
 						++prf_idx; // Skip new index value
 					} // End of version 65 THEFT_BOMB
+
+					/* === Version Checks for changed weapons / items === */
+
+					if ( (file_version < 65) ) {
+						if ( (ITEM_FUEL == (prf_idx - WEAPONS))
+						  && (prf_val < 1) ) {
+							// Generate a value
+							prf_val = static_cast<double>(MAX_WEAP_PROBABILITY)
+							        / 60.
+							        * ( static_cast<double>(type) / 2. + .5);
+
+							DEBUG_LOG_EMO(name, "Changed preference for %s : %5d",
+							              item[ITEM_FUEL].getName(),
+							              prf_val)
+						}
+					} // End of version 65 ITEM_FUEL
 
 					/* === Store data === */
 					// (If someone edited the save game, the index might

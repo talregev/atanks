@@ -175,6 +175,8 @@ template<typename T> void sort_entries(T** head)
 
 /// @brief AICore default constructor
 AICore::AICore() :
+	canMove(ATOMIC_VAR_INIT(true)),
+	isMovedBy(ATOMIC_VAR_INIT(0)),
 	textAllowed(ATOMIC_VAR_INIT(true))
 {
 	// As the opponent counts, and both weapons and items
@@ -264,9 +266,11 @@ PLAYER* AICore::active_player() const
 /** @brief aim the current selection
   * @param[in] is_last if set to true, the best result is accepted, no matter
   * what the outcome might be.
+  * @param[in] can_move if set to true, the AI might try to move the tank into
+  * a better position.
   * @return true if the aiming resulted in a usable hit.
 **/
-bool AICore::aim(bool is_last)
+bool AICore::aim(bool is_last, bool can_move)
 {
 	plStage = PS_AIM;
 
@@ -387,6 +391,21 @@ bool AICore::aim(bool is_last)
 			ang_mod = (last_ang_mod + (SIGN(last_ang_mod) * ang_mod)) / 2;
 			pow_mod = (last_pow_mod + pow_mod) / 2 * SIGN(best_overshoot);
 		}
+
+		// Otherwise a movement might be in order
+		else if ( canMove // No failed or finished moving done, yet
+		       && can_move // Half of the oppAttempts are off
+		       && (attempt >= (findRngAttempts / 2)) // Half the aiming, too
+		       && (buried < BURIED_LEVEL) // Not buried
+		       && (!best_prime_hit || (best_score <= 0)) // nothing achieved here
+		       && needSuccess // nothing achieved otherwise so far
+		       && moveTank() /* movement done */ ) {
+			// Reclaim this attempt
+			--attempt;
+			// And continue, we need to retrace the weapon
+			continue;
+		}
+
 
 		// The outcome has to be checked:
 		if (canWork && !isStopped) {
@@ -2836,6 +2855,29 @@ bool AICore::hasExited() const
 }
 
 
+/** @brief Signal the AI that the tank was moved
+  *
+  * The direction signals the following:
+  *
+  * < 0 : Moved to the left
+  * = 0 : Movement not possible
+  * > 0 : Moved to the right.
+  *
+  * @param[in] direction indicate movement direction
+**/
+void AICore::hasMoved(int32_t direction)
+{
+	if (direction) {
+		isMovedBy.store(direction, ATOMIC_WRITE);
+		canMove.store(true, ATOMIC_WRITE);
+	} else {
+		isMovedBy.store(0, ATOMIC_WRITE);
+		canMove.store(false, ATOMIC_WRITE);
+	}
+
+}
+
+
 /// @brief initialize work with the current players data
 bool AICore::initialize()
 {
@@ -2857,6 +2899,8 @@ bool AICore::initialize()
 	blast_med     = 0.;
 	blast_big     = 0.;
 	blast_max     = 0.;
+	canMove.store(true, ATOMIC_WRITE);
+	isMovedBy.store(0, ATOMIC_WRITE);
 	isShocked     = false;
 	revengee      = nullptr;
 	shocker       = nullptr;
@@ -5067,6 +5111,104 @@ void AICore::weapon_fired()
 }
 
 
+/** @brief Attempt to move the tank
+  *
+  * @return true if the tank was moved
+**/
+bool AICore::moveTank()
+{
+	/* Moving the AI tank is easy. Just set the command and wait for the
+	 * main thread to react.
+	 * However, where shall the tank move and what distance?
+	 *
+	 * - If the target is very near (under two bitmap widths) then move
+	 *   away.
+	 * Otherwise:
+	 * - If the angle is steep (75° and up), assume the shot must go
+	 *   over a hill and move away from the target.
+	 * - If the angle is flat  (15° and down), move towards the target,
+	 *   the way seems clear at least.
+	 * Otherwise:
+	 * - If the overshoot is negative (too short), move towards the target.
+	 * - If the overshoot is positive (too far), move away from the target.
+	 */
+	double min_dist   = tank->getDiameter()
+					  + mem_curr->entry->opponent->tank->getDiameter();
+	int32_t want_dist = 0; // Eventually move in this direction ...
+	int32_t want_dir  = 0; // ... by this amount
+
+	if (mem_curr->distance < min_dist) {
+		// The first case: we are too near and want to move away
+		want_dir  = mem_curr->opX > x ? DIR_LEFT : DIR_RIGHT;
+		want_dist = want_dir
+				  * (min_dist - mem_curr->distance + RAND_AI_1P);
+	} else if ( (curr_angle <= 195) && (curr_angle >= 165) ) {
+		// The second case, the angle is steep
+		want_dir  = mem_curr->opX > x ? DIR_LEFT : DIR_RIGHT;
+		want_dist = want_dir
+				  * ( 20 - std::abs(180 - curr_angle) + RAND_AI_1P);
+	} else if ( (curr_angle <= 105) || (curr_angle >= 255) ) {
+		// The third case, the angle is very flat
+		want_dir  = mem_curr->opX > x ? DIR_RIGHT : DIR_LEFT;
+		want_dist = want_dir
+				  * ( std::abs(curr_angle - 180) - 70 + RAND_AI_1P);
+	} else {
+		// Last two cases use the overshoot as a distance to use
+		want_dist = best_overshoot != MAX_OVERSHOOT
+				  ? best_overshoot : curr_overshoot;
+		want_dir  = SIGN(want_dist);
+		// "tune" the distance
+		want_dist += RAND_AI_1P * want_dir;
+	}
+
+	// Now that direction and distance are set up, go for it.
+	bool tank_was_moved = false;
+
+	DEBUG_LOG_AIM(player->getName(), "Starting to move %s for %d",
+	              DIR_LEFT == want_dir ? "left" : "right", want_dist)
+
+	while (!isStopped && canMove.load(ATOMIC_READ) && want_dist) {
+
+		isMovedBy.store(0, ATOMIC_WRITE);
+		plStage   = DIR_LEFT == want_dir ? PS_MOVE_LEFT : PS_MOVE_RIGHT;
+
+		// Wait for the move to happen
+		while ( !isStopped
+		     && canMove.load(ATOMIC_READ)
+		     && (0 == isMovedBy.load(ATOMIC_READ)))
+			std::this_thread::yield();
+
+		// Do not do double moves!
+		plStage = PS_AIM;
+
+		if (!tank_was_moved && isMovedBy.load(ATOMIC_READ))
+			tank_was_moved = true;
+
+		want_dist -= isMovedBy.load(ATOMIC_READ);
+	} // That's it, really!
+
+	// No matter how much movement was done, this tank
+	// won't move again in this turn.
+	canMove.store(false, ATOMIC_WRITE);
+
+	// However, if the tank was moved, all distances are different now:
+	if (tank_was_moved) {
+		opEntry_t* op = mem_head;
+		while (op) {
+			if (  op->entry->opponent->tank
+			  && !op->entry->opponent->tank->destroy )
+				op->distance = FABSDISTANCE2(x, y, op->opX, op->opY);
+			op = op->next;
+		}
+	}
+
+	DEBUG_LOG_AIM(player->getName(), "Moving finished %s (%d distance left)",
+	              want_dist ? "incompletely" : "successfully", want_dist)
+
+	return tank_was_moved;
+}
+
+
 /// @brief Core threading operator
 void AICore::operator()()
 {
@@ -5237,7 +5379,8 @@ void AICore::operator()()
 			// --- 3) Aim the current selection                       ---
 			// ----------------------------------------------------------
 			if (done && needAim && !isBlocked)
-				done = aim( (tgt_attempts == findTgtAttempts) && needSuccess );
+				done = aim((tgt_attempts == findTgtAttempts) && needSuccess, // is last?
+				           opp_attempts >= (findOppAttempts / 2) );          // allowed to move?
 			else  if (!needAim || isBlocked) {
 				DEBUG_LOG_AIM(player->getName(), "No aiming done: %s, %s",
 				              needAim   ? "Aiming needed"   : "Aiming NOT needed",

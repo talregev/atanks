@@ -16,6 +16,8 @@ enum ePlayerStages
 	PS_SELECT_WEAPON,  //!< AI is selecting a weapon or item
 	PS_CALCULATE,      //!< AI calculates its basic attack values
 	PS_AIM,            //!< AI aims the current selection to hit its target
+	PS_MOVE_LEFT,      //!< AI wants to move their tank to the left
+	PS_MOVE_RIGHT,     //!< AI wants to move their tank to the right
 	PS_FIRE,           //!< AI is ready to have the current weapon/item fired
 	PS_CLEANUP,        //!< AI is cleaning up
 	PS_STAGE_COUNT

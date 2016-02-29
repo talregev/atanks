@@ -500,7 +500,7 @@ enum weaponType
 	CLUSTER_MIRV       = 49,
 	PERCENT_BOMB       = 50,
 	REDUCER            = 51,
-	THEFT_BOMB         = 52, // Last ballistic (WEAPONS == 53)
+	THEFT_BOMB         = 52, // Last ballistic (BALLISTICS == 53)
 	SML_LAZER          = 53,
 	MED_LAZER          = 54,
 	LRG_LAZER          = 55, // Last weapon (WEAPONS == 56)
@@ -518,13 +518,13 @@ enum weaponType
 #define ITEM_NO_SHIELD   -1
 enum itemType
 {
-	ITEM_TELEPORT             =  0, // 55 (weap_idx - WEAPONS)
-	ITEM_SWAPPER              =  1, // 56
-	ITEM_MASS_TELEPORT        =  2, // 57
-	ITEM_FAN                  =  3, // 58
-	ITEM_VENGEANCE            =  4, // 59
-	ITEM_DYING_WRATH          =  5, // 60
-	ITEM_FATAL_FURY           =  6, // 61
+	ITEM_TELEPORT             =  0, // 56 (weap_idx - WEAPONS)
+	ITEM_SWAPPER              =  1, // 57
+	ITEM_MASS_TELEPORT        =  2, // 58
+	ITEM_FAN                  =  3, // 59
+	ITEM_VENGEANCE            =  4, // 60
+	ITEM_DYING_WRATH          =  5, // 61
+	ITEM_FATAL_FURY           =  6, // 62
 	ITEM_LGT_SHIELD           =  7,
 	ITEM_MED_SHIELD           =  8,
 	ITEM_HVY_SHIELD           =  9,
@@ -539,9 +539,9 @@ enum itemType
 	ITEM_DIMPLEP              = 18,
 	ITEM_PARACHUTE            = 19,
 	ITEM_REPAIRKIT            = 20,
-	ITEM_FUEL                 = 21, // 76
-	ITEM_ROCKET               = 22, // 77
-	ITEM_SDI                  = 23 // Last item
+	ITEM_FUEL                 = 21, // 77
+	ITEM_ROCKET               = 22, // 78
+	ITEM_SDI                  = 23  // 79 (Last item)
 };
 
 #define SHIELD_COUNT		6
