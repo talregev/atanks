@@ -871,6 +871,7 @@ private:
 	// Internal values
 	mutex_t    actionMutex;
 	condv_t    actionCondition;
+	playerType bestType         = USELESS_PLAYER; // What the AI considers humans to be.
 	abool_t    canMove;
 	volatile
 	bool       canWork          = true;

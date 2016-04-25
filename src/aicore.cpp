@@ -200,6 +200,12 @@ AICore::AICore() :
 
 	/// 2) Opponents
     for (int32_t i = 0; canWork && (i < env.numGamePlayers); ++i) {
+		// Look for highest AI type
+		if ( (env.players[i]->type <= DEADLY_PLAYER)
+		  && (env.players[i]->type >  bestType) )
+			bestType = env.players[i]->type;
+
+		// Create memory chain
 		try {
 			mem_curr = new opEntry_t(mem_last);
 			if (!mem_head)
@@ -4355,7 +4361,8 @@ void AICore::updateOppScore(opEntry_t* pOpp)
 	 * --- 6) Add or dock points regarding AI level               ---
 	 * --- More powerful opponents are targeted preferably, while ---
 	 * --- weaker ones are not considered to be such a threat.    ---
-	 * --- Note: Human players are handled like deadly bots.      ---
+	 * --- Note: Human players are handled like the best AI       ---
+	 * ---       that is present in the game.                     ---
 	 * -------------------------------------------------------------- */
 	double level_score = 0.;
 	if (!pOpp->onSameTeam) {
@@ -4363,7 +4370,7 @@ void AICore::updateOppScore(opEntry_t* pOpp)
 		  && (LAST_PLAYER_TYPE > opponent->type) )
 			level_score = static_cast<double>(opponent->type - player->type);
 		else
-			level_score = static_cast<double>(DEADLY_PLAYER  - player->type);
+			level_score = static_cast<double>(bestType       - player->type);
 
 		// The higher the self preservation, the more urgent deadlier
 		// bots are targeted to get them down early.
@@ -5193,6 +5200,12 @@ bool AICore::moveTank()
 
 	// However, if the tank was moved, all distances are different now:
 	if (tank_was_moved) {
+
+		// Update current position
+		x = tank->x;
+		y = tank->y;
+
+		// Update all distances
 		opEntry_t* op = mem_head;
 		while (op) {
 			if (  op->entry->opponent->tank

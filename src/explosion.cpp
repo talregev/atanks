@@ -386,11 +386,23 @@ void EXPLOSION::draw()
 					  && (weapType >= DIRT_BALL)
 					  && (weapType <= SMALL_DIRT_SPREAD) ) {
 						BITMAP* tmp    = create_bitmap(rad * 2, rad * 2); // for mixing
-						int32_t   colour = player ? player->color : GREEN;
-
+						int32_t colour = player ? player->color : GREEN;
 						clear_to_color(tmp, PINK);
 
-						circlefill(tmp, rad, rad, rad - 1, colour);
+						if (global.skippingComputerPlay)
+							circlefill(tmp, rad, rad, rad - 1, colour);
+						else {
+							float fR   = static_cast<float>(getr(colour));
+							float fG   = static_cast<float>(getg(colour));
+							float fB   = static_cast<float>(getb(colour));
+							float fRad = static_cast<float>(rad);
+							for (float r = fRad - 1.f; r > .998f; r -= 1.f)
+								circlefill(tmp, rad, rad, static_cast<int32_t>(r), makecol(
+									static_cast<int32_t>(fR * (r / fRad) ),
+									static_cast<int32_t>(fG * (r / fRad) ),
+									static_cast<int32_t>(fB * (r / fRad) )
+								));
+						}
 
 						// copy terrain over explosion
 						masked_blit(global.terrain, tmp,
@@ -961,10 +973,18 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 	if ( (nullptr == tank) || (tank->destroy) )
 		return 0.;
 
-	double weap_rad  = weapon[type].radius;
-	double xrad      =    DRILLER       == type    ? weap_rad / 20. : weap_rad;
-	double yrad      = ( (SHAPED_CHARGE <= type)
-	                  && (CUTTER        >= type) ) ? weap_rad / 20. : weap_rad;
+	double weap_rad  = type < WEAPONS
+	                 ? weapon[type].radius
+	                 : naturals[type - WEAPONS].radius;
+	double xrad      = weap_rad;
+	double yrad      = weap_rad;
+
+	// Adapt x-/y-radius for the driller and the shaped weapons
+	if (DRILLER == type)
+		xrad /= 20;
+	if ( (SHAPED_CHARGE <= type) && (CUTTER >= type) )
+		yrad /= 20;
+
 	double in_rate_x = 0.;
 	double in_rate_y = 0.;
 	double dmg       = 0.;
@@ -973,7 +993,11 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 		if (PERCENT_BOMB == type)
 			dmg = ((tank->l + tank->sh) / 2) + 1;
 		else if ( (REDUCER == type)
-		       && (tank->player->damageMultiplier > 0.1) )
+			   && (tank->player->damageMultiplier > 0.1) )
+			dmg = 1.; // So result > 0 can be checked
+		else if (THEFT_BOMB == type)
+			dmg = 1.; // So result > 0 can be checked
+		else if ( (RIOT_BOMB <= type) && (RIOT_BLAST >= type) )
 			dmg = 1.; // So result > 0 can be checked
 		else if (THEFT_BOMB == type)
 			dmg = 1.; // So result > 0 can be checked
@@ -988,7 +1012,9 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 			 *       minimum distance needed for the main blast radius.
 			 */
 
-			dmg = weapon[type].damage;
+			dmg = type < WEAPONS
+			    ? weapon[type].damage
+			    : naturals[type - WEAPONS].damage;
 
 			// Some weapons have minimum rates on axis ratings
 			if (DRILLER == type) {

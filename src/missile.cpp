@@ -611,7 +611,6 @@ void MISSILE::Check_SDI()
 	// and anything with submunition.
 	if ( (PT_DIGGING == physType)
 	  || (weapType == NAPALM_JELLY)
-	  || ( (weapType >= DIRT_BALL) && (weapType <= SMALL_DIRT_SPREAD) )
 	  || (weap->submunition > 0) )
 		return;
 
@@ -728,7 +727,9 @@ void MISSILE::Check_SDI()
 			}
 
 			// If the missile is destroyed, check whether the explosion would
-			// a) hit this tank and be) be nearer than the missile is now.
+			// a) hit this tank,
+			// b) be nearer than the missile is now and
+			// c) will not kill the tank if shot down.
 			// If so, shoot it down!
 			bool will_hit = false;
 			if (mind_shot.destroy) {
@@ -744,10 +745,17 @@ void MISSILE::Check_SDI()
 				  && (std::abs(y_dist) <= y_rad) // tank in y range
 				  && ( ( std::abs(x - pSDI->x) > x_rad) // misses x radius now
 				    || ( std::abs(y - pSDI->y) > y_rad) // misses y radius now
-						// Is now farther away than when it goes off:
+				        // Is now farther away than when it goes off:
 				    || (   ABSDISTANCE2(x, y, pSDI->tank->x, pSDI->tank->y)
-				        >= ABSDISTANCE2(x, y, mind_shot.x, mind_shot.y) ) ) )
-					will_hit = true;
+				        >= ABSDISTANCE2(x, y, mind_shot.x, mind_shot.y) ) ) ) {
+
+					// The point looks promising, but is it worth it?
+					double dmg = get_hit_damage(pSDI->tank,
+					                            static_cast<weaponType>(weapType),
+					                            x, y);
+					if (dmg < (pSDI->tank->sh + pSDI->tank->l))
+						will_hit = true;
+				}
 			}
 
 			if (will_hit) {
@@ -1203,7 +1211,9 @@ void MISSILE::triggerTest ()
 		else
 			trigger();
 	} else if ( (yv > 0.)
-	         && ( (weapType < RIOT_BOMB) || (weapType > SMALL_DIRT_SPREAD) ) )
+	         && ( (weapType < RIOT_BOMB)
+	           || (weapType > SMALL_DIRT_SPREAD) )
+	         && (weapType < BALLISTICS) )
 		// Otherwise it is time to check whether any tank SDI shoots it down
 		Check_SDI();
 }
