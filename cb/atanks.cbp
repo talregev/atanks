@@ -357,9 +357,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../Changelog" />
 		<Unit filename="../Makefile" />
 		<Unit filename="../Makefile.bsd" />
-		<Unit filename="../TODO_akut" />
+		<Unit filename="../README" />
+		<Unit filename="../TODO" />
 		<Unit filename="../src/aicore.cpp" />
 		<Unit filename="../src/aicore.h" />
 		<Unit filename="../src/atanks.cpp" />

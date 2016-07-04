@@ -1,21 +1,17 @@
-There is now some small attempt at prioritisation in this file, 
-higher priority stuff should be at the top of the file, 
-lower priority at the bottom. It is currently only vaguely correct.
+There is now some small attempt at prioritisation in this file, higher priority
+stuff should be at the top of the file, lower priority at the bottom.
 
 	Bugs:
-	- Make sure network client doesn't get
-          unlimited shots.
+	- Make sure network client doesn't get unlimited shots.
 
 	Features:
 	- Add scroll bar to buying screen.
-	- Add randomize button to buying screen to have
-	  items automatically purchased.
-   	- Field repair kit: Spend a turn to repair your tank 
-          rather than fire.           
-          Limited uses, heals more than Auto Repair Kit 
-	- Radar resistant missile: A missile designed to 
-          avoid the missile defence system by masking 
-          its heat signature 
+	- Add randomize button to buying screen to have items automatically
+	  purchased.
+	- Field repair kit: Spend a turn to repair your tank rather than fire.
+          Limited uses, heals more than Auto Repair Kit.
+	- Radar resistant missile: A missile designed to avoid the missile defence
+	      system by masking its heat signature.
           Yield: Large missile
 	- Update client ground surface more often.
 	- Client needs a buying screen.
@@ -26,12 +22,12 @@ lower priority at the bottom. It is currently only vaguely correct.
 
 	   Items from here to the bottom of the file
 	   are under consideration by the development
-	   team and may (or may not) be implemented.   
+	   team and may (or may not) be implemented.
 
 ===============================================
 
 
-        -- under ground mines
+	-- under ground mines
 
 	-- rocket like fireworks
 

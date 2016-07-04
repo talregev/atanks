@@ -747,7 +747,8 @@ void MISSILE::Check_SDI()
 				    || ( std::abs(y - pSDI->y) > y_rad) // misses y radius now
 				        // Is now farther away than when it goes off:
 				    || (   ABSDISTANCE2(x, y, pSDI->tank->x, pSDI->tank->y)
-				        >= ABSDISTANCE2(x, y, mind_shot.x, mind_shot.y) ) ) ) {
+				        >= ABSDISTANCE2(mind_shot.x, mind_shot.y,
+				                        pSDI->tank->x, pSDI->tank->y) ) ) ) {
 
 					// The point looks promising, but is it worth it?
 					double dmg = get_hit_damage(pSDI->tank,

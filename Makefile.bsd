@@ -14,7 +14,7 @@ MODULES := network.o aicore.o debris_pool.o sky.o \
            optionitembase.o optionscreens.o button.o \
            explosion.o update.o
 
-VERSION    := 6.5_rc1
+VERSION    := 6.5
 PREFIX     := .
 INSTALLDIR := ${PREFIX}/
 

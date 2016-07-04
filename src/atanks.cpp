@@ -622,9 +622,9 @@ static void init_game_settings()
 
 		if (channels) {
 			env.voices = channels >  64 ?  32
-							: channels >  32 ?  16
-							: channels >  16 ?   8
-							: channels;
+			           : channels >  32 ?  16
+			           : channels >  16 ?   8
+			           : channels;
 
 			int32_t snd_installed = -1;
 
