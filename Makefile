@@ -1,7 +1,7 @@
 .PHONY: all install clean veryclean user winuser osxuser ubuntu \
 dist tarball zipfile source-dist i686-dist win32-dist
 
-VERSION := 6.4
+VERSION := 6.5
 
 
 DEBUG   ?= NO
@@ -45,7 +45,7 @@ INSTALLDIR ?= ${PREFIX}/share/games/atanks
 # ------------------------------------
 # Source files and objects
 # ------------------------------------
-SOURCES := $(wildcard src/*.cpp)
+SOURCES := $(sort $(wildcard src/*.cpp))
 MODULES := $(addprefix obj/,$(notdir $(SOURCES:.cpp=.o)))
 DEPENDS := $(addprefix dep/,$(notdir $(SOURCES:.cpp=.d)))
 
@@ -331,7 +331,7 @@ $(TARGET): $(MODULES)
 	$(LD) -o $@ $(MODULES) $(CPPFLAGS) $(LDFLAGS) $(CXXFLAGS)
 
 clean:
-	$(RM) obj/*
+	$(RM) obj/* atanks
 
 veryclean: clean
 ifeq (WIN32,$(PLATFORM))

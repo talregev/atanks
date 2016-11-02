@@ -1,5 +1,15 @@
 NOTE: From now on, new changes appear at the top of this file.
 
+	- Remove old Atanks binary during normal "make clean".
+
+	- Added patch from Debian which makes the build process reproducible.
+	  Thanks to Reiner Herrmann for submitting the patch. Closes
+	  Debian bug #842865.
+
+============ Atanks-6.4 released ===================
+
+	We are happy to announce a new release of Atomic Tanks is now available for download. The new release, version 6.4, carries a number of bug fixes and minor improvements. Perhaps the most visual change is more funky behaviour in the funky bombs and the AI players handle napalm better. 
+
 ============ Atanks-6.3 released ===================
 
 	Sven has done a huge amount of code changes for this release. The
