@@ -221,7 +221,7 @@ using std::string;
 
 #define MENUHEIGHT 40
 #define BOXED_TOP 41 // This is the highest non-border pixel in boxed mode
-#define	BALLISTICS 52
+#define	BALLISTICS 53
 #define	BEAMWEAPONS 3
 #define WEAPONS (BALLISTICS + BEAMWEAPONS)
 #define ITEMS 24
@@ -244,6 +244,10 @@ using std::string;
 #define MAX_ITEM_DESC_LEN 511
 #define MAX_ITEMS_IN_STOCK 999999
 #define MAX_MONEY_IN_WALLET 1000000000
+
+// to make the theft bomb base steal easier to change, here
+// is a useful define. Maybe, one day, we'll add it to the options?
+#define THEFT_AMOUNT 5000
 
 // Use these instead of the (most strict) defaults,
 // But only where timing by memory fences do not matter.
@@ -495,16 +499,17 @@ enum weaponType
 	SMALL_DIRT_SPREAD  = 48,
 	CLUSTER_MIRV       = 49,
 	PERCENT_BOMB       = 50,
-	REDUCER            = 51, // Last ballistic
-	SML_LAZER          = 52,
-	MED_LAZER          = 53,
-	LRG_LAZER          = 54, // Last weapon (WEAPONS == 55)
-	SML_METEOR         = 55,
-	MED_METEOR         = 56,
-	LRG_METEOR         = 57,
-	SML_LIGHTNING      = 58,
-	MED_LIGHTNING      = 59,
-	LRG_LIGHTNING      = 60 // Last natural
+	REDUCER            = 51,
+	THEFT_BOMB         = 52, // Last ballistic (BALLISTICS == 53)
+	SML_LAZER          = 53,
+	MED_LAZER          = 54,
+	LRG_LAZER          = 55, // Last weapon (WEAPONS == 56)
+	SML_METEOR         = 56,
+	MED_METEOR         = 57,
+	LRG_METEOR         = 58,
+	SML_LIGHTNING      = 59,
+	MED_LIGHTNING      = 60,
+	LRG_LIGHTNING      = 61 // Last natural
 };
 
 
@@ -513,13 +518,13 @@ enum weaponType
 #define ITEM_NO_SHIELD   -1
 enum itemType
 {
-	ITEM_TELEPORT             =  0, // 55 (weap_idx - WEAPONS)
-	ITEM_SWAPPER              =  1, // 56
-	ITEM_MASS_TELEPORT        =  2, // 57
-	ITEM_FAN                  =  3, // 58
-	ITEM_VENGEANCE            =  4, // 59
-	ITEM_DYING_WRATH          =  5, // 60
-	ITEM_FATAL_FURY           =  6, // 61
+	ITEM_TELEPORT             =  0, // 56 (weap_idx - WEAPONS)
+	ITEM_SWAPPER              =  1, // 57
+	ITEM_MASS_TELEPORT        =  2, // 58
+	ITEM_FAN                  =  3, // 59
+	ITEM_VENGEANCE            =  4, // 60
+	ITEM_DYING_WRATH          =  5, // 61
+	ITEM_FATAL_FURY           =  6, // 62
 	ITEM_LGT_SHIELD           =  7,
 	ITEM_MED_SHIELD           =  8,
 	ITEM_HVY_SHIELD           =  9,
@@ -534,9 +539,9 @@ enum itemType
 	ITEM_DIMPLEP              = 18,
 	ITEM_PARACHUTE            = 19,
 	ITEM_REPAIRKIT            = 20,
-	ITEM_FUEL                 = 21, // 76
-	ITEM_ROCKET               = 22, // 77
-	ITEM_SDI                  = 23 // Last item
+	ITEM_FUEL                 = 21, // 77
+	ITEM_ROCKET               = 22, // 78
+	ITEM_SDI                  = 23  // 79 (Last item)
 };
 
 #define SHIELD_COUNT		6

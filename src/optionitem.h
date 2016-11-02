@@ -407,7 +407,7 @@ public:
 	{
 		if ( (ET_VALUE == this->type) && this->format)
 			// Check format, because texts[] based options are rotated.
-			return (*target > static_cast<tgt_T>(minVal));
+			return (*target > static_cast<tgt_T>(minVal) ? true : false);
 		return true;
 	}
 
@@ -416,7 +416,7 @@ public:
 	virtual bool canGoUp()
 	{
 		if ( (ET_VALUE == this->type) && this->format)
-			return (*target < static_cast<tgt_T>(maxVal));
+			return (*target < static_cast<tgt_T>(maxVal) ? true : false);
 		return true;
 	}
 

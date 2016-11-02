@@ -49,7 +49,6 @@ PLAYER::PLAYER() :
 	memset(name,         0, sizeof(char)    * NAME_LEN);
 	memset(weapPref,     0, sizeof(int32_t) * THINGS);
 
-	nm[0] = 99; // need some small missiles. ;)
 	strncpy(name, "New Player", NAME_LEN);
 
 	// 25% of time set to perplay weapon preferences
@@ -527,6 +526,21 @@ eControl PLAYER::computerControls (AICore* aicore, bool allow_fire)
 		}
 	} // End of handling firing stage
 
+	// If the AI wants to move their tank, do so:
+	else if (PS_MOVE_LEFT == plStage) {
+		if (tank->moveTank(DIR_LEFT)) {
+			aicore->hasMoved(DIR_LEFT);
+			return CONTROL_OTHER;
+		} else
+			aicore->hasMoved(0); // No movement possible
+	} else if (PS_MOVE_RIGHT == plStage) {
+		if (tank->moveTank(DIR_RIGHT)) {
+			aicore->hasMoved(DIR_RIGHT);
+			return CONTROL_OTHER;
+		} else
+			aicore->hasMoved(0); // No movement possible
+	}
+
 	return CONTROL_NONE;
 }
 
@@ -547,7 +561,8 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 	 * 4.: Armour/Amps
 	 * 5.: "Tools" to free themselves like Riot Blasts
 	 * 6.: Shields, if enough money is there
-	 * 7.: if all is set, look for dimpled/slick projectiles!
+	 * 7.: Fuel, everybody shall have at least 100 units.
+	 * 8.: if all is set, look for dimpled/slick projectiles!
 	 */
 
 
@@ -780,7 +795,15 @@ int32_t PLAYER::computerSelectPreBuyItem (int32_t max_boost)
 	} // End of step 5
 
 
-    // Step 7: Slick / Dimpled Projectiles
+	// Step 7: Fuel
+	if ( (ni[ITEM_FUEL] < 100)
+	  && (money >= item[ITEM_FUEL].cost) ) {
+		DEBUG_LOG_FIN(name, "Pre-selecting Fuel", 0)
+		return (WEAPONS + ITEM_FUEL);
+	}
+
+
+    // Step 8: Slick / Dimpled Projectiles
     if ( (ni[ITEM_SLICKP] + ni[ITEM_DIMPLEP]) < 100 ) {
 
 		if ( (ni[ITEM_DIMPLEP] < 50)
@@ -1222,10 +1245,10 @@ void PLAYER::exitShop()
 		damageMultiplier += std::pow(tmpDM, 0.6);
 
 	// All players need small missiles:
-	int32_t max_small_missiles = 500 + (rand() % 500); // max 999
-	nm[SML_MIS] += 50 + (rand() % 50);
-	if (nm[SML_MIS] > max_small_missiles)
-		nm[SML_MIS] = max_small_missiles;
+	if (nm[SML_MIS] < 100)
+		nm[SML_MIS] += 100 + (rand() % 100); // + [100;199]
+	if (nm[SML_MIS] < 250)
+		nm[SML_MIS] +=  50 + (rand() %  50); // + [ 50; 99]
 }
 
 
@@ -1389,6 +1412,11 @@ void PLAYER::generatePreferences()
 					worth = 300. * ai_rate
 					      * -(defensive - 2.)
 					      * selfPreservation;
+				// Note: The theft bomb is a debuff weapon with extra benefits. ;-)
+				if (THEFT_BOMB == currItem)
+					worth = (150. + vengeful) * ai_rate
+					      * ( (selfPreservation + 2.) / 2.)
+					      * (std::abs(defensive) + 1.0);
 
 				// === 5. Shaped weapons are deadly but limited ===
 				//--------------------------------------------------
@@ -1485,7 +1513,7 @@ void PLAYER::generatePreferences()
 					worth = baseProb / 15. * ai_rate;
 					break;
 				case ITEM_FUEL:
-					worth     = -5000; // Bots don't need fuel
+					worth = baseProb / 30. * ai_rate;
 					isWarhead = true;  // Yes, it's a lie. ;-)
 					break;
 				case ITEM_ROCKET:
@@ -1974,9 +2002,10 @@ void PLAYER::initialise (bool loaded_game)
 {
 	// Initialize basic values if this is not loaded
 	if (!loaded_game) {
-		nm[0] = MAX_ITEMS_IN_STOCK;
 		memset(nm, 0, sizeof(int32_t) * WEAPONS);
 		memset(ni, 0, sizeof(int32_t) * ITEMS);
+
+		ni[ITEM_FUEL] = 100; // Supply some initial fuel
 
 		kills  = 0;
 		killed = 0;
@@ -2024,14 +2053,14 @@ bool PLAYER::load_from_file (FILE *file)
 			}
 
 			// strip newline character
-			int32_t line_length = strlen(line);
+			size_t line_length = strlen(line);
 			while ( line[line_length - 1] == '\n') {
 				line[line_length - 1] = '\0';
 				line_length--;
 			}
 
 			// find equal sign
-			int32_t equal_position = 1;
+			size_t equal_position = 1;
 			while ( ( equal_position < line_length )
 				 && ( line[equal_position] != '='  ) )
 				equal_position++;
@@ -2122,7 +2151,20 @@ bool PLAYER::load_from_file (FILE *file)
 }
 
 
-void PLAYER::load_game_data(FILE* file)
+/** @brief Load player data from @a file which has the @a file_version.
+  *
+  * Version additions that are not found in earlier versions:
+  * <ul>
+  * <li>Version 65 : THEFT_BOMB
+  * </ul>
+  *
+  * Version changes from earlier versions:
+  * <ul>
+  * <li>Version 65 : FUEL needs preferences
+  * </ul>
+  *
+**/
+void PLAYER::load_game_data(FILE* file, int32_t file_version)
 {
 	if (!file)
 		return;
@@ -2149,14 +2191,14 @@ void PLAYER::load_game_data(FILE* file)
 			}
 
 			// strip newline character
-			int32_t line_length = strlen(line);
+			size_t line_length = strlen(line);
 			while ( line[line_length - 1] == '\n') {
 				line[line_length - 1] = '\0';
 				line_length--;
 			}
 
 			// find equal sign
-			int32_t equal_position = 1;
+			size_t equal_position = 1;
 			while ( ( equal_position < line_length )
 				 && ( line[equal_position] != '='  ) )
 				equal_position++;
@@ -2220,8 +2262,47 @@ void PLAYER::load_game_data(FILE* file)
 				int32_t prf_val = -1;
 				sscanf(value, "%d %d", &prf_idx, &prf_val);
 				if ( (prf_idx > -1) && (prf_idx < THINGS) ) {
-					weapPref[prf_idx] = prf_val;
-					has_pref_loaded   = true; // to separate old versus new save games
+
+					/* === Version Checks for new weapons / items === */
+
+					if ( (file_version < 65) && (prf_idx >= THEFT_BOMB) ) {
+						if (THEFT_BOMB == prf_idx) {
+							// Generate a value
+							weapPref[THEFT_BOMB] = (150. + vengeful)
+							                     * (static_cast<double>(type) / 2. + .5)
+						                         * ( (selfPreservation + 2.) / 2.)
+						                         * (std::abs(defensive) + 1.0);
+							DEBUG_LOG_EMO(name, "New preference for %s : %5d",
+							              weapon[THEFT_BOMB].getName(),
+							              weapPref[THEFT_BOMB])
+						}
+						++prf_idx; // Skip new index value
+					} // End of version 65 THEFT_BOMB
+
+					/* === Version Checks for changed weapons / items === */
+
+					if ( (file_version < 65) ) {
+						if ( (ITEM_FUEL == (prf_idx - WEAPONS))
+						  && (prf_val < 1) ) {
+							// Generate a value
+							prf_val = static_cast<double>(MAX_WEAP_PROBABILITY)
+							        / 60.
+							        * ( static_cast<double>(type) / 2. + .5);
+
+							DEBUG_LOG_EMO(name, "Changed preference for %s : %5d",
+							              item[ITEM_FUEL].getName(),
+							              prf_val)
+						}
+					} // End of version 65 ITEM_FUEL
+
+					/* === Store data === */
+					// (If someone edited the save game, the index might
+					//  be too larger now, so check again to be safe!)
+					if (prf_idx < THINGS)
+						weapPref[prf_idx] = prf_val;
+
+					// separate very old from new save games
+					has_pref_loaded   = true;
 				}
 			}
 
@@ -2230,8 +2311,19 @@ void PLAYER::load_game_data(FILE* file)
 				int32_t weap_idx = -1;
 				int32_t weap_val = -1;
 				sscanf(value, "%d %d", &weap_idx, &weap_val);
-				if ( (weap_idx > -1) && (weap_idx < WEAPONS) )
-					nm[weap_idx] = weap_val;
+				if ( (weap_idx > -1) && (weap_idx < WEAPONS) ) {
+
+					/* === Version Checks for new weapons === */
+
+					if ( (file_version < 65) && (weap_idx >= THEFT_BOMB) )
+						++weap_idx; // Skip new index value
+
+					/* === Store data === */
+					// (If someone edited the save game, the index might
+					//  be too larger now, so check again to be safe!)
+					if (weap_idx < WEAPONS)
+						nm[weap_idx] = weap_val;
+				}
 			}
 
 			// Inventory of the items
@@ -2239,8 +2331,13 @@ void PLAYER::load_game_data(FILE* file)
 				int32_t item_idx = -1;
 				int32_t item_val = -1;
 				sscanf(value, "%d %d", &item_idx, &item_val);
-				if ( (item_idx > -1) && (item_idx < ITEMS) )
+				if ( (item_idx > -1) && (item_idx < ITEMS) ) {
+
+					/* === Version Checks for new weapons === */
+					// Currently there are no new items.
+
 					ni[item_idx] = item_val;
+				}
 			}
 
 			// Opponents Memory
@@ -2354,7 +2451,7 @@ void PLAYER::newGame()
 }
 
 
-// run this at the begining of each turn
+// run this at the beginning of each turn
 void PLAYER::newRound()
 {
 	// if the player is under computer control, give it back to the player
@@ -2437,8 +2534,8 @@ void PLAYER::noteDamageFrom(PLAYER* opponent, int32_t damage, bool destroyed)
 				if (!global.skippingComputerPlay ) {
 					try {
 						new FLOATTEXT(selectRevengePhrase(),
-										tank->x, tank->y - 30, .0, -.4, color,
-										CENTRE, TS_NO_SWAY, 300);
+						              tank->x, tank->y - 30, .0, -.4, color,
+						              CENTRE, TS_NO_SWAY, 300, false);
 					} catch (...) {
 						perror ( "player.cpp: Failed to allocate memory for"
 								 " revenge text in noteDamageFrom().");

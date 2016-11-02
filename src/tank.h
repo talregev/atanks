@@ -73,6 +73,7 @@ public:
 	bool    moveTank(int32_t direction);
 	void    newRound (int32_t pos_x, int32_t pos_y);
 	void    reactivate_shield ();
+	void    repair();
 	bool    repulse (double xpos, double ypos, double* xa, double* ya,
 	                 ePhysType phys_type);
 	void    resetFlashDamage();
@@ -127,8 +128,8 @@ private:
 	int32_t       para             = 0;
 	int32_t       repair_rate      = 0;
 	int32_t       repulsion        = 0;
-	int32_t shld_col_inner   = BLACK;
-	int32_t shld_col_outer   = BLACK;
+	int32_t       shld_col_inner   = BLACK;
+	int32_t       shld_col_outer   = BLACK;
 	double        shld_delta       = 360.; // divided by FPS in ctor
 	double        shld_phase       = 0.; // Neutral
 	int32_t       shld_rad_x       = 0; // Determined by the used bitmap

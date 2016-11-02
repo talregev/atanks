@@ -41,9 +41,9 @@ extern ENVIRONMENT env;
 
 
 // === Defined colours used everywhere ===
-extern int32_t BLACK, BLUE, DARK_GREEN, DARK_GREY, DARK_RED, GREY, GREEN,
-               LIGHT_GREEN, LIME_GREEN, ORANGE, PINK, PURPLE, RED, SILVER,
-               TURQUOISE, WHITE, YELLOW;
+extern int32_t BLACK, BLUE, DARK_GREEN, DARK_GREY, DARK_RED, GOLD, GREY,
+               GREEN, LIGHT_GREEN, LIME_GREEN, ORANGE, PINK, PURPLE, RED,
+               SILVER, TURQUOISE, WHITE, YELLOW;
 
 
 // === General values that are globally used ===
@@ -52,6 +52,7 @@ extern const char* errorMessage;
 extern int32_t     errorX, errorY;
 extern int32_t     k, K;
 extern int32_t     fi, lx, ly;
+extern int32_t     game_version;
 extern WEAPON      weapon[WEAPONS];    // from files.cpp
 extern WEAPON      naturals[NATURALS]; // from files.cpp
 extern ITEM        item[ITEMS];        // from files.cpp

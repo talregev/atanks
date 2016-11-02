@@ -1,4 +1,4 @@
-To build atanks using Visual Studio 2012 you will need
+To build atanks using Visual Studio 2015 you will need
 to adapt the include path settings to where your allegro
 includes are.
 Further replace alleg44.dll and alleg44_64.dll with the

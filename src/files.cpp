@@ -47,6 +47,11 @@ bool Save_Game()
 	if (!game_file)
 		return false;
 
+	// write file version information
+	fprintf(game_file, "VERSION\n");
+	fprintf(game_file, "FILE_VERSION=%d\n", game_version);
+	fprintf(game_file, "***\n");
+
 	// write global data
 	fprintf(game_file, "GLOBAL\n");
 	fprintf(game_file, "CURRENTROUND=%d\n", global.currentround + 1);
@@ -119,6 +124,7 @@ bool Load_Game()
 	int32_t line_num                   = 0;
 	int32_t player_idx                 = -1;
 	bool    done                       = false;
+	int32_t file_version               = 0;
 
 	// Be sure that numbers are understood right:
 	const char* cur_lc_numeric = setlocale(LC_NUMERIC, "C");
@@ -148,7 +154,7 @@ bool Load_Game()
 			}
 
 			// strip newline character
-			int32_t line_length = strlen(line);
+			size_t line_length = strlen(line);
 			while ( line[line_length - 1] == '\n') {
 				line[line_length - 1] = '\0';
 				line_length--;
@@ -159,13 +165,24 @@ bool Load_Game()
 				stage = SGS_GLOBAL;
 			else if (!strcasecmp(line, "ENVIRONMENT") )
 				stage = SGS_ENVIRONMENT;
-			else if (!strcasecmp(line, "PLAYERS") )
+			else if (!strcasecmp(line, "PLAYERS") ) {
+				// Here the file version must be known, or it is not set.
+				// Inform the user if an upgrade is needed
+				if (game_version > file_version)
+					fprintf(stdout, "Game \"%s\" needs to be upgraded"
+					        " from version %2.1f to version %2.1f\n",
+					        env.game_name,
+					        static_cast<float>(file_version) / 10.0,
+					        static_cast<float>(game_version) / 10.0);
+
 				stage = SGS_PLAYERS;
+			} else if (!strcasecmp(line, "VERSION") )
+				stage = SGS_VERSION;
 			else {
 				// Not a new stage, keep loading.
 
 				// find equal sign
-				int32_t equal_position = 1;
+				size_t equal_position = 1;
 				while ( ( equal_position < line_length )
 					 && ( line[equal_position] != '='  ) )
 					equal_position++;
@@ -238,11 +255,21 @@ bool Load_Game()
 
 						// Now let the player load itself
 						if (player_idx > -1)
-							env.allPlayers[player_idx]->load_game_data(game_file);
+							env.allPlayers[player_idx]->load_game_data(game_file, file_version);
 						else {
 							cerr << path_buf << ":" << line_num << " : Ignored line\n";
 							cerr << "The line \"" << line << "\"";
 							cerr << " is ignored, as player idx is " << player_idx << endl;
+						}
+
+						break;
+					case SGS_VERSION:
+						if (!strcasecmp(field, "FILE_VERSION") )
+							sscanf(value, "%d", &file_version);
+						else {
+							cerr << path_buf << ":" << line_num << " : Ignored line\n";
+							cerr << "The line \"" << line << "\"";
+							cerr << " is ignored, it does not belong to VERSION" << endl;
 						}
 
 						break;
@@ -324,8 +351,7 @@ bool Copy_Config_File()
 	if (!access(dest_path, R_OK | W_OK))
 		return true;
 
-	char* my_home_folder        = getenv(HOME_DIR);
-	int   status                = 0;
+	char*  my_home_folder = getenv(HOME_DIR);
 
 	// figure out where home is
 	if (! my_home_folder)
@@ -335,12 +361,12 @@ bool Copy_Config_File()
 	// file not copied yet, create the required directory
 	snprintf(buffer, PATH_MAX, "%s/.atanks", my_home_folder);
 #ifdef ATANKS_IS_WINDOWS
-	status = mkdir(buffer);
+	int32_t mkdir_status = mkdir(buffer);
 #else
-	status = mkdir(buffer, 0700);
+	int32_t mkdir_status = mkdir(buffer, 0700);
 #endif // ATANKS_IS_WINDOWS
 
-	if (status == -1) {
+	if (mkdir_status == -1) {
 		printf( "Error occured. Unable to create sub directory.\n");
 		return false;
 	}
@@ -360,10 +386,10 @@ bool Copy_Config_File()
 	}
 
 	// we have open files, let's copy
-	status = fread(buffer, 1, PATH_MAX, source_file);
-	while (status) {
-		status = fwrite(buffer, 1, PATH_MAX, dest_file);
-		status = fread(buffer, 1, PATH_MAX, source_file);
+	size_t file_status = fread(buffer, 1, PATH_MAX, source_file);
+	while (file_status) {
+		file_status = fwrite(buffer, 1, PATH_MAX, dest_file);
+		file_status = fread(buffer, 1, PATH_MAX, source_file);
 	}
 
 	fclose(source_file);

@@ -507,7 +507,7 @@ int32_t OptionItemBase::activateMenu(Menu* target)
 void OptionItemBase::activateText(char* target, int32_t k)
 {
 	if (target && (k > 0) ) {
-		int32_t oldTextLen = strlen(target);
+		int32_t oldTextLen = static_cast<int32_t>(strlen(target));
 		char    chr        = static_cast<char>(k & 0xff);
 		textLen = oldTextLen;
 

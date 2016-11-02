@@ -12,7 +12,7 @@ static BITMAP* temp_land = nullptr;
 
 
 // Define how the land will look.
-void generate_land (LevelCreator* lcr, int32_t xoffset, int32_t yoffset, int32_t heightx)
+void generate_land (LevelCreator* lcr, int32_t xoffset, int32_t heightx)
 {
 	double* depthStrip[2] = { nullptr, nullptr };
 	double  smoothness    = 100.;
@@ -84,7 +84,7 @@ void generate_land (LevelCreator* lcr, int32_t xoffset, int32_t yoffset, int32_t
 		// height.
 
 		if (land_type != LAND_NONE)
-			surface = (1. + perlin2DPoint(1.0, smoothness, xoffset + x, yoffset,
+			surface = (1. + perlin2DPoint(1.0, smoothness, xoffset + x, 0,
 			                              lambda, octaves) )
 			        / 2. * land_height;
 		global.surface[x].store(surface);
@@ -130,7 +130,7 @@ void generate_land (LevelCreator* lcr, int32_t xoffset, int32_t yoffset, int32_t
 			for (depth = 1; depth < env.screenHeight; depth++) {
 				depthStrip[1][depth] = (1. + perlin2DPoint (1.0, smoothness,
 				                                            xoffset + x,
-				                                            yoffset + depth,
+				                                            depth,
 				                                            lambda, octaves) )
 				                     / 2. * land_height
 				                     - (env.screenHeight - depth);

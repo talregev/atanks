@@ -98,8 +98,14 @@ EXPLOSION::EXPLOSION (PLAYER* player_, double x_, double y_,
 	// Note: Napalm Jellies deal damage over time and not at once.
 	if ( (NAPALM_JELLY == weapType)
 	  || ( (weapType >= RIOT_BOMB) && (weapType <= CLUSTER_MIRV) ) ) {
-		apply_damage = false;
-		// And those wouldn't throw debris or clear terrain either
+
+		// Riot weapons must set who caused falling damage, but the
+		// others do not trigger any
+		if ( (NAPALM_JELLY == weapType) || (weapType >= DIRT_BALL) )
+			apply_damage = false;
+
+		// Neither of these would throw debris or clear terrain
+		// (Note: Riot weapons need a special trigger to clear terrain once.)
 		hasThrown  = true;
 		hasCleared = true;
 	} else if (env.debris_level > 0) {
@@ -380,11 +386,23 @@ void EXPLOSION::draw()
 					  && (weapType >= DIRT_BALL)
 					  && (weapType <= SMALL_DIRT_SPREAD) ) {
 						BITMAP* tmp    = create_bitmap(rad * 2, rad * 2); // for mixing
-						int32_t   colour = player ? player->color : GREEN;
-
+						int32_t colour = player ? player->color : GREEN;
 						clear_to_color(tmp, PINK);
 
-						circlefill(tmp, rad, rad, rad - 1, colour);
+						if (global.skippingComputerPlay)
+							circlefill(tmp, rad, rad, rad - 1, colour);
+						else {
+							float fR   = static_cast<float>(getr(colour));
+							float fG   = static_cast<float>(getg(colour));
+							float fB   = static_cast<float>(getb(colour));
+							float fRad = static_cast<float>(rad);
+							for (float r = fRad - 1.f; r > .998f; r -= 1.f)
+								circlefill(tmp, rad, rad, static_cast<int32_t>(r), makecol(
+									static_cast<int32_t>(fR * (r / fRad) ),
+									static_cast<int32_t>(fG * (r / fRad) ),
+									static_cast<int32_t>(fB * (r / fRad) )
+								));
+						}
 
 						// copy terrain over explosion
 						masked_blit(global.terrain, tmp,
@@ -409,8 +427,17 @@ void EXPLOSION::draw()
 
 						for (int32_t i = 1 + (curFrame % 2); i < rad; i += 2)
 							circle(global.canvas, x, y, i, i < (rad / 2) ? col_mid : col_back);
-						setUpdateArea (x - rad - 1, y - rad - 1,
-									(rad + 1) * 2, (rad + 1) * 2);
+						setUpdateArea(x - rad - 1, y - rad - 1,
+						              (rad + 1) * 2, (rad + 1) * 2);
+					} else if (THEFT_BOMB == weapType) {
+						int32_t col_front = GOLD;
+						int32_t col_back  = GetShadeColor(BLACK, false, col_front);
+
+						circlefill(global.canvas, x, y, rad,     col_front);
+						circle    (global.canvas, x, y, rad / 2, col_back);
+
+						setUpdateArea(x - rad - 1, y - rad - 1,
+						              (rad + 1) * 2, (rad + 1) * 2);
 					} else {
 						// This is something else. But what?
 						fprintf(stderr, "EXPLOSION::draw() Unknown weapon type %d\n",
@@ -575,11 +602,46 @@ void EXPLOSION::explode ()
 				if (dmg > 0.) {
 					if (PERCENT_BOMB == weapType)
 						lt->addDamage(player, dmg); // already set, no multiplier
-					else if (REDUCER == weapType) {
-						lt->player->damageMultiplier *= 0.75; // already checked
-					} else
+					else if (REDUCER == weapType)
+						// Note: dmg was set to a fake damage of 1.0
+						lt->player->damageMultiplier *= 0.667; // already checked
+					else if ( (RIOT_BOMB <= weapType)
+					       && (RIOT_BLAST >= weapType) )
+						lt->addDamage(player, 0.); // So falling damage gets credited.
+					else if ( (THEFT_BOMB == weapType)
+					         && (lt->player != player) ) {
+						// Note: dmg was set to a fake damage of 1.0
+						int32_t max_amount = ROUND(player->damageMultiplier * THEFT_AMOUNT);
+						int32_t amount     = lt->player->money <= max_amount
+						                   ? lt->player->money
+						                   : max_amount; // you have?
+
+						// We indicate the theft by a red string on top of the tank
+						static char the_money[17] = { 0x0 };
+						snprintf(the_money, 16, "-$%s", Add_Comma(amount) );
+
+						if (!global.skippingComputerPlay) {
+							// show how much the shooter gets
+							try {
+								new FLOATTEXT(the_money,
+								              lt->x, lt->y - 30,
+								              .0, -.5, RED,
+								              CENTRE,
+								              env.swayingText ? TS_HORIZONTAL : TS_NO_SWAY,
+								              200, false);
+								if (global.stage < STAGE_SCOREBOARD)
+									global.updateMenu = true;
+							} catch (...) {
+								perror("tank.cpp: Failed allocating memory for"
+								       "money text in explode().");
+							}
+						}
+
+						lt->player->money -= amount; // the actual theft.
+						player->money     += amount; // money goes to the shooter.
+					} else if (THEFT_BOMB != weapType)
 						lt->addDamage(player, dmg
-									* (player ? player->damageMultiplier : 1.) );
+						            * (player ? player->damageMultiplier : 1.) );
 				} // End of having damage to deal
 
 				lt->getNext(&lt);
@@ -764,7 +826,7 @@ void EXPLOSION::do_throw()
 
         // find first earth pixel:
         if ( (ypos < y) && (maxY > ypos)
-		  && checkPixelsBetweenTwoPoints(&xpos, &ypos, xpos, maxY)) {
+		  && checkPixelsBetweenTwoPoints(&xpos, &ypos, xpos, maxY, 0.0, nullptr)) {
 
 			// Try to get a free debris pool item
 			sDebrisItem* deb_item = global.get_debris_item(deb_rad);
@@ -911,10 +973,18 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 	if ( (nullptr == tank) || (tank->destroy) )
 		return 0.;
 
-	double weap_rad  = weapon[type].radius;
-	double xrad      =    DRILLER       == type    ? weap_rad / 20. : weap_rad;
-	double yrad      = ( (SHAPED_CHARGE <= type)
-	                  && (CUTTER        >= type) ) ? weap_rad / 20. : weap_rad;
+	double weap_rad  = type < WEAPONS
+	                 ? weapon[type].radius
+	                 : naturals[type - WEAPONS].radius;
+	double xrad      = weap_rad;
+	double yrad      = weap_rad;
+
+	// Adapt x-/y-radius for the driller and the shaped weapons
+	if (DRILLER == type)
+		xrad /= 20;
+	if ( (SHAPED_CHARGE <= type) && (CUTTER >= type) )
+		yrad /= 20;
+
 	double in_rate_x = 0.;
 	double in_rate_y = 0.;
 	double dmg       = 0.;
@@ -923,30 +993,28 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 		if (PERCENT_BOMB == type)
 			dmg = ((tank->l + tank->sh) / 2) + 1;
 		else if ( (REDUCER == type)
-		       && (tank->player->damageMultiplier > 0.1) )
+			   && (tank->player->damageMultiplier > 0.1) )
+			dmg = 1.; // So result > 0 can be checked
+		else if (THEFT_BOMB == type)
+			dmg = 1.; // So result > 0 can be checked
+		else if ( (RIOT_BOMB <= type) && (RIOT_BLAST >= type) )
+			dmg = 1.; // So result > 0 can be checked
+		else if (THEFT_BOMB == type)
+			dmg = 1.; // So result > 0 can be checked
+		else if ( (RIOT_BOMB <= type) && (RIOT_BLAST >= type) )
 			dmg = 1.; // So result > 0 can be checked
 
 		// Shaped charges and drillers have a minimum distance under which they
 		// deal no damage:
-		else if ( ( ( (SHAPED_CHARGE > type) || (CUTTER < type) ) //     ( Not shaped
-		         || (std::abs(tank->x - hit_x) > yrad) )          //       or x distance okay )
-		       && ( (DRILLER != type)                             // and (not driller
-		         || (std::abs(tank->y - hit_y) > xrad) ) ) {      //       or y distance okay )
+		else if ( ( (SHAPED_CHARGE > type) || (CUTTER < type) ) //     ( Not shaped
+		       || (std::abs(tank->x - hit_x) > yrad) ) {        //       or x distance okay )
 			/* Note: The radii are reversed as the opposite radius is the
 			 *       minimum distance needed for the main blast radius.
-			 * Note: The above is built from the following formula:
-			 * Be a = Weapon is a shaped charge, wide boy or cutter,
-			 *    b = x distance is greater than the weapons x range minimum,
-			 *    c = Weapon is the driller,
-			 *    d = y distance is greater than the weapons y range minimum.
-			 * Then the following term must be true to be allowed to enter this block:
-			 * (~a v b) ^ (~c v d) which reads like:
-			 *       (Not a shaped weapon OR the x distance is in order)
-			 *   AND (Not the driller     OR the y distance is in order)
-			 * The above if block actually is exactly that from bottom to top.
 			 */
 
-			dmg = weapon[type].damage;
+			dmg = type < WEAPONS
+			    ? weapon[type].damage
+			    : naturals[type - WEAPONS].damage;
 
 			// Some weapons have minimum rates on axis ratings
 			if (DRILLER == type) {
@@ -967,10 +1035,19 @@ double get_hit_damage(TANK* tank, weaponType type, int32_t hit_x, int32_t hit_y)
 			}
 
 			// The full in_rate must not be lower than 10% on any weapon.
-			double in_rate = in_rate_x * in_rate_y;
-			if (in_rate < 0.1)
-				in_rate = 0.1;
-			dmg *= in_rate;
+			// However, the driller has a minimum x distance to cover.
+			if ( (DRILLER != type)                      // (not driller
+			  || (std::abs(tank->y - hit_y) > xrad) ) { //  or y distance okay )
+				double in_rate = in_rate_x * in_rate_y;
+				if (in_rate < 0.1)
+					in_rate = 0.1;
+				dmg *= in_rate;
+			}
+			// If this is a driller and the distance is too low,
+			// a minimum damage of 1. is done so the cause of
+			// potential falling damage is at least noted.
+			else if (DRILLER == type)
+				dmg = 1.;
 		} // End of having damage to deal
 	} // End of tank in ellipse
 

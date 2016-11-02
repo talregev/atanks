@@ -59,7 +59,7 @@ bool PHYSICAL_OBJECT::checkPixelsBetweenPrevAndNow()
 	double startX = x - xv;
 	double startY = y - yv;
 
-	if (checkPixelsBetweenTwoPoints(&startX, &startY, x, y)) {
+	if (checkPixelsBetweenTwoPoints(&startX, &startY, x, y, mindDelay, &mindPassed)) {
 		x = startX;
 		y = startY;
 		return true;
@@ -194,11 +194,12 @@ void PHYSICAL_OBJECT::applyPhysics()
 		//       terminates the movement towards a wall. Only if the path
 		//       really is clear wall handling makes sense.
 		// =================================================================
-		if (checkPixelsBetweenTwoPoints(&currX, &currY, nextX, nextY)) {
+		if (checkPixelsBetweenTwoPoints(&currX, &currY, nextX, nextY, mindDelay, &mindPassed)) {
 			xv_cur = currX - nextX;
 			yv_cur = currY - nextY;
 			nextX  = currX;
 			nextY  = currY;
+
 			if (PT_DIRTBOUNCE == physType) {
 				double rxv, ryv;
 				getDirtBounceReact(nextX, nextY, xv, yv, rxv, ryv);
@@ -375,7 +376,9 @@ void PHYSICAL_OBJECT::applyPhysics()
 }
 
 /* --- global function --- */
-bool checkPixelsBetweenTwoPoints (double *startX, double *startY, double endX, double endY)
+bool checkPixelsBetweenTwoPoints(double* startX,    double* startY,
+                                 double  endX,      double  endY,
+                                 double  can_delay, double* has_delayed)
 {
 	// return at once if there can't be any dirt in the box.
 	if (!global.isDirtInBox(*startX, *startY, endX, endY)) {
@@ -390,11 +393,12 @@ bool checkPixelsBetweenTwoPoints (double *startX, double *startY, double endX, d
 	double length = FABSDISTANCE2(xDist, yDist, 0, 0);
 
 	// Shortcuts:
-	bool   hasTop = env.isBoxed;
-	double left   = 1;
-	double right  = env.screenWidth - 2;
-	double top    = MENUHEIGHT + (hasTop ? 1 : 0);
-	double bottom = env.screenHeight - 2;
+	bool   hasDelay = has_delayed && (can_delay > *has_delayed);
+	bool   hasTop   = env.isBoxed;
+	double left     = 1;
+	double right    = env.screenWidth - 2;
+	double top      = MENUHEIGHT + (hasTop ? 1 : 0);
+	double bottom   = env.screenHeight - 2;
 
 
 	// Drop out early if a neighbouring pixel is checked and it is a hit
@@ -404,19 +408,31 @@ bool checkPixelsBetweenTwoPoints (double *startX, double *startY, double endX, d
 		  && (endY > top)
 		  && (endY < bottom) ) {
 
+			*startX = endX;
+			*startY = endY;
+
 			if (PINK != getpixel(global.terrain, endX, endY) ) {
-				*startX = endX;
-				*startY = endY;
 				result  = true;
+
+				// For mind shot delays the distance is only added
+				// to the travelled distance, but the result remains
+				// false if the distance is not used up.
+				if (hasDelay) {
+					*has_delayed += length;
+					if (can_delay > *has_delayed)
+						result = false;
+				}
 			}
 
 		} // End of having a valid position
+
 		return result;
 	} // End of early drop out
 
 	// Otherwise the path must be checked
-	double xInc = xDist / length;
-	double yInc = yDist / length;
+	double xInc  = xDist / length;
+	double yInc  = yDist / length;
+	double iDist = ABSDISTANCE2(0.0, 0.0, xInc, yInc); // [i]ncrease[Dist]ance
 
 	// sanity check
 	if (length > (env.screenWidth + env.screenHeight))
@@ -442,9 +458,19 @@ bool checkPixelsBetweenTwoPoints (double *startX, double *startY, double endX, d
 		  && (*startY > top)
 		  && (*startY < bottom) ) {
 
-			if (PINK != getpixel (global.terrain, *startX, *startY) )
+			if (PINK != getpixel (global.terrain, *startX, *startY) ) {
 				result = true;
 				// Note: startX/startY now point to the hit pixel
+
+				// For mind shot delays we revert to false as long
+				// as the allowed distance through dirt is used up.
+				if (hasDelay) {
+					*has_delayed += iDist;
+					if (can_delay > *has_delayed)
+						result = false;
+				}
+
+			}
 
 		} // End of having a valid position
 	} // End of walking positions

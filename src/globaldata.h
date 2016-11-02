@@ -129,6 +129,7 @@ public:
 	TANK*   get_curr_tank     ();
 	item_t* get_debris_item   (int32_t radius);
 	TANK*   get_next_tank     (bool* wrapped_around);
+	TANK*   get_random_tank   ();
 	void    initialise        ();
 	bool    isCloseBtnPressed ();
 	bool    isDirtInBox       (int32_t x1, int32_t y1, int32_t x2, int32_t y2);

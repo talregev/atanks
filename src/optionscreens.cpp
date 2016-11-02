@@ -886,12 +886,12 @@ static void build_Money(Menu &mMoney,
 	itemY += itemFullHeight;
 
 	// "Self-Damage Penalty"
-	mMoney.addValue(&env.scoreSelfHit, idx++, WHITE, 0, 10000, 1000, "%d",
+	mMoney.addValue(&env.scoreSelfHit, idx++, WHITE, 0, 5000, 25, "%d",
 	                menuMid - 50, itemY, itemWidth, itemHeight, itemPadding);
 	itemY += itemFullHeight;
 
 	// "Team-Damage Penalty"
-	mMoney.addValue(&env.scoreTeamHit, idx++, WHITE, 0, 10000, 1000, "%d",
+	mMoney.addValue(&env.scoreTeamHit, idx++, WHITE, 0, 5000, 10, "%d",
 	                menuMid - 50, itemY, itemWidth, itemHeight, itemPadding);
 	itemY += itemFullHeight;
 

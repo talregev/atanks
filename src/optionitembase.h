@@ -140,10 +140,10 @@ protected:
 		if (format) {
 			char txt_buf[256] = { 0x0 };
 			snprintf(txt_buf, 255, format, *target);
-			textLen = strlen(txt_buf);
+			textLen = static_cast<int32_t>(strlen(txt_buf));
 			this->displayText(txt_buf);
 		} else if (texts && texts[entryNum]) {
-			textLen = strlen(texts[entryNum]);
+			textLen = static_cast<int32_t>(strlen(texts[entryNum]));
 			this->displayText(texts[entryNum]);
 		}
 	}

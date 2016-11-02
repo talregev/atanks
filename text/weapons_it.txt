@@ -155,6 +155,9 @@ Distrugge meta' della corazza dell'obiettivo
 Riduttore
 Abbassa la potenza esplosiva dei missili nemici.
 
+Theft Bomb
+Steals 5k from opponent on impact.
+
 Laser Piccolo
 Raggio Laser a 50kW.
 

@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cmath>
 #include <algorithm>
+#include <cassert>
 #include "text.h"
 #include "main.h"
 
@@ -271,23 +272,25 @@ const char* Add_Comma(int32_t number)
 	char buffer[15] = { 0 };
 	snprintf(buffer, 14, "%d", number);
 
-	int32_t index       = strlen(buffer); // start from the end
+	int32_t index       = static_cast<int32_t>(strlen(buffer)); // start from the end
 	int32_t returnindex = index + (index / 3) - 1;
 	int32_t th_count    = 0;
 
 	if (0 == (index % 3) )
 		returnindex--;
 
-	while (--index >= 0) {
+	while ( (index-- > 0) && (returnindex >= 0) ) {
 		return_value[returnindex--] = buffer[index];
 		th_count++;
 
 		if ( (th_count == 3) && (returnindex > 0) ) {
 			th_count = 0;
-			return_value[returnindex] = ',';
-			returnindex--;
+			return_value[returnindex--] = ',';
 		}
 	}
+
+	assert((index < 1) && "ERROR: index is not smaller than 1!");
+	assert((returnindex < 1) && "ERROR: returnindex is not smaller than 1!");
 
 	return return_value;
 }

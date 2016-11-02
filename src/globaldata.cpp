@@ -546,7 +546,8 @@ TANK* GLOBALDATA::get_next_tank(bool *wrapped_around)
 	while (!found && (wrapped < 2)) {
 		if (index >= MAXPLAYERS) {
 			index = 0;
-			*wrapped_around = true;
+			if (wrapped_around)
+				*wrapped_around = true;
 			wrapped++;
 		}
 
@@ -571,6 +572,23 @@ TANK* GLOBALDATA::get_next_tank(bool *wrapped_around)
 		updateMenu = true;
 
 	return next_tank;
+}
+
+
+/// @brief randomly return one active tank
+TANK* GLOBALDATA::get_random_tank()
+{
+	int32_t idx      = rand() % MAXPLAYERS;
+	int32_t attempts = 2;
+	while ( (!order[idx] || order[idx]->destroy)
+	     && (idx < MAXPLAYERS) && attempts ) {
+		if (++idx >= MAXPLAYERS) {
+			idx = 0;
+			--attempts;
+		}
+	}
+
+	return order[idx];
 }
 
 
@@ -663,14 +681,14 @@ void GLOBALDATA::load_from_file (FILE* file)
 				return;
 
 			// strip newline character
-			int32_t line_length = strlen(line);
+			size_t line_length = strlen(line);
 			while ( line[line_length - 1] == '\n') {
 				line[line_length - 1] = '\0';
 				line_length--;
 			}
 
 			// find equal sign
-			int32_t equal_position = 1;
+			size_t equal_position = 1;
 			while ( ( equal_position < line_length )
 				 && ( line[equal_position] != '='  ) )
 				equal_position++;

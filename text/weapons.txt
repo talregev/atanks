@@ -1,3 +1,8 @@
+# Cost Amount Mass Drag Radius Sound Etime Damage Picpoint Spread Delay Noimpact
+# TechLevel Warhead NumSubmunitions Submunition ImpartVelocity Divergence
+# SpreadVariation LaunchSpeed SpeedVariation CountDown CountVariation
+#
+
 *WEAPONS*
 Small Missile
 Produces a low impact explosion
@@ -157,43 +162,43 @@ Produce a small earthquake on impact
 
 Shock Wave
 Produce a large earthquake on impact
-10000 2 60 0.2 100 2 3 20 15 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+8000 2 60 0.2 100 2 3 20 15 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
 
 Tectonic Shift
 Produce a huge earthquake on impact
-30000 1 100 0.2 150 3 4 30 16 1 0 0 5 0 0 -1 0 0 0 0 0 -1 0
+16000 1 100 0.2 150 3 4 30 16 1 0 0 5 0 0 -1 0 0 0 0 0 -1 0
 
 Riot Bomb
 Destroy a small volume of dirt without damaging anything else
-2000 5 15 0.2 25 0 2 0 23 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+2000 5 15 0.2 50 0 2 0 23 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
 
 Heavy Riot Bomb
 Destroy a large volume of dirt without damaging anything else
-3000 2 30 0.2 100 1 2 0 24 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+3000 2 30 0.2 125 1 2 0 24 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
 
 Riot Charge
 Cuts through a cone of dirt directly in front of the gun
-1000 5 15 0.2 50 0 2 0 11 1 0 1 1 0 0 -1 0 0 0 0 0 0 0
+1000 5 15 0.2 75 0 2 0 11 1 0 1 1 0 0 -1 0 0 0 0 0 0 0
 
 Riot Blast
 Cuts through a large cone of dirt directly in front of the gun
-2000 2 30 0.2 150 1 2 0 12 1 0 1 3 0 0 -1 0 0 0 0 0 0 0
+2000 2 30 0.2 200 1 2 0 12 1 0 1 3 0 0 -1 0 0 0 0 0 0 0
 
 Dirt Ball
 Produce a small sphere of material to bury your opponents
-3000 5 15 0.2 25 0 2 0 11 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
+2000 5 15 0.2 40 0 2 0 11 1 0 0 1 0 0 -1 0 0 0 0 0 -1 0
 
 Large Dirt Ball
 Produce a large sphere of material to bury your opponents
-7000 2 30 0.2 60 1 2 0 12 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+4000 2 30 0.2 70 1 2 0 12 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
 
 Super Dirt Ball
 Produce a huge ball of material to bury your opponents
-10000 1 60 0.2 100 2 2 0 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+7000 1 60 0.2 120 2 2 0 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 Small Dirt Spread
 Drop little piles of dirt on your enemies
-4000 2 30 0.2 40 1 2 0 12 4 0 0 3 0 0 -1 0 0 0 0 0 -1 0
+4000 2 30 0.2 70 1 2 0 12 4 0 0 3 0 0 -1 0 0 0 0 0 -1 0
 
 Cluster MIRV
 Releases a cluster of small missiles on its way down
@@ -204,20 +209,24 @@ Destroys half of the target's armour
 12000 2 30 0.2 30 3 4 0 29 1 0 0 3 0 0 -1 0 0 0 0 0 -1 0
 
 Reducer
-Lowers the explosive power of an enemy's missiles.
+Lowers the explosive power of an enemy's missiles by one third.
 6000 3 25 0.3 30 3 4 0 30 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+
+Theft Bomb
+Steals 5k from opponent on impact.
+3000 3 25 0.3 40 3 4 0 31 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 Small Laser
 A 50kW laser beam.
-5000 5 1 0.0 2 5 5 30 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+4000 5 1 0.0 2 5 5 30 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 Medium Laser
 A 100kW laser beam
-10000 3 1 0.0 5 5 5 65 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+8000 3 1 0.0 5 5 5 65 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 Large Laser
 A powerful 200kW laser beam
-15000 2 1 0.0 9 5 5 150 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
+12000 2 1 0.0 9 5 5 150 13 1 0 0 4 0 0 -1 0 0 0 0 0 -1 0
 
 *NATURALS*
 Small Meteor
@@ -247,19 +256,19 @@ A powerful bolt of lightning
 *ITEMS*
 Teleport
 Teleports the tank to a random location
-5000 2 1 3 6
+2000 2 1 3 6
 
 Swapper
 Swap places with another tank
-10000 2 1 4 6
+40000 2 1 4 6
 
 Mass Teleport
 Teleports all tanks on the screen
-15000 2 1 4 6
+8000 2 1 4 6
 
 Fan
 Change the wind strength and direction
-2500 3 1 3 7
+500 3 1 3 7
 
 Vengeance
 A small self-destruct or auto-destruct device, if you've got to go, why not take someone with you?
@@ -267,11 +276,11 @@ A small self-destruct or auto-destruct device, if you've got to go, why not take
 
 Dying Wrath
 A large self/auto-destruct device. Mutually Assured Destruction.
-25000 1 1 3 3 21 3
+20000 1 1 3 3 21 3
 
 Fatal Fury
 End it all in style
-50000 1 1 4 4 24 5
+30000 1 1 4 4 24 5
 
 Light Shield
 A small amount of protection from damage
@@ -331,13 +340,13 @@ Repairs the tank a little each turn. Each additional kit provides a slightly sma
 
 Fuel
 Allows the tank to move across level terran.
-1000 10 0 2 0 0 0
+200 10 0 2 0 0 0
 
 Rocket
 Launches the tank into the air.
-2000 2 1 4 0 0 0
+1000 2 1 4 0 0 0
 
 SDI Missile Defense
-Offers some protection against incoming missiles.
-10000 1 0 5 5 0
+Offers some protection against incoming missiles. Additional purchases increase the range of defense. There is a 1% chance on each use that an item will burn out.
+20000 1 0 5 5 0
 

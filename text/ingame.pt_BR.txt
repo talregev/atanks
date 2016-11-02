@@ -81,3 +81,4 @@ O cliente foi desligado do servidor.
 O servidor está cheio ou o jogo não começou.
 O servidor fechou a ligação.
 O jogo acabou.
+

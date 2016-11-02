@@ -2,10 +2,10 @@
 //
 #include "resource.h"
 /////////////////////////////////////////////////////////////////////////////
-// Deutsch (Deutschland) resources
+// Neutral (Default) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 #pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,19 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 A                       ICON                    "../atanks.ico"
+
 ALLEGRO_ICON            ICON                    "../atanks.ico"
+
+#endif    // Neutral (Default) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -24,8 +36,8 @@ ALLEGRO_ICON            ICON                    "../atanks.ico"
 //
 
 1 VERSIONINFO
- FILEVERSION 6,1,2,0
- PRODUCTVERSION 6,1,2,0
+ FILEVERSION 6,4,99,0
+ PRODUCTVERSION 6,4,99,0
  FILEFLAGSMASK 0x0L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -41,11 +53,11 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "FileDescription", "Atomic Tanks"
-            VALUE "FileVersion", "6.1.2.0"
+            VALUE "FileVersion", "6.4.99.0"
             VALUE "LegalCopyright", "See credits.txt and COPYING.txt"
             VALUE "OriginalFilename", "atanks.exe"
             VALUE "ProductName", "Atomic Tanks"
-            VALUE "ProductVersion", "6.1.2.0"
+            VALUE "ProductVersion", "6.4.99.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -79,7 +91,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Deutsch (Deutschland) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

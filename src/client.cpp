@@ -160,7 +160,7 @@ int Parse_Client_Data(char *buffer)
        sscanf(args[4], "%lf", &delta_y);
        sscanf(args[5], "%d", &my_type);
        missile = new MISSILE(nullptr, my_x, my_y, delta_x, delta_y, my_type,
-							MT_WEAPON, 1);
+							MT_WEAPON, 1, 0);
        if (! missile)
          printf("Attempted to create missile failed in client code.\n");
        return FALSE;

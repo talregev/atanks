@@ -766,7 +766,11 @@ void ENVIRONMENT::load_from_file (FILE *file)
 				play_music = val > 0 ? true : false;
 			} else if (!strcasecmp(field, "rounds") )
 				sscanf(value, "%u", &rounds);
-			else if (!strcasecmp(field, "scorehitunit"))
+			else if (!strcasecmp(field, "scoreboard")) {
+				int32_t val = 0;
+				sscanf(value, "%d", &val);
+				global.showScoreBoard = val > 0 ? true : false;
+			} else if (!strcasecmp(field, "scorehitunit"))
 				sscanf(value, "%d", &scoreHitUnit);
 			else if (!strcasecmp(field, "scoreroundwinbonus"))
 				sscanf(value, "%d", &scoreRoundWinBonus);
@@ -1477,6 +1481,7 @@ bool ENVIRONMENT::save_to_file (FILE *file)
 	fprintf (file, "PLAYMUSIC=%d\n", play_music ? 1 : 0);
 	fprintf (file, "ROUNDS=%d\n", rounds);
 	fprintf (file, "SATELLITE=%d\n", satellite);
+	fprintf (file, "SCOREBOARD=%d\n", global.showScoreBoard ? 1 : 0);
 	fprintf (file, "SCOREHITUNIT=%d\n", scoreHitUnit);
 	fprintf (file, "SCOREROUNDWINBONUS=%d\n", scoreRoundWinBonus);
 	fprintf (file, "SCORESELFHIT=%d\n", scoreSelfHit);

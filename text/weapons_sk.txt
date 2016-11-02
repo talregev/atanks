@@ -155,6 +155,9 @@ Zničí polovicu brnenia cieľa
 Redukovač
 Znižuje explozívnu silu nepriateľských striel.
 
+Theft Bomb
+Steals 5k from opponent on impact.
+
 Malý laser
 50kW laserový lúč
 

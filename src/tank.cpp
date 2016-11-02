@@ -32,9 +32,9 @@
 
 TANK::TANK () :
 	PHYSICAL_OBJECT(false),
-	healthText(nullptr, -1, -1, 0., 0., WHITE,     CENTRE, TS_NO_SWAY, -1),
-	nameText(  nullptr, -1, -1, 0., 0., WHITE,     CENTRE, TS_NO_SWAY, -1),
-	shieldText(nullptr, -1, -1, 0., 0., TURQUOISE, CENTRE, TS_NO_SWAY, -1)
+	healthText(nullptr, -1, -1, 0., 0., WHITE,     CENTRE, TS_NO_SWAY, -1, true),
+	nameText(  nullptr, -1, -1, 0., 0., WHITE,     CENTRE, TS_NO_SWAY, -1, true),
+	shieldText(nullptr, -1, -1, 0., 0., TURQUOISE, CENTRE, TS_NO_SWAY, -1, true)
 {
 	// The shield phase delta depends on currently set FPS
 	shld_delta /= static_cast<double>(env.frames_per_second);
@@ -141,7 +141,7 @@ void TANK::activateCurrentSelection()
 					MISSILE* newmis = new MISSILE(player,
 					                   x + (env.slope[ca][0] * turr_off_x),
 									   y + (env.slope[ca][1] * turr_off_x),
-									   mxv, myv, cw, MT_WEAPON, 1);
+									   mxv, myv, cw, MT_WEAPON, 1, 0);
 
 					// set up / check volley
 					if (weapon[cw].delay && (0 == fire_another_shot) )
@@ -439,7 +439,7 @@ void TANK::applyDamage ()
 							.0, -.5, team_hit ? PURPLE : self_hit ? RED : GREEN,
 							CENTRE,
 							env.swayingText ? TS_HORIZONTAL : TS_NO_SWAY,
-							200);
+							200, false);
 					if (global.stage < STAGE_SCOREBOARD)
 						global.updateMenu = true;
 				} catch (...) {
@@ -460,8 +460,9 @@ void TANK::applyDamage ()
 
 			try {
 				new FLOATTEXT(creditTo->selectGloatPhrase(),
-							creditTo->tank->x, creditTo->tank->y - 30,
-							.0, -.4, creditTo->color, CENTRE, TS_NO_SWAY, 200);
+				              creditTo->tank->x, creditTo->tank->y - 30,
+				              .0, -.4, creditTo->color, CENTRE, TS_NO_SWAY,
+				              200, false);
 			} catch (...) {
 				perror ( "tank.cpp: Failed to allocate memory for"
 						 " gloating text in applyDamage().");
@@ -472,8 +473,8 @@ void TANK::applyDamage ()
 		if (self_hit && destroy && !global.skippingComputerPlay) {
 			try {
 				new FLOATTEXT(player->selectSuicidePhrase(),
-								x, y - 30, .0, -.4, player->color,
-								CENTRE, TS_NO_SWAY, 300);
+				              x, y - 30, .0, -.4, player->color,
+				              CENTRE, TS_NO_SWAY, 300, false);
 			} catch (...) {
 				perror ( "tank.cpp: Failed allocate memory for suicide"
 						 " text in applyDamage().");
@@ -500,6 +501,8 @@ void TANK::applyDamage ()
 				t_dmg += sh_dmg - old_sh;
 				sh_dmg = old_sh;
 			}
+			if (t_dmg > l)
+				t_dmg = l;
 
 			sh = old_sh - sh_dmg;
 			l -= t_dmg;
@@ -525,7 +528,8 @@ void TANK::applyDamage ()
 			snprintf (buf, 9, "%d", full_damage);
 			try {
 				new FLOATTEXT(buf, x, y - 30, .0, -.3, RED, CENTRE,
-						env.swayingText ? TS_HORIZONTAL : TS_NO_SWAY, 300);
+				              env.swayingText ? TS_HORIZONTAL : TS_NO_SWAY,
+				              300, false);
 			} catch (...) {
 				perror ( "tank.cpp: Failed to allocate memory for damage"
 						 " text in applyDamage().");
@@ -594,11 +598,9 @@ void TANK::applyPhysics ()
 
 		// Check whether a previous fall just ends:
 		if ( (yv > 0.) && ( (y >= bottom) || (PINK != pix_col) || on_tank ) ) {
-			if (isTeleported) {
-				addDamage(creditTo, yv * 10.);
+			addDamage(creditTo, yv * 10.);
+			if (isTeleported)
 				isTeleported = false;
-			} else
-				addDamage(nullptr, yv * 10.);
 
 			// 10 points of damage are 'free' when falling
 			// Note: This negates any damage when parachuting as well.
@@ -1355,8 +1357,9 @@ bool TANK::isInEllipse(double ex, double ey, double rx, double ry,
 **/
 bool TANK::moveTank(int32_t direction)
 {
-	// Return false now if there is no fuel or the tank is currently flying
-	if ( (player->ni[ITEM_FUEL] < 1 ) || (yv < 0.) || (yv > 0.) )
+	// return now if the tank is flying/falling or has no fuel
+	if ( (player->ni[ITEM_FUEL] < 1 ) // No fuel ?
+	  || (yv < 0.) || (yv > 0.) )     // flying / falling ?
 		return false;
 
 	// Safety: assert DIR_LEFT/RIGHT
@@ -1366,36 +1369,39 @@ bool TANK::moveTank(int32_t direction)
 		return false;
 
 	// Check whether the target pixel is beyond the border or occupied
-	int32_t next_x = x + direction;
-	int32_t min_y  = y + tank_off_y - tank_sag - 4 ;
-
-	if ( (next_x < 1)
-	  || (next_x >= env.screenWidth)
+	int32_t nextX = ROUND(x + direction);
+	if ( (nextX < 1)
+	  || (nextX >= env.screenWidth)
 	  || (env.landType == LAND_NONE) )
 		return false;
 
-	if (PINK != getpixel(global.terrain, next_x, min_y))
-		return false;
+	// select the next pixel on the left/right that is not terrain
+	float   nextY  = global.surface[nextX].load(ATOMIC_READ) - 1;
 
-	// move tank
-	x += direction;
-	player->ni[ITEM_FUEL]--;
+	// If there is more terrain to climb, the pixel after the next must
+	// be taken into account, too
+	int32_t afterX = nextX + direction;
+	float   afterY = nextY;
+	if ( (afterX > 0) && (afterX < env.screenWidth) )
+		afterY  = global.surface[afterX].load(ATOMIC_READ) - 1;
 
-	// Allow the tank to move up a bit if necessary
-	y = min_y + 5;
-	if (y > env.screenHeight - 1)
-		y = env.screenHeight - 1;
+	// If the tank is not climbing too much, let it move:
+	if ( (nextY > (y - tank_sag)) && (afterY > (y - tank_off_y + tank_sag)) ) {
+		// move tank
+		x = nextX;
+		player->ni[ITEM_FUEL]--;
 
-	while ( ( y > min_y ) && (PINK != getpixel(global.terrain, x, y)))
-		--y;
-	// Now fix y back to normal coordinate
-	y -= tank_off_y - tank_sag;
+		// climb and correct for the tank extension
+		y = nextY - tank_off_y + tank_sag;
 
-	// But secure y
-	if (y > (env.screenHeight - tank_off_y))
-		y = env.screenHeight - tank_off_y;
+		// But secure y
+		if (y > (env.screenHeight - tank_off_y))
+			y = env.screenHeight - tank_off_y;
+		return true;
+	}
 
-	return true;
+	// No move:
+	return false;
 }
 
 
@@ -1499,6 +1505,36 @@ void TANK::reactivate_shield ()
 		snprintf (buf, 4, "%d", sh);
 		shieldText.set_text (buf);
 		setTextPositions(true);
+	}
+}
+
+
+/// @brief do tank repairs
+void TANK::repair()
+{
+	if ( (repair_rate > 0) && (l < maxLife) ) {
+		int32_t old_life = l;
+
+		// Apply repair
+		l += repair_rate;
+		if (l > maxLife)
+			l = maxLife;
+
+		// update text
+		snprintf(buf, 9, "%d", l);
+		healthText.set_text(buf);
+
+		// add float text
+		if (!global.skippingComputerPlay) {
+			try {
+				snprintf(buf, 9, "+%d", l - old_life);
+				new FLOATTEXT(buf, x, y - 30, .0, -.8, GREEN, CENTRE,
+				              TS_NO_SWAY, 120, false);
+			} catch (...) {
+				perror("tank.cpp: Failed to allocate memory for healing"
+					   " text in repair().");
+			}
+		}
 	}
 }
 
@@ -1689,11 +1725,6 @@ void TANK::simActivateCurrentSelection ()
 
 	// allow naturals to happen again
 	global.naturals_activated = 0;
-
-	// apply repairs
-	l += repair_rate;
-	if (l > maxLife)
-		l = maxLife;
 
 	snprintf (buf, 5, "%d", l);
 	healthText.set_text(buf);

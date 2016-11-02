@@ -1,14 +1,45 @@
 NOTE: From now on, new changes appear at the top of this file.
 
+============ Atanks-6.5 released ===================
+
 	- Remove old Atanks binary during normal "make clean".
 
 	- Added patch from Debian which makes the build process reproducible.
 	  Thanks to Reiner Herrmann for submitting the patch. Closes
 	  Debian bug #842865.
 
-============ Atanks-6.4 released ===================
+	Fixes:
+	- Falling damage that was caused by a driller or riot weapon, is now
+	  credited to the shooter of that weapon.
+	- Fixed a crash that happened when SDI units tried to target meteors.
+	Additions:
+	- The AI players can move their tank to get to a better position.
+	- New weapon: "Theft Bomb" (Idea and basic patch by Alois Dirnaichner)
+	- Game save files got a version number, so old save games can be
+	  upgraded.
+	Changes:
+	- Raised the power reduction of the Reducer from 25% to 33%.
+	- The radius of the riot and dirt bombs have been raised.
+	- The prices of some items and weapons have been rebalanced.
+	- The height rollers can climb depends on their size now.
+	- All players start with some fuel.
+	- Human players are no longer considered to be like deadly bots, but
+	  to be like the best present bot. In a game with only lower level
+	  bots, they no longer "unite" against the human players right from
+	  the start.
+	- SDI units might skip their shot if the resulting explosion will kill
+	  the SDI owning tank.
+	- SDI units might skip their shot if the resulting explosion will be
+	  nearer to the tank than on the point were the missile would explode
+	  if not shot down.
 
-	We are happy to announce a new release of Atomic Tanks is now available for download. The new release, version 6.4, carries a number of bug fixes and minor improvements. Perhaps the most visual change is more funky behaviour in the funky bombs and the AI players handle napalm better. 
+============ Atanks-6.4 released ===================
+	Service release with bug fixes and some improvements for the AI.
+	Fixes:
+	- Fixed a bug that caused the AI to use Napalm in a stupid way.
+	Changes:
+	- The funky bombs are now a lot more 'funky' by randomly switching
+	  horizontal and/or vertical direction in mid-flight.
 
 ============ Atanks-6.3 released ===================
 

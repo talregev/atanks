@@ -622,9 +622,9 @@ static void init_game_settings()
 
 		if (channels) {
 			env.voices = channels >  64 ?  32
-							: channels >  32 ?  16
-							: channels >  16 ?   8
-							: channels;
+			           : channels >  32 ?  16
+			           : channels >  16 ?   8
+			           : channels;
 
 			int32_t snd_installed = -1;
 
@@ -665,14 +665,13 @@ static void init_game_settings()
 			fprintf (stderr, "detect_digi_driver detected no sound device\n");
 	} // End of sound initialization
 
-	srand (time (0));
-
   	// Colour initialization, must be done here when allegro is initialized.
 	BLACK       = makecol (0x00, 0x00, 0x00);
 	BLUE        = makecol (0x00, 0x00, 0xff);
 	DARK_GREEN  = makecol (0x00, 0x50, 0x00);
 	DARK_GREY   = makecol (0x40, 0x40, 0x40);
 	DARK_RED    = makecol (0x80, 0x00, 0x00);
+	GOLD        = makecol (0xaf, 0xaf, 0x00);
 	GREY        = makecol (0x80, 0x80, 0x80);
 	GREEN       = makecol (0x00, 0xff, 0x00);
 	LIGHT_GREEN = makecol (0x80, 0xff, 0x80);
@@ -796,8 +795,8 @@ static bool loadPlayers(FILE* file)
 		try {
 			player_new = new PLAYER();
 		} catch (std::exception &e) {
-			fprintf(stderr, "%s:%d : Failed to allocate memory for player\n",
-					__FILE__, __LINE__);
+			fprintf(stderr, "%s:%d : Failed to allocate memory for player (%s)\n",
+					__FILE__, __LINE__, e.what());
 			status = false;
 		}
 
@@ -1471,6 +1470,18 @@ int32_t main (int32_t argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
+	// Initialize random number generation
+	srand (time(nullptr));
+
+	// Set the game version global
+#ifdef VERSION
+	{
+		double this_version = 0.;
+		sscanf(VERSION, "%lf", &this_version);
+		game_version = static_cast<int32_t>(this_version * 10);
+	}
+#endif // VERSION
+
 	// try to find config dir
 	env.find_config_dir();
 
@@ -1489,7 +1500,7 @@ int32_t main (int32_t argc, char** argv)
 
 	// Create the update checker thread:
 	update_data updateData("projects.sourceforge.net", "version.txt",
-	                       "atanks.sourceforge.net", VERSION);
+	                       "atanks.sourceforge.net");
 
 	std::thread updateThread(std::ref(updateData));
 	if (env.check_for_updates)

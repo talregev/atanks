@@ -1,0 +1,73 @@
+# Backups
+*.bak
+*.old
+*~
+
+
+# Build and project directories
+*.layout
+obj/*
+!obj/.keep_dir
+
+
+# Patch directory, it is purely for diff submissions
+patches
+patches_sent
+*.patch
+*patch*.zip
+
+
+# build results
+*.dep
+*.o
+atanks
+!vs12/atanks*
+!vs13/atanks*
+devtools
+
+
+# VS12/VS13/VS14 temp and build files
+*.aps
+*.suo
+*.opensdf
+*.sdf
+*.pdb
+*.psess
+*.vsp
+*.exe
+*.ilk
+*.iobj
+*.ipdb
+vs*/Debug_x86
+vs*/Release_x86
+vs*/Debug_x64/
+vs*/Release_x64/
+vs*/atanks.vcxproj.user
+vs*/atanks.VC.opendb
+vs*/.obj
+
+# Allegro build stuff
+alleg44*.lib
+alleg44*-debug.*
+alleg44*_d.*
+allegro.log
+
+
+# Helpers, logs, AI upgrade specific READMEs
+atanks.log
+memcheck.log
+TODO_akut
+sound/new
+sound/edit
+AI_Workflow.txt
+atanks-*aiu*.README
+atanks-upgrade.README
+atanks_web_icon_*.png
+mail_*.txt
+
+# This one is specific for the windows build:
+allegro.cfg
+
+# Screenshots
+screenshot_*.*
+Thumbs.db

@@ -9,9 +9,9 @@ GLOBALDATA  global;
 ENVIRONMENT env;
 
 // === Defined colours used everywhere ===
-int32_t BLACK, BLUE, DARK_GREEN, DARK_GREY, DARK_RED, GREY, GREEN,
-        LIGHT_GREEN, LIME_GREEN, ORANGE, PINK, PURPLE, RED, SILVER,
-        TURQUOISE, WHITE, YELLOW;
+int32_t BLACK, BLUE, DARK_GREEN, DARK_GREY, DARK_RED, GOLD, GREY,
+        GREEN, LIGHT_GREEN, LIME_GREEN, ORANGE, PINK, PURPLE, RED,
+        SILVER, TURQUOISE, WHITE, YELLOW;
 
 // === General values that are globally used ===
 char        buf[100]; // buffer for general use
@@ -19,6 +19,7 @@ const char* errorMessage;
 int32_t     errorX, errorY;
 int32_t	    k, K; // k = key pressed, K = Key Code from k
 int32_t     fi, lx, ly;
+int32_t     game_version; // Used for update check and save file upgrades
 
 
 // === Gradients ===

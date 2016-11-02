@@ -49,7 +49,7 @@ public:
 	explicit FLOATTEXT (const char* text_, int32_t xpos, int32_t ypos,
 						double xv_, double yv_, int32_t color_,
 						alignType alignment, eTextSway sway_type,
-						int32_t max_age);
+						int32_t max_age, bool is_fixed_);
 	~FLOATTEXT ();
 
 
@@ -76,6 +76,9 @@ private:
 	 * -----------------------
 	 */
 
+	void     check_pos    (bool is_new);
+	int32_t  overlaps_by  (const FLOATTEXT* other);
+	void     push_down    (int32_t ydiff, bool is_new);
 	void     reset_sway   ();
 	void     set_speed    (double xv_, double yv_);
 
@@ -87,6 +90,8 @@ private:
 
 	int32_t   color     = SILVER; //!< Foreground colour
 	int32_t   halfColor = GREY;   //!< Shadow colour
+	bool      is_fixed  = false;  //!< Whether new texts can push this out of the way
+	bool      is_pushed = false;
 	double    pos_x     = 0.;
 	double    pos_y     = 0.;
 	eTextSway sway      = TS_NO_SWAY;

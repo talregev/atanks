@@ -152,6 +152,9 @@ Lanzamiento de pequeños misiles en caidas
 Bomba Por Ciento
 Destruye la mitad de protección de las armaduras
 
+Theft Bomb
+Steals 5k from opponent on impact.
+
 Reductor
 Baja el poder de explosion de los misiles enemigos.
 

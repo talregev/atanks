@@ -371,8 +371,8 @@ Given some input parameters, renders a sky (with moons) onto a bitmap.
 void generate_sky(LevelCreator* lcr, const gradient* grad, int32_t flags )
 {
 	double messiness  = (static_cast<double>(rand () % 100) / 1000.0 + 0.05);
-	const int xoffset = rand( );  // For perlin, random starting x
-	const int yoffset = rand( );  // For perlin, random starting y
+	const int xoffset = rand() % env.screenWidth;  // For perlin, random starting x
+	const int yoffset = rand() % env.screenHeight; // For perlin, random starting y
 
 	temp_sky = create_bitmap( env.sky->w, env.sky->h );
 	clear_to_color(temp_sky, BLACK);

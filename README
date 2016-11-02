@@ -1,186 +1,179 @@
 README file for Atomic Tanks
 ============================================
 
+
 What is Atomic Tanks?
 ========================
 
-Atomic Tanks is a game in which you control an overly-powerful
-tank and attempt to blow up other highly powerful tanks. Players
-get to select a number of weapons and defensive items and then
-attack each other in a turn-based manner. The last tank standing
-is the winner.
+Atomic Tanks is a game in which you control an overly-powerful tank and attempt
+to blow up other highly powerful tanks. Players get to select a number of
+weapons and defensive items and then attack each other in a turn-based manner.
+The last tank standing is the winner.
 
 
 
 How to I get/install Atomic Tanks?
 ===================================
 
-To gain a copy of Atomic Tanks, go to our
-website at http://atanks.sourceforge.net
-Click on the "Download" link and select the
-latest version of Atanks.
+To gain a copy of Atomic Tanks, go to our website at
+   http://atanks.sourceforge.net
+Click on the "Download" link and select the latest version of Atanks.
 
-Note: If you have a pre-compiled (binary) copy
-of Atomic Tanks, you will need the Allegro graphic
-package. See http://allegro.cc/
-Also, if you are going to compile/build Atomic Tanks
-from source code, you will need the Allegro development
-package. These packages can be found at
-http://allegro.cc/files/
-Please also note, those of you running Linux can
-usually get Allegro packages through your distribution's
-package manager. These packages are named (at least on Fedora)
-"allegro" and "allegro-devel" respectively. Debian
-uses, I think, "allegro" and "allegro-dev".
+Note: If you have a pre-compiled (binary) copy of Atomic Tanks, you will need
+      the Allegro graphic package.
+      See : http://allegro.cc/
+      Also, if you are going to compile/build Atomic Tanks from source code, you
+      will need the Allegro development package.
+
+If you are using a pre-built, binary copy of Atomic Tanks, please see the next
+section on running the game. Next we will cover compiling from source.
 
 
-If you are using a pre-built, binary copy of Atomic Tanks,
-please see the next section on running the game. Next
-we will cover compiling from source.
-
-
-To compile Atomic Tanks, please make sure you have
-the Allegro libraries installed (see above). Next,
-open a command console (shell) and move into the
-directory containing the Atomic Tanks package.
-This file will probably be named "atanks-5.6.tar.gz".
+To compile Atomic Tanks, please make sure you have the Allegro libraries and
+headers installed (see above).
+Next, open a command console (shell) and move into the directory containing the
+Atomic Tanks package. This file will probably be named "atanks-6.5.tar.gz".
 Then run the following commands:
 
-tar zxf atanks-6.0.tar.gz
-cd atanks-6.0
+tar zxf atanks-6.5.tar.gz
+cd atanks-6.5
 
 Now it depends on your preferences:
 
-Default linux installation.
-The Binary goes to: /usr/games/bin
+1) Default linux installation :
+The Binary goes to  : /usr/bin
 The data files go to: /usr/share/games/atanks
 
 make
 make install
 
-Linux User installation, where everything stays in
-the atanks folder:
+If you are on Ubuntu, or one of Ubuntu's children distributions, and encounter
+sound problems, you can try to to fix this by building and installing Atanks
+with:
 
-make
+make ubuntu
+make install ubuntu
 
-Windows User installation where everything stays in
-the atanks folder:
+2) Linux User installation, where everything stays in the atanks folder :
+
+make user
+
+3) Windows User installation where everything stays in the atanks folder :
 
 make winuser
 
-OSX User installation where everything stays in
-the atanks folder:
+4) OSX User installation where everything stays in the atanks folder :
 
 make osxuser
-(BSD or OS X users may wish to use "gmake osxuser" instead.)
-
-For people compiling on Ubuntu (or one of Ubuntu's children distributions)
-please compile with
-
-make ubuntu
-
-Now we can get to running the game. If you encounter
-an error while running "make", then please see the
-last section of this document, which covers reporting
-bugs.
+(You may wish to use "gmake osxuser" instead.)
 
 
+Now we can get to running the game. If you encounter an error while running
+"make", then please see the last section of this document, which covers
+reporting bugs.
 
+
+How to adapt build and installation paths
+=========================================
+
+There are two different variables which influence how Atanks is built and
+installed. Both are important to package managers in the first place:
+
+PREFIX - This defaults to /usr and influences the basic path. If you would like
+         to install into /usr/local instead, simply call:
+         make PREFIX=/usr/local
+         make install PREFIX=/usr/local
+
+DESTDIR - This defaults to an empty string and can be set for build roots, just
+          like the prefix. If you do not know what that means, you do not need
+          it. ;-)
 
 
 How do I run Atomic Tanks?
 ====================================
 
-You can run the atanks file by typing "./atanks"
-from a command line, or double-clicking the file
-in a file browser. Atomic Tanks tries to use
-reasonable defaults, so there is rarely a need to
-use the command-line options. However, Atomic Tanks
-supports the following options:
+You can run the atanks file by typing "./atanks" from a command line, or by
+double-clicking the file in a file browser.
+Atomic Tanks tries to use reasonable defaults, so there is rarely a need to use
+the command-line options. However, Atomic Tanks supports the following options:
 
-./atanks -h   (Print list of credits, command-line options and exit.)
-./atanks -fs  (Run the game using the entire screen. Full screen mode.)
-./atanks --windowed  (Run the game in a window. This is the default).
-./atanks --nosound  (Run the game without sound. Sound is on by default.)
-./atanks --noname   (Do not display player names over the tanks.)
-./atanks --width <number>  (Run the game in a window with a set width in pixels.)
-./atanks --tall <number>  (Run the game in a window with a set height in pixels.)
-./atanks --datadir <data directory>  (Path to the directory with Atank's data files.)
-./atanks --depth <number>  (Sets pixel depth. Use either 16 or 32 here.)
-./atanks --noconfig   (Resets all config options back to defaults.)
-./atanks --nonetwork  (Prevents atanks from setting up a server.)
-./atanks --nobackground  (Does not display the green menu background. May prevent crashes on 64-bit.)
-./atanks --nothread   (Stops threads for running in the background.)
-./atanks --thread     (Enabled use of threads to speed up things.)
+-h  --help           Show this help screen
+-fs                  Full screen
+    --windowed       Run in a window
+-w  --width <width>  Specify the screen width in pixels
+-t  --tall  <height> Specify the screen height in pixels
+                     Adjust the screen size at your own risk
+                     (default is 800x600)
+-d  --depth <depth>  Colour depths, currently either 16 or 32 bit
+    --datadir <path> Path to the data directory
+-c <path>            Path to config and saved game directory
+    --noconfig       Do not load game settings.
+    --nosound        Disable sound
+    --noname         Do not show player name above tank
+    --nonetwork      Disable network connections.
+    --nobackground   Do not display the green menu background.
 
-Most of these options can be used together, with the exception of "-fs"
-for full screen mode. Simply running "./atanks" is the same as running
-Atomic Tanks with the following options:
+Most of these options can be used together, with the exception of "-fs" for full
+screen mode. Simply running "./atanks" is the same as running Atomic Tanks with
+the following options:
 ./atanks --windowed --width 800 --tall 600 --datadir . depth 32
-
-Please note that as of version 4.3, threads are disabled by default. Use
-the "--thread" flag to enable background threads.
-
 
 
 How do I go about creating a player for myself?
 ================================================
 
-when you first run Atomic Tanks, the first thing you'll need to
-do is create a player/tank for youself. Click on the "Players"
-button and click "Create New". Enter the name you want and
-pick the colour you'd like your tank to be. That's all you'll
-need to do. Click the "Okay" button. Then click the
-"Back" button and, most importantly, click "Play"!
+when you first run Atomic Tanks, the first thing you'll need to do is to create
+a player/tank for yourself. If you haven't created a human player, yet, the game
+will present you with the player creation screen automatically. Otherwise click
+on the "Players" button and click "Create New". Enter the name you want and pick
+the colour you'd like your tank to be.
+The teams "Jedi" and "Sith" mean that their members work (somewhat) together,
+while the neutral tanks are all on their own. The "Jedi" AI is a bit more social
+and defensive, while the "Sith" AI is a bit more individualistic and aggressive.
 
-Once you click play, you'll have a chance to select which
-tanks you'll be playing against. You can get anywhere from 2
-to 10 tanks on the playing field at one time. Don't forget
-to select yourself!
+That's all you'll need to do. Click the "Okay" button. Then click the "Back"
+button and, most importantly, click "Play"!
 
-The next screen gives you a chance to buy weapons and defensive
-items. There is no perfect combination, so experiment a little.
-You can buy an item (assuming you have enough funds) by
-left-clicking on the item. To sell the item, right-click on
-the item. When you've completed your selection, click "Done".
+Once you click play, you'll have a chance to select which tanks you'll be
+playing against. You can get anywhere from 2 to 10 tanks on the playing field at
+one time. Don't forget to select yourself!
+
+The next screen gives you a chance to buy weapons and defensive items. There is
+no perfect combination, so experiment a little.
+You can buy an item (assuming you have enough funds) by left-clicking on the
+item. To sell the item, right-click on the item. When you've completed your
+selection, click "Done".
 
 The final screen you'll see is where the action takes place!
-Use the left and right arrow buttons on your keyboard to
-aim your tank's gun. The up and down arrow keys adjust the
-speed (power) of the shot. The space bar fires the tanks gun. If
-you want to change which weapon you will be using, press the
-TAB button or the BACKSPACE button. The round is over when
-there is one tank left standing.
-
-
-
+Use the left and right arrow buttons on your keyboard to aim your tank's gun.
+The up and down arrow keys adjust the speed (power) of the shot. The space bar
+fires the tanks gun. If you want to change which weapon you will be using, press
+the TAB button or the BACKSPACE button. The round is over when there is one tank
+left standing.
 
 
 Keyboard Controls
 =========================================
 
-Atomic Tanks tries to be keybaord friendly and much of
-the tank's controls require the keyboard. Here is a quick
-over-view of which keys do what:
+Atomic Tanks tries to be keyboard friendly and much of the tank's controls
+require the keyboard. Here is a quick overview of which keys do what:
 
-SPACEBAR -- Fires weapons and selects/toggles menu items.
-ENTER -- Is similar to pressing the OK button on a menu.
-UP/DOWN arrows -- Adjusts tank power and cycles through menu items. Scrolls on the buying screen.
-LEFT/RIGHT arrows -- Aim the tank's gun. Also buys and sells on the buying screen or adjusts values in menus.
-ESC  -- Cancel out of a menu.
-
-F1   -- Take a screenshot
-
-F10  -- Tells the computer to take over your tank for the remainder of the round.
-        Also saves games when on the buying screen.
-
-V, v -- The "v" key controls the volume during matches. Pressing lower-case "v"
-        decreases the volume and upper-case "V" increases the volume.
-
-~    -- Show/hide the scoreboard during rounds. On german (and possibly other)
-        keyboards the scoreboard is switched with the key '#'.
-
-
+SPACEBAR   -- Fires weapons and selects/toggles menu items.
+ENTER      -- Is similar to pressing the OK button on a menu.
+UP/DOWN    -- Adjusts tank power, cycles through menu items and scrolls on the
+              buying screen.
+LEFT/RIGHT -- Aim the tank's gun. Also buys and sells on the buying screen or
+              adjusts values in menus.
+ESC        -- Cancel out of a menu.
+F1         -- Takes a screenshot.
+F10        -- Tells the computer to take over your tank for the remainder of the
+              round.
+              Also saves games when on the buying screen.
+V, v       -- The "v" key controls the volume during matches. Pressing
+              lower-case "v" decreases the volume and upper-case "V" increases
+              the volume.
+~          -- Show/hide the scoreboard during rounds. On german (and possibly
+              other) keyboards the scoreboard is switched with the key '#'.
 
 
 How to play a game over a network?
@@ -193,56 +186,60 @@ you along.
 Playing over a network requires two or more people. One person must be the Host
 and the other person is the Client. If you are hosting the game, make sure
 you have networking enabled. To check this, go into the Options menu and select
-the Network option. Make sure "Networking" is set to "On". If it was "Off", then change it to "On" and then exit Atanks and re-start the game. Congratulations, you're now running a Host. You can continue to play as you normally would from this point. Clients will connect to your game and take over computer-controled tanks. To connect to you the Clients will need your IP address. To get this, visit the website whatismyip.com.
+the Network option. Make sure "Networking" is set to "On". If it was "Off", then
+change it to "On" and then exit Atanks and re-start the game. Congratulations,
+you're now running a Host. You can continue to play as you normally would from
+this point. Clients will connect to your game and take over computer-controled
+tanks. To connect to you, the Clients will need your IP address. To get this,
+visit the website whatismyip.com.
 
-For clients, to connect to a host, you'll need to first get the IP address of your Host. Once you have that, go to the Option menu and select the Network option. Change the box marked "Server Address" to match the IP address of your Host. Then return to the main menu and click the button labled Network Game. Atanks will then try to connect to the server and introduce you to the game.
+For clients, to connect to a host, you'll need to first get the IP address of
+your Host. Once you have that, go to the Option menu and select the Network
+option. Change the box marked "Server Address" to match the IP address of your
+Host. Then return to the main menu and click the button labelled Network Game.
+Atanks will then try to connect to the server and introduce you to the game.
 
-Things are still a bit flakey on the Client side. Hopefully it will improve as time goes on.
+Things are still flaky on the Client side. Hopefully it will improve as time
+goes on.
 
-If the Client cannot connect to the Host, there are a few possible problems. Perhaps there is a firewall in the way? Maybe the Host is using a non-default port number. Perhaps the Client side just isn't working well enough yet. If you run into problems, please let us know about them on the forum.
+If the Client cannot connect to the Host, there are a few possible problems.
+Perhaps there is a firewall in the way? Maybe the Host is using a non-default
+port number. Perhaps the Client side just isn't working well enough yet. If you
+run into problems, please let us know about them on the forum.
 
-When you're playing a game (as the client) you'll notice the various tanks
-some in four different colours. The Jedi Team is marked in Green, the
-Sith are marked as Purple, Neutral tanks are Blue and the player's
-tank is indicated with Red. Hopefully this will prevent you from shooting
-your team mates.
-
+When you're playing a game (as the client) you'll notice the various tanks are
+in four different colours. The Jedi Team is marked in Green, the Sith are marked
+as Purple, Neutral tanks are Blue and the player's tank is indicated with Red.
+Hopefully this will prevent you from shooting your team mates.
 
 
 Known issues
 =========================================
 
-There are some known issues which players should be aware of. We
-are trying to fix these, but in the mean time, it's best to know they
-exist and how to work around them. The issues are, in no particular order.
+There are some known issues which players should be aware of. We are trying to
+fix these, but in the mean time, it's best to know they exist and how to work
+around them. The issues are, in no particular order.
 
-1. Changing the game's language and then going into the Players menu
-will cause weird text to display and may cause problems. If you change the
-game's language, it's best to Quit the game fro mthe main menu and then
-start Atanks again.
+1. The default sound driver doesn't work on Ubuntu Linux and its related
+distributions. If sound isn't working for you, go into the Options menu, select
+Sound. Make sure Sound is turned on and that the Sound Driver is switched from
+AutoDetect to OSS. Then return to the main menu, Quit and then re-start the
+game. If this doesn't resolve the issue, then Quit the game and delete all of
+the files and folders in your computer's /tmp folder with the name "pulse".
 
-2. The default sound driver doesn't work on Ubuntu Linux and its related
-distributions. If sound isn't working for you, go into the Options menu,
-select Sound. Make sure Sound is turned on and that the Sound Driver is
-switched from AutoDetect to OSS. Then return to the main menu, Quit and
-then re-start the game. If this doesn't resolve the issue, then Quit the
-game and delete all of the files and folders in your computer's /tmp
-folder with the name "pulse".
-
-3. The client side of the network games is buggy. We're working on that.
-
-
-
+2. The client side of the network games is buggy. We're working on that.
 
 
 Where do I report bugs or send requests?
 =========================================
 
 Atomic Tanks is a great game, but it isn't perfect.
-We, the developers, are always trying to improve the
-experience our game brings to you. If you have
-a problem with installing or playing Atomic Tanks,
-please let us know. Mail me at jessefrgsmith@yahoo.ca
-We encourage you to give your feedback. Please give
-as many details as possible so we can help you.
+We, the developers, are always trying to improve the experience our game brings
+to you. If you have a problem with installing or playing Atomic Tanks, please
+let us know.
+We have a bug tracker on xxx, where issues can be recorded, tracked, and
+discussed.
+Or mail the project lead at jessefrgsmith@yahoo.ca
+We encourage you to give your feedback. Please give as many details as possible
+so we can help you.
 

@@ -36,7 +36,8 @@
  */
 MISSILE::MISSILE (PLAYER* player_, double xpos, double ypos,
                   double xvel, double yvel, int32_t weapon_type,
-                  eMissileType missile_type, int32_t ai_level_) :
+                  eMissileType missile_type, int32_t ai_level_,
+                  int32_t delay_idx_) :
 	PHYSICAL_OBJECT(MT_WEAPON == missile_type),
 	ai_level(ai_level_),
 	missileType(missile_type)
@@ -131,12 +132,22 @@ MISSILE::MISSILE (PLAYER* player_, double xpos, double ypos,
 	  || (CLUSTER_MIRV == weapType) )
 		allowDirtyWrap = false;
 
-	// Add to the chain:
+	// If this is a mind shot with a delay characteristic, like
+	// the chain missile, set a delay range by its index.
+	// This causes PHYSICAL_OBJECT::applyPhysics() to not detonate
+	// the missile unless the set distance was travelled through
+	// dirt. This simulates the clearing of the path by previous
+	// missiles, so the AI can track those weapons better.
+	if (MT_MIND_SHOT == missile_type)
+		this->mindDelay = weap->radius * delay_idx_;
+
+	// Otherwise add it to the chain:
 	// Do not put mind shots in there or the object updaters
 	// will not only try to apply physics, but use delete on
 	// them when they get destroyed.
-	if (MT_MIND_SHOT != missileType)
+	else
 		global.addObject(this);
+
 }
 
 
@@ -204,6 +215,12 @@ void MISSILE::applyPhysics ()
 		// Standard physics can be applied
 		PHYSICAL_OBJECT::applyPhysics ();
 
+		// If a mind shot napalm jelly hit something, it is counted as
+		// destroyed immediately.
+		if (hitSomething
+		  && (MT_MIND_SHOT == missileType)
+		  && (NAPALM_JELLY == weapType) )
+			destroy = true;
 
 		// mirvs trigger above ground
 		if ( !hitSomething
@@ -242,44 +259,57 @@ void MISSILE::applyPhysics ()
 
 	// === 2) Handle rolling projectiles ===
 	else if (PT_ROLLING == physType) {
+
 		// check whether anything is hit
+		int32_t round_x = ROUND(x);
+		int32_t round_y = ROUND(y);
 		if ( (x < 2)
 		  || (x > (env.screenWidth  - 3) )
-		  || (y > (env.screenHeight - 3) ) ) {
-			int32_t round_x = ROUND(x);
-			int32_t round_y = ROUND(y);
-			if(PINK != getpixel(global.terrain, round_x, round_y))
+		  || (y > (env.screenHeight - 3) )
+		  || (PINK != getpixel(global.terrain, round_x, round_y)) )
 				hitSomething = true;
-		}
 
-		if (!hitSomething) {
-			// roll roller
-			float surfY = global.surface[ROUND(x)].load(ATOMIC_READ) - 1;
+		else {
+			// To honour the size of the rollers, they have the following
+			// rules about the path they roll:
+			// - The small roller can climb four and fall six pixels.
+			// - The large roller can climb six and fall nine pixels.
+			// - The death roller can climb nine and fall twelve pixels.
+			int32_t maxClimb = SML_ROLLER == weapType ?  4 :
+			                   LRG_ROLLER == weapType ?  6 :
+			                   DTH_ROLLER == weapType ?  9 : 1;
+			int32_t maxFall  = SML_ROLLER == weapType ?  6 :
+			                   LRG_ROLLER == weapType ?  9 :
+			                   DTH_ROLLER == weapType ? 12 : 1;
 
-			// Check whether terrain is going down
-			if ( (surfY > y) && (y < (env.screenHeight - 5)) ) {
+			// get next surface pixel
+			float surfY = global.surface[ROUND(x+xv)].load(ATOMIC_READ) - 1;
 
-				// Do not fall more than five pixels if terrain gives way.
-				if ( surfY < (y + 5) )
-					y  = surfY;
+			// Check whether the terrain is going down
+			if (surfY > y) {
+				// Do not fall more than 'maxFall' pixels if terrain gives way.
+				if ( surfY <= (y + maxFall) )
+					y  = surfY - 1;
 				else
-					y += 5;
-			} else {
-				// Normal movement:
-				x += xv > 0 ? 1 : xv < 0 ? -1 : 0;
+					y += maxFall;
+				// Do not fall through the floor:
+				if (y > (env.screenHeight - maxClimb))
+					y =  env.screenHeight - maxClimb;
+			}
 
-				if	(y >= MENUHEIGHT) {
-					// The small roller can climb two, the large three and
-					// the death roller four pixels. Everything else
-					// rolling is limited to one pixel.
-					int32_t maxHeight = y -
-								(SML_ROLLER == weapType ? 2 :
-								 LRG_ROLLER == weapType ? 3 :
-								 DTH_ROLLER == weapType ? 4 : 1);
-					if (surfY >= maxHeight)
-						y = surfY - 1;
-				}
-			} // End of normal movement
+			// Check whether the terrain is going up
+			else if (surfY < y) {
+				// If terrain is going up, it can be climbed,
+				// or the rollers path ends here
+				if ( surfY >= (y - maxClimb) )
+					y = surfY - 1;
+				else
+					// too steep!
+					hitSomething = true;
+			}
+
+			// Normal transversal movement:
+			x += xv > 0 ? 1 : xv < 0 ? -1 : 0;
 
 			// Adapt angle according to movement
 			if (xv > 0.0) angle = (angle +   3) % 256;
@@ -294,12 +324,39 @@ void MISSILE::applyPhysics ()
 	// === 3) Handle funky projectiles ===
 	else if (PT_FUNKY_FLOAT == physType)  {
 
-		// Funky Floats have a 0.5% chance to randomly reverse either direction:
-		if (0 == (rand() % 200)) {
-			if (rand() % 2)
+		// Funky Floats have a 0.75% chance to randomly change their direction
+		if (0 == (rand() % 150)) {
+
+			int32_t floatee_action = rand() % 4;
+
+			// Three possibilities:
+			// A) 25% chance to reverse x movement
+			// B) 25% chance to reverse y movement
+			// C) 50% chance to pick a random target to home into.
+			// If A is chosen and there is no x movement, or B is chosen and
+			// there is no y movement, option C is pulled.
+			if ( (1 == floatee_action) && (std::abs(xv) > 0.5))
 				xv *= -1.;
-			else
+			else if ( (3 == floatee_action) && (std::abs(yv) > 0.5))
 				yv *= -1.;
+			else {
+				TANK* floatee_tgt = global.get_random_tank();
+				if (floatee_tgt) {
+					WEAPON* launchWeap = FUNKY_BOMBLET == weapType
+					                   ? &weapon[FUNKY_BOMB]
+					                   : FUNKY_DEATHLET == weapType
+					                   ? &weapon[FUNKY_DEATH]
+					                   : nullptr;
+					double speed = ( launchWeap->launchSpeed
+					               + ROUND( (launchWeap ? launchWeap->speedVariation : 0.0)
+					                      * (launchWeap ? launchWeap->launchSpeed    : 0.0)
+					                      * Noise(rand() % 1000000) ) )
+					             * env.FPS_mod;
+					double fdiff = ABSDISTANCE2(floatee_tgt->x, floatee_tgt->y, x, y);
+					xv = (floatee_tgt->x - x) / fdiff * speed;
+					yv = (floatee_tgt->y - y) / fdiff * speed;
+				}
+			}
 		}
 
 		// Funky floats simply bounce on borders.
@@ -554,7 +611,6 @@ void MISSILE::Check_SDI()
 	// and anything with submunition.
 	if ( (PT_DIGGING == physType)
 	  || (weapType == NAPALM_JELLY)
-	  || ( (weapType >= DIRT_BALL) && (weapType <= SMALL_DIRT_SPREAD) )
 	  || (weap->submunition > 0) )
 		return;
 
@@ -609,9 +665,10 @@ void MISSILE::Check_SDI()
 			 * 2: but further away than the minimum distance and
 			 * 3: no dirt is between the gun top and the missile.
 			 */
-			if ( (sdi[idx].dist <= sdi[idx].range)                    // 1
-			  && (sdi[idx].dist >  lt->player->ni[ITEM_SDI])          // 2
-			  && !checkPixelsBetweenTwoPoints(&startX, &startY, x, y) /* 3 */ ) {
+			if ( (sdi[idx].dist <= sdi[idx].range)                // 1
+			  && (sdi[idx].dist >  lt->player->ni[ITEM_SDI])      // 2
+			  && !checkPixelsBetweenTwoPoints(&startX, &startY,
+			                                  x, y, 0.0, nullptr) /* 3 */ ) {
 				// This can be added!
 				if (pSDI) {
 					// Must be sorted in
@@ -637,7 +694,7 @@ void MISSILE::Check_SDI()
 		if ( (rand() % 100) < (19 + pSDI->am) ) {
 			// Try to predict the coordinates where the missile will go down:
 			MISSILE mind_shot(player, x, y, xv, yv, weapType, MT_MIND_SHOT,
-			                  SDI_PREDICTOR);
+			                  SDI_PREDICTOR, 0);
 
 			// Adapt missile drag if the player has dimpled/slick projectiles
 			if (player->ni[ITEM_DIMPLEP])
@@ -670,7 +727,9 @@ void MISSILE::Check_SDI()
 			}
 
 			// If the missile is destroyed, check whether the explosion would
-			// a) hit this tank and be) be nearer than the missile is now.
+			// a) hit this tank,
+			// b) be nearer than the missile is now and
+			// c) will not kill the tank if shot down.
 			// If so, shoot it down!
 			bool will_hit = false;
 			if (mind_shot.destroy) {
@@ -686,10 +745,18 @@ void MISSILE::Check_SDI()
 				  && (std::abs(y_dist) <= y_rad) // tank in y range
 				  && ( ( std::abs(x - pSDI->x) > x_rad) // misses x radius now
 				    || ( std::abs(y - pSDI->y) > y_rad) // misses y radius now
-						// Is now farther away than when it goes off:
+				        // Is now farther away than when it goes off:
 				    || (   ABSDISTANCE2(x, y, pSDI->tank->x, pSDI->tank->y)
-				        >= ABSDISTANCE2(x, y, mind_shot.x, mind_shot.y) ) ) )
-					will_hit = true;
+				        >= ABSDISTANCE2(mind_shot.x, mind_shot.y,
+				                        pSDI->tank->x, pSDI->tank->y) ) ) ) {
+
+					// The point looks promising, but is it worth it?
+					double dmg = get_hit_damage(pSDI->tank,
+					                            static_cast<weaponType>(weapType),
+					                            x, y);
+					if (dmg < (pSDI->tank->sh + pSDI->tank->l))
+						will_hit = true;
+				}
 			}
 
 			if (will_hit) {
@@ -1097,6 +1164,9 @@ void MISSILE::triggerTest ()
 									* Noise(randStart + 124786 + sc) );
 
 					// Launch new submunition missile
+					// Note on funky floats: They do *not* home in on random
+					// tanks when started, it is just a possibility in
+					// applyPhysics() *only*
 					try {
 						newmis = new MISSILE (player, x, startY,
 									env.slope[newMissAngle][0]
@@ -1107,7 +1177,7 @@ void MISSILE::triggerTest ()
 									* launchSpeed
 									* env.FPS_mod
 									+ inheritedYV, weap->submunition,
-									missileType, ai_level);
+									missileType, ai_level, 0);
 						newmis->physType  = submunitionPhys;
 						newmis->countdown = newMissCount;
 						newmis->setUpdateArea(newmis->x - 20, newmis->y - 20, 40, 40);
@@ -1142,7 +1212,9 @@ void MISSILE::triggerTest ()
 		else
 			trigger();
 	} else if ( (yv > 0.)
-	         && ( (weapType < RIOT_BOMB) || (weapType > SMALL_DIRT_SPREAD) ) )
+	         && ( (weapType < RIOT_BOMB)
+	           || (weapType > SMALL_DIRT_SPREAD) )
+	         && (weapType < BALLISTICS) )
 		// Otherwise it is time to check whether any tank SDI shoots it down
 		Check_SDI();
 }
