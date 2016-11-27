@@ -1,13 +1,5 @@
 NOTE: From now on, new changes appear at the top of this file.
 
-============ Atanks-6.5 released ===================
-
-	- Remove old Atanks binary during normal "make clean".
-
-	- Added patch from Debian which makes the build process reproducible.
-	  Thanks to Reiner Herrmann for submitting the patch. Closes
-	  Debian bug #842865.
-
 	Fixes:
 	- Falling damage that was caused by a driller or riot weapon, is now
 	  credited to the shooter of that weapon.
@@ -32,6 +24,15 @@ NOTE: From now on, new changes appear at the top of this file.
 	- SDI units might skip their shot if the resulting explosion will be
 	  nearer to the tank than on the point were the missile would explode
 	  if not shot down.
+
+============ Atanks-6.5 released ===================
+
+	- Remove old Atanks binary during normal "make clean".
+
+	- Added patch from Debian which makes the build process reproducible.
+	  Thanks to Reiner Herrmann for submitting the patch. Closes
+	  Debian bug #842865.
+
 
 ============ Atanks-6.4 released ===================
 	Service release with bug fixes and some improvements for the AI.

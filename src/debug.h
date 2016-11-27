@@ -26,7 +26,7 @@
 # define ATANKS_IS_LINUX
 #endif // Linux
 
-#if !defined(ATANKS_IS_WINDOWS) && !defined(ATANKS_IS_LINUX)
+#if !defined(ATANKS_IS_WINDOWS) && !defined(ATANKS_IS_LINUX) && !defined(ATANKS_IS_BSD)
 # error "Only Windows, Linux and BSD are supported at the moment"
 #endif // Windows versus Linux
 
