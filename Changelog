@@ -24,6 +24,8 @@ NOTE: From now on, new changes appear at the top of this file.
 	- SDI units might skip their shot if the resulting explosion will be
 	  nearer to the tank than on the point were the missile would explode
 	  if not shot down.
+	- Fixed bug in debug.h which would prevent compiling on FreeBSD.
+
 
 ============ Atanks-6.5 released ===================
 
