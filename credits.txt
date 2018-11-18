@@ -65,7 +65,7 @@ Any Other Role not listed
 Tom Hudson (tom@singular.org.uk)
 
 Allegro
-Shawn Hargreaves (shawn@talula.demon.co.uk) - http://allegro.sf.net
+Shawn Hargreaves (shawn@talula.demon.co.uk) - https://liballeg.org
 
 Games for Linux: http://games.linux.sk
 Text Logos: http://www.cooltext.com
