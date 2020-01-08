@@ -442,10 +442,10 @@ bool checkPixelsBetweenTwoPoints(double* startX,    double* startY,
 
 	// As xInc/yInc are known now, left, right, top and bottom can
 	// be corrected if the line would not leave the screen.
-	left   = std::min(std::min(*startX,   left), *startX + (length * xInc));
-	top    = std::min(std::min(*startY,    top), *startY + (length * yInc));
-	right  = std::max(std::max(*startX,  right), *startX + (length * xInc));
-	bottom = std::max(std::max(*startY, bottom), *startY + (length * yInc));
+	left   = std::min({*startX, left,   *startX + (length * xInc)});
+	top    = std::min({*startY, top,    *startY + (length * yInc)});
+	right  = std::max({*startX, right,  *startX + (length * xInc)});
+	bottom = std::max({*startY, bottom, *startY + (length * yInc)});
 
 	// Note: Start with 1 and increase startX/Y first, as
 	//       the starting pixel can be assumed to be clean.
