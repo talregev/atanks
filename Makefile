@@ -302,6 +302,8 @@ endif
 install: $(TARGET)
 	$(INSTALL) -d $(DESTDIR)${BINDIR}
 	$(INSTALL) -m 755 atanks $(DESTDIR)${BINDIR}
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/metainfo
+	$(INSTALL) -m 644 io.sourceforge.atanks.metainfo.xml $(DESTDIR)$(PREFIX)/share/metainfo
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/applications
 	$(INSTALL) -m 644 atanks.desktop $(DESTDIR)$(PREFIX)/share/applications
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps

@@ -7,7 +7,7 @@ Jesse Smith (jessefrgsmith@yahoo.ca)
 Mike Wilson (CaptainNeeda+atanks@gmail.com)
 Kevin (sylikc@gmail.com)
 Sven Eden (yamakuzure@users.sourceforge.net)
-Bruno Victal
+Bruno Victal (ubr47k@users.sourceforge.net)
 Bill Buerger
 
 Graphics
@@ -65,7 +65,7 @@ Any Other Role not listed
 Tom Hudson (tom@singular.org.uk)
 
 Allegro
-Shawn Hargreaves (shawn@talula.demon.co.uk) - http://allegro.sf.net
+Shawn Hargreaves (shawn@talula.demon.co.uk) - https://liballeg.org
 
 Games for Linux: http://games.linux.sk
 Text Logos: http://www.cooltext.com

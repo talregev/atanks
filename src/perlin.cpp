@@ -62,27 +62,17 @@ and a distance between them, return the interpolated y.  x1 and x2 are the y
 values (sorry, it's the best I could explain it).  i is the distance,
 expressed as a percentage of the wave length, ie 0<=i<1 .
 *****************************************************************************/
-/*
 double interpolate (double x1, double x2, double i)
 {
-	double ft = i * M_PI;
-	double f = (1 - cos(ft)) * 0.5;
+  if (std::isnan(x1) || std::isnan(x2))
+    return 0.0;
 
-	return (x1 * (1 - f) + (x2 * f));
-}
-*/
-
-
-double interpolate (double x1, double x2, double i)
-{
   double ft = i * M_PI;
   double f = (1 - cos(ft)) * 0.5;
   double result = (x1 * (1 - f) + (x2 * f));
 
-  if (std::isnan(x1) || std::isnan(x2))
-    return 0.0;
   if (std::isnan(result))
-    return (x1 + x2) / 2.0; /* fall back to linear interpolation */
+    return (x1 * (1-i) + (x2 * i)); /* fall back to linear interpolation */
   return result;
 }
 

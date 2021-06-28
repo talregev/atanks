@@ -517,10 +517,10 @@ void EXPLOSION::drawFracture(int32_t x, int32_t y, int32_t frac_angle,
 		dim_cur.w = x1;
 		dim_cur.h = y1;
 	} else {
-		dim_cur.x = std::min(std::min(std::min(x1, x2), x3), dim_cur.x);
-		dim_cur.y = std::min(std::min(std::min(y1, y2), y3), dim_cur.y);
-		dim_cur.w = std::max(std::max(std::max(x1, x2), x3), dim_cur.w);
-		dim_cur.h = std::max(std::max(std::max(y1, y2), y3), dim_cur.h);
+		dim_cur.x = std::min({x1, x2, x3, dim_cur.x});
+		dim_cur.y = std::min({y1, y2, y3, dim_cur.y});
+		dim_cur.w = std::max({x1, x2, x3, dim_cur.w});
+		dim_cur.h = std::max({y1, y2, y3, dim_cur.h});
 	}
 
 	if (recurseDepth < maxRecurse) {
