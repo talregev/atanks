@@ -48,41 +48,44 @@ void sGfxData::destroy()
 		stuff_bar_gradient_strip = nullptr;
 		explosion_gradient_strip = nullptr;
 
-		if (sky_gradient_strips) {
+                // The following pointer checks are being removed because
+                // they are declared in the header and will always
+                // evaluate to true. -- Jesse
+		// if (sky_gradient_strips) {
 			for (int32_t i = 0; i < ALL_SKIES; ++i) {
 				if ( sky_gradient_strips[i] ) {
 					destroy_bitmap(sky_gradient_strips[i]);
 					sky_gradient_strips[i] = nullptr;
 				}
 			}
-		}
+		// }
 
-		if (land_gradient_strips) {
+		// if (land_gradient_strips) {
 			for (int32_t i = 0; i < ALL_LANDS; ++i) {
 				if ( land_gradient_strips[i] ) {
 					destroy_bitmap(land_gradient_strips[i]);
 					land_gradient_strips[i] = nullptr;
 				}
 			}
-		}
+		// }
 
-		if (explosions) {
+		// if (explosions) {
 			for (int32_t i = 0; i < EXPLOSIONFRAMES; ++i) {
 				if ( explosions[i] ) {
 					destroy_bitmap(explosions[i]);
 					explosions[i] = nullptr;
 				}
 			}
-		}
+		// }
 
-		if (flameFront) {
+		// if (flameFront) {
 			for (int32_t i = 0; i < EXPLOSIONFRAMES; ++i) {
 				if ( flameFront[i] ) {
 					destroy_bitmap(flameFront[i]);
 					flameFront[i] = nullptr;
 				}
 			}
-		}
+		// }
 
 		initDone = false;
 	}

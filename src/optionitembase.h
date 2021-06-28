@@ -37,7 +37,8 @@ extern uint32_t select_text_len; // needed for the item distribution
 
 // Forward BUTTON if it isn't known, yet:
 #ifndef BUTTON_HEADER_
-class BUTTON;
+// class BUTTON;
+#include "button.h"
 #endif // BUTTON_HEADER_
 
 // Forward Menu if it isn't known, yet:

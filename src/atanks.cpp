@@ -289,8 +289,8 @@ static const char* do_winner()
 		}
 
 		// Check value length
-		char valTxt[16] = { 0 };
-		snprintf(valTxt, 15, " %14s", Add_Comma(pl_money[z]));
+		char valTxt[32] = { 0 };
+		snprintf(valTxt, 16, " %14s", Add_Comma(pl_money[z]));
 		curLen = text_length(font, valTxt);
 		if (curLen > valLen)
 			valLen = curLen;
@@ -1314,7 +1314,7 @@ static void play_local()
 		// round by exiting or quitting
 		if ( (global.currentround == 0)
 		  && (global.get_command() == GLOBAL_COMMAND_PLAY) ) {
-			char        buffer[256] = { 0 };
+			char        buffer[512] = { 0 };
 			const char* winner      = do_winner();
 
 			if (winner)

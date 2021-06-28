@@ -101,8 +101,9 @@ void TANK::activateCurrentSelection()
 		return;
 
 	// remove status from top bar at next redraw
-	if (global.tank_status)
-		global.tank_status[0] = 0;
+        // Removing this check as it is always true. -- Jesse
+	// if (global.tank_status)
+	global.tank_status[0] = 0;
 
 	// reduce time to fall, but reset if already done
 	if (--env.time_to_fall < 0)

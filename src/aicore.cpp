@@ -1419,8 +1419,10 @@ bool AICore::calcLaser(bool is_last)
 
 		// ...unless this is a forced success ...
 		if (is_last)
+                {
 			// at least reduce the score.
-			hit_score = hit_score;
+			// hit_score = hit_score;
+                }
 		else {
 			curr_angle       = old_angle;
 			curr_power       = old_power;
@@ -1757,8 +1759,8 @@ bool AICore::calcStandard(bool is_last, bool allow_flip_shot)
 	// ------------------------------------------------------------
 	double angle_mod = (rand() % 13) * focusRate // useless: 0-2, deadly+1: 0-12
 	                 * ((rand() % 2) ? -1. : 1.);
-	while ( (std::abs(angle_mod > 0.))
-	     && ( ( (new_angle > 180)
+	while ( ( std::abs(angle_mod) > 0. )
+	      && ( ( (new_angle > 180)
 	         && ( ( (new_angle + angle_mod) < 190)
 	           || ( (new_angle + angle_mod) > 260) ) )
 	       || ( (new_angle < 180)
