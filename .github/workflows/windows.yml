@@ -1,0 +1,44 @@
+name: Windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: windows-build
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Download Dependencies
+        if: success()
+        shell: cmd
+        run: |
+          curl -LO http://cdn.allegro.cc/file/library/allegro/4.4.2/allegro-4.4.2-msvc-10.0.7z
+          7z x allegro-4.4.2-msvc-10.0.7z
+          rename allegro-4.4.2-msvc-10.0 allegro
+
+      - name: Build
+        if: success()
+        run: msbuild vs19\atanks.sln -p:Configuration=Release -p:Platform=x86 -m
+   
+      - name: Prepare artifacts for deploy
+        if: success()
+        run: |
+          7z a -t7z -mx=9 atanks.7z -r0 *
+
+      - uses: actions/upload-artifact@v2
+        if: success()
+        with:
+          name: atanks_windows_${{ github.event.pull_request.head.sha }}
+          path: atanks.7z

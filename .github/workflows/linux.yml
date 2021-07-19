@@ -1,0 +1,38 @@
+name: Linux
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: linux-build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y liballegro4-dev p7zip-full zip
+
+      - name: Build
+        run: make
+
+      - name: Prepare artifacts for deploy
+        if: success()
+        uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a -t7z -mx=9 atanks.7z atanks
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: success()
+        with:
+          name: atanks_linux_${{ github.event.pull_request.head.sha }}
+          path: atanks.7z
