@@ -1,5 +1,7 @@
 NOTE: From now on, new changes appear at the top of this file.
 
+============ Atanks-6.5 released ===================
+
 	Fixes:
 	- Falling damage that was caused by a driller or riot weapon, is now
 	  credited to the shooter of that weapon.
@@ -40,6 +42,7 @@ NOTE: From now on, new changes appear at the top of this file.
 
 
 ============ Atanks-6.4 released ===================
+
 	Service release with bug fixes and some improvements for the AI.
 	Fixes:
 	- Fixed a bug that caused the AI to use Napalm in a stupid way.
