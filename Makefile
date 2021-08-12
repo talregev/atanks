@@ -363,7 +363,7 @@ tarball: veryclean
 	cd .. && tar --create --file $(FILENAME).tar.gz --exclude-vcs $(FILENAME) 
 
 zipfile: veryclean
-	cd .. && zip -r $(FILENAME)-source.zip $(FILENAME) -x *.git*
+	cd .. && zip -r $(FILENAME)-source.zip $(FILENAME) -x '*.git*'
 
 source-dist: $(TARGET)
 	cd ../; \
