@@ -5305,19 +5305,14 @@ void AICore::operator()()
 		// --- Done here and not in initialize so the full ---
 		// --- shock check is already done.                ---
 		// ---------------------------------------------------
-		findOppAttempts = ai_level + 2 - (isShocked ? ai_level / 2 : 0);
-		findRngAttempts = (std::pow(ai_level + 1, 2) + 1)
-		                / (isShocked ? ai_level + 1 : 1)
-		                + (isShocked ? 0 : ai_level + 4);
-		findTgtAttempts = ai_level
-		                - (isShocked ? ai_level - 1 : 0)
-		                + (isShocked ? 0 : 1);
-		findWeapAttempts= ai_level * 2 / (isShocked ? ai_level : 1);
-		focusRate       = ai_level_d * 2.
-		                / static_cast<double>(maxAiLevel * 2);
+		findOppAttempts = ai_level;
+		findRngAttempts = ai_level;
+		findTgtAttempts = ai_level;
+		findWeapAttempts= ai_level;
+		focusRate       = ai_level;
 		errorMultiplier = static_cast<double>(maxAiLevel + 1 - ai_level)
 		                / static_cast<double>(findRngAttempts);
-		maxBounce       = ROUNDu(std::pow(ai_level, 2) / 2.) + 2;
+		maxBounce       = ai_level;
 		/* The results should be [if shocked]:
 		 * findOppAttempts : Useless   3   [2], Deadly + 1:  8    [4]
 		 * findRngAttempts : Useless: 10   [2], Deadly + 1: 60    [7]

@@ -25,6 +25,9 @@ NOTE: From now on, new changes appear at the top of this file.
 	  nearer to the tank than on the point were the missile would explode
 	  if not shot down.
 	- Fixed bug in debug.h which would prevent compiling on FreeBSD.
+	- Reduced AI difficultly, especially at lower levels. AI was far too
+	  strong for most players. AI aiming now uses a number of aiming attempts
+	  equal to its level rather than a power of its level.
 
 
 ============ Atanks-6.5 released ===================
