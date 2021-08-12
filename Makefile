@@ -360,7 +360,7 @@ ubuntu: $(TARGET)
 dist: source-dist i686-dist win32-dist
 
 tarball: veryclean
-	cd .. && tar czf $(FILENAME).tar.gz $(FILENAME) --exclude=.git
+	cd .. && tar --create --file $(FILENAME).tar.gz --exclude-vcs $(FILENAME) 
 
 zipfile: veryclean
 	cd .. && zip -r $(FILENAME)-source.zip $(FILENAME) -x *.git*
