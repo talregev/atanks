@@ -6,6 +6,8 @@ NOTE: From now on, new changes appear at the top of this file.
 	- Falling damage that was caused by a driller or riot weapon, is now
 	  credited to the shooter of that weapon.
 	- Fixed a crash that happened when SDI units tried to target meteors.
+	- Fixed Makefile so that tar abd zip commands would not include
+	  .git directory in source archives.
 	Additions:
 	- The AI players can move their tank to get to a better position.
 	- New weapon: "Theft Bomb" (Idea and basic patch by Alois Dirnaichner)
