@@ -162,7 +162,7 @@ void generate_land (LevelCreator* lcr, int32_t xoffset, int32_t heightx)
 				double maxTop = std::max(depthStrip[0][depth],
 				                         depthStrip[1][depth]);
 				double btdiff = maxTop - minBot;
-				double i      = (y - bot) / btdiff;
+				double i      = (y - bot) / ( (btdiff > 1.0) ? btdiff : 1.0);
 				double a1     = RAD2DEG(atan2(depthStrip[0][depth - 1]
 				                            - depthStrip[1][depth - 1], 1.0))
 				              + 180.;
