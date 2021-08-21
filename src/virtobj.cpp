@@ -74,8 +74,6 @@ void VIRTUAL_OBJECT::applyPhysics ()
 
 void VIRTUAL_OBJECT::draw ()
 {
-	// assert(bitmap && "ERROR: VIRTUAL_OBJECT::draw() called without bitmap!");
-        cout << "atanks: Virtual Object draw function called without bitmap." << endl;
 	if (!destroy && bitmap) {
 
 		rotate_sprite (global.canvas, bitmap,
