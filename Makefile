@@ -1,7 +1,7 @@
 .PHONY: all install clean veryclean user winuser osxuser ubuntu \
 dist tarball zipfile source-dist i686-dist win32-dist
 
-VERSION := 6.6
+VERSION := 6.7
 
 
 DEBUG   ?= NO
@@ -85,7 +85,7 @@ FILENAME := $(TARGET)-$(VERSION)
 # ------------------------------------
 INSTALL := $(shell which install)
 RM      := $(shell which rm) -f
-CXX     ?= g++
+CXX     ?= clang++
 SED     := $(shell which sed)
 WINDRES :=
 

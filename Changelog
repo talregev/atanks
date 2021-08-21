@@ -1,5 +1,12 @@
 NOTE: From now on, new changes appear at the top of this file.
 
+	Fixes:
+	- Avoid divide by zero error during land calculation. Fix provided by Sven.
+	- Assert is often called when attempting to draw virtual object without a
+	  bitmap associated with the object. This has been removed to avoid exiting
+	  the game and a simple error is printed to the terminal instead.
+
+
 ============ Atanks-6.6 released ===================
 
 	Fixes:

@@ -386,9 +386,8 @@ bool ENVIRONMENT::find_data_dir()
 	else {
         // This was not successful, try the current directory if not tried, yet.
 
-        if (strncmp(DATA_DIR, ".", 1) && strncmp(DATA_DIR, "./", 2)) {
+        if ( (strncmp(DATA_DIR, ".", 1) ) && (strncmp(DATA_DIR, "./", 2) ) ) {
 			strncpy(path_buf, "./unicode.dat", PATH_MAX);
-
 			// Try again and reset if unsuccessful
 			if (!access(path_buf, R_OK))
 				strncpy(dataDir, ".", PATH_MAX);
