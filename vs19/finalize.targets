@@ -1,0 +1,10 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="CopyDLLFiles" DependsOnTargets="Build" AfterTargets="Build">
+		<ItemGroup>
+			<RELEASE	Include="..\allegro\bin\allegro-4.4.2-mt.dll" />
+			<DEBUG		Include="..\allegro\bin\allegro-4.4.2-mt-debug.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(RELEASE)"	DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(DEBUG)"	DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+	</Target>
+</Project>
